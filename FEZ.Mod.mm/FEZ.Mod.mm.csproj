@@ -30,31 +30,39 @@
     <Reference Include="System" />
     <Reference Include="FNA">
       <HintPath>..\libs\FNA.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ContentSerialization">
       <HintPath>..\libs\ContentSerialization.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
     <Reference Include="XnaWordWrapCore">
       <HintPath>..\libs\XnaWordWrapCore.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="FEZ">
       <HintPath>..\libs\FEZ.exe</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="FezEngine">
       <HintPath>..\libs\FezEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="EasyStorage">
       <HintPath>..\libs\EasyStorage.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Common">
       <HintPath>..\libs\Common.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="MonoMod">
       <HintPath>..\libs\MonoMod.exe</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
