@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{180C043D-688B-4120-84C2-8ED3F0D008A9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FEZ.Mod.mm</RootNamespace>
+    <AssemblyName>FEZ.ChaosMod.mm</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="FNA">
+      <HintPath>..\libs\FNA.dll</HintPath>
+    </Reference>
+    <Reference Include="ContentSerialization">
+      <HintPath>..\libs\ContentSerialization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="XnaWordWrapCore">
+      <HintPath>..\libs\XnaWordWrapCore.dll</HintPath>
+    </Reference>
+    <Reference Include="FEZ">
+      <HintPath>..\libs\FEZ.exe</HintPath>
+    </Reference>
+    <Reference Include="FezEngine">
+      <HintPath>..\libs\FezEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="EasyStorage">
+      <HintPath>..\libs\EasyStorage.dll</HintPath>
+    </Reference>
+    <Reference Include="Common">
+      <HintPath>..\libs\Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod">
+      <HintPath>..\libs\MonoMod.exe</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Mod\BoundingBoxExtensions.cs" />
+    <Compile Include="Mod\ChaosModAboutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mod\ChaosModEffectListComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Mod\ChaosModEffectText.cs" />
+    <Compile Include="Mod\ChaosModSettingsHelper.cs" />
+    <Compile Include="Mod\ChaosModWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mod\CircularProgressBar.cs" />
+    <Compile Include="Mod\CollapsableGroupedListControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Mod\ColorExtensions.cs" />
+    <Compile Include="Mod\DrawingTools.cs" />
+    <Compile Include="Mod\FezChaosMod.cs" />
+    <Compile Include="Mod\LevelConnectionList.cs" />
+    <Compile Include="Mod\LevelInfo.cs" />
+    <Compile Include="Mod\LevelNames.cs" />
+    <Compile Include="Mod\LinearProgressBar.cs" />
+    <Compile Include="Mod\ListExtensions.cs" />
+    <Compile Include="Mod\Loot.cs" />
+    <Compile Include="Mod\LootMetadata.cs" />
+    <Compile Include="Mod\ProgressBars.cs" />
+    <Compile Include="Mod\TypeExtensions.cs" />
+    <Compile Include="Mod\VolumeExtensions.cs" />
+    <Compile Include="Mod\WorldInfo.cs" />
+    <Compile Include="Patches\Fez.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mod\ChaosModAboutWindow.resx">
+      <DependentUpon>ChaosModAboutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mod\ChaosModWindow.resx">
+      <DependentUpon>ChaosModWindow.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
