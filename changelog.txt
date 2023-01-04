@@ -1,0 +1,144 @@
+
+* Quality of Life mod (qol):
+
+1.0.0
+always starts in speedrun mode, always spawns all the anticubes in the clock tower when doing a speedrun, and removes the arbitrary 5 second long "loading" time
+
+1.1.0
+Adds the other collectables to the SpeedRun tracker thing
+Key: 
+  C: Cube
+  A: AntiCube
+  H: PieceOfHeart
+  K: SkeletonKey
+  N: NumberCube
+  S: TriSkull
+  L: LetterCube
+  T: Tome
+  M: TreasureMap
+
+1.2.0
+Changes "always spawns all the anticubes in the clock tower when doing a speedrun" to use an optional flag instead. 
+New flags:
+-ctit
+--clock-tower-ignore-time
+
+
+
+
+* Chaos mod:
+
+0.1.0
+Includes qol mod
+Added basic chaotic effects
+
+0.3.2 (unstable)
+Added more fun effects
+Weighted random effects
+Conditional effects
+Bug fixes
+
+0.4.0
+Bug Fixes
+New effect: "PlayRandomMusic"
+
+
+
+
+* Madness mod
+
+0.1.0
+Includes qol mod, chaos mod, and entrance randomizer mod
+
+0.1.1
+Slight changes to the room randomizer
+
+0.2.1
+Entrance randomizer now bidirectional
+
+0.2.2
+Bug fixes
+
+0.3.1
+Entrance randomizer now places the player at the door from whence they came
+Cleanup
+
+0.5.0
+Renamed to back to Chaos Mod
+Now with a fancy GUI (Note: saving and loading of settings is currently not supported)
+
+0.6.0
+Rewrote the entrance randomizer again
+Added a Help menu
+
+0.6.1
+Starting to add logic to the randomizer
+Bug fixes
+
+0.7.0
+Randomizer now has janky logic
+
+0.7.2
+Refactored the randomizer
+Bug fixes
+
+0.8.0
+Added timed effects
+Added in-game active chaos effects text
+Added effect duration modifier
+
+0.8.1
+Bug fixes
+Added saving and loading chaos mod settings
+Changed Effect Duration Modifier to a multiplier
+Added glitch effects
+
+0.8.2
+Added progress icon things for active effects
+Added Starfield effect
+The data in saved setting files is now alphabetically sorted
+
+0.8.3
+Bug fixes
+Added option to show debug info in-game
+Custom graphics for the additional speedrun splits
+
+0.8.4
+Bug fixes and optimizations
+Added more gravity effects for testing
+Added option to allow rotate anywhere
+Added option to allow first person anywhere
+Added option to enable/disable stereoscopic mode whenever
+Added speedrun split for collecting owls
+Key: 
+  C: Cube
+  A: AntiCube
+  M: TreasureMap
+  H: PieceOfHeart
+  N: NumberCube
+  S: TriSkull
+  L: LetterCube
+  T: Tome
+  K: SkeletonKey
+  O: Owl
+
+0.8.5
+Bug fixes
+Added progress bar to show when the next effect will occur
+Fixed black holes spawning on top of player
+Added setting to adjust how many effects are displayed
+
+0.9.0
+Revamped the effects customization UI
+Now with 200% more settings per effect!
+Changed how checkboxes are saved; this should not affect settings files
+More bug fixes
+Cleanup
+
+0.9.1
+Now uses MonoMod ( https://github.com/MonoMod/MonoMod )
+As a result of moving to MonoMod, several features (including new speedrun splits, and clock-tower-ignore-time) got cut.
+Also removed the janky randomizer.
+Older versions have been archived.
+
+
