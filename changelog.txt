@@ -139,6 +139,7 @@ Cleanup
 Now uses MonoMod ( https://github.com/MonoMod/MonoMod )
 As a result of moving to MonoMod, several features (including new speedrun splits, and clock-tower-ignore-time) got cut.
 Also removed the janky randomizer.
+Note the effects that utilize `NesGlitches` have been disabled because the class `NesGlitches` is flagged as an internal class, which apparently causes errors and I have yet to figure out how to fix this issue. 
 Older versions have been archived.
 
 
