@@ -55,7 +55,12 @@ namespace FezGame.ChaosMod
             ChaosModWindow.instance = this;
 
             Initializing = true;
-            this.Shown += (Object sender, EventArgs e) => { Initializing = false; LogLine("Initialization complete."); };
+            this.Shown += (Object sender, EventArgs e) =>
+            {
+                Initializing = false;
+                LogLine("Initialization complete.");
+                LogLine($"Welcome to Chaos Mod version {FezChaosMod.Version}");
+            };
 
             this.chaosMod = chaosMod;
             InitializeComponent();
