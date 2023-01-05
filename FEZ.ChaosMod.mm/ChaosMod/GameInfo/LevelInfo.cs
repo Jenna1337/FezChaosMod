@@ -480,7 +480,7 @@ namespace FezGame.GameInfo
                 }
                 catch (Exception e)
                 {
-                    ChaosModWindow.LogLineDebug(e);
+                    ChaosModWindow.LogLineDebug(e.ToString());
                     System.Diagnostics.Debugger.Break();
                     return null;
                 }
