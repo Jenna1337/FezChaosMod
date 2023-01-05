@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{180C043D-688B-4120-84C2-8ED3F0D008A9}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>FEZ.Mod.mm</RootNamespace>
+    <RootNamespace>FEZ.ChaosMod.mm</RootNamespace>
     <AssemblyName>FEZ.ChaosMod.mm</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -67,43 +67,43 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Mod\BoundingBoxExtensions.cs" />
-    <Compile Include="Mod\ChaosModAboutWindow.cs">
+    <Compile Include="ChaosMod\GameInfo\BoundingBoxExtensions.cs" />
+    <Compile Include="ChaosMod\GuiWindow\ChaosModAboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Mod\ChaosModEffectListComponent.cs">
+    <Compile Include="ChaosMod\GuiWindow\ChaosModEffectListComponent.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Mod\ChaosModEffectText.cs" />
-    <Compile Include="Mod\ChaosModSettingsHelper.cs" />
-    <Compile Include="Mod\ChaosModWindow.cs">
+    <Compile Include="ChaosMod\GuiInGame\ChaosModEffectText.cs" />
+    <Compile Include="ChaosMod\GuiWindow\ChaosModSettingsHelper.cs" />
+    <Compile Include="ChaosMod\GuiWindow\ChaosModWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Mod\CircularProgressBar.cs" />
-    <Compile Include="Mod\CollapsableGroupedListControl.cs">
+    <Compile Include="ChaosMod\GuiInGame\CircularProgressBar.cs" />
+    <Compile Include="ChaosMod\GuiWindow\CollapsableGroupedListControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Mod\ColorExtensions.cs" />
-    <Compile Include="Mod\DrawingTools.cs" />
-    <Compile Include="Mod\FezChaosMod.cs" />
-    <Compile Include="Mod\LevelConnectionList.cs" />
-    <Compile Include="Mod\LevelInfo.cs" />
-    <Compile Include="Mod\LevelNames.cs" />
-    <Compile Include="Mod\LinearProgressBar.cs" />
-    <Compile Include="Mod\ListExtensions.cs" />
-    <Compile Include="Mod\Loot.cs" />
-    <Compile Include="Mod\LootMetadata.cs" />
-    <Compile Include="Mod\ProgressBars.cs" />
-    <Compile Include="Mod\TypeExtensions.cs" />
-    <Compile Include="Mod\VolumeExtensions.cs" />
-    <Compile Include="Mod\WorldInfo.cs" />
+    <Compile Include="ChaosMod\GuiInGame\ColorExtensions.cs" />
+    <Compile Include="ChaosMod\GuiInGame\DrawingTools.cs" />
+    <Compile Include="ChaosMod\FezChaosMod.cs" />
+    <Compile Include="ChaosMod\GameInfo\LevelConnectionList.cs" />
+    <Compile Include="ChaosMod\GameInfo\LevelInfo.cs" />
+    <Compile Include="ChaosMod\GameInfo\LevelNames.cs" />
+    <Compile Include="ChaosMod\GuiInGame\LinearProgressBar.cs" />
+    <Compile Include="ChaosMod\ListExtensions.cs" />
+    <Compile Include="ChaosMod\GameInfo\Loot.cs" />
+    <Compile Include="ChaosMod\GameInfo\LootMetadata.cs" />
+    <Compile Include="ChaosMod\GuiInGame\ProgressBars.cs" />
+    <Compile Include="ChaosMod\GameInfo\TypeExtensions.cs" />
+    <Compile Include="ChaosMod\VolumeExtensions.cs" />
+    <Compile Include="ChaosMod\GameInfo\WorldInfo.cs" />
     <Compile Include="Patches\Fez.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Mod\ChaosModAboutWindow.resx">
+    <EmbeddedResource Include="ChaosMod\GuiWindow\ChaosModAboutWindow.resx">
       <DependentUpon>ChaosModAboutWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Mod\ChaosModWindow.resx">
+    <EmbeddedResource Include="ChaosMod\GuiWindow\ChaosModWindow.resx">
       <DependentUpon>ChaosModWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

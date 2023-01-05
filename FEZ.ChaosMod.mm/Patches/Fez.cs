@@ -17,7 +17,7 @@ using FezGame.ChaosMod;
 namespace FezGame {
     class patch_Fez : Fez {
 
-        public static FezChaosMod chaosMod { get; internal set; }
+        public static FezChaosMod ChaosMod { get; internal set; }
         public static bool ChaosMode = true;
 
         public extern void orig_Update(GameTime gameTime);
@@ -28,8 +28,8 @@ namespace FezGame {
         public extern void orig_Draw(GameTime gameTime);
         protected override void Draw(GameTime gameTime) {
             orig_Draw(gameTime);
-            if (chaosMod != null)
-                chaosMod.Draw((float)Math.Floor(base.GraphicsDevice.GetViewScale()), base.GraphicsDevice.Viewport);
+            if (ChaosMod != null)
+                ChaosMod.Draw((float)Math.Floor(base.GraphicsDevice.GetViewScale()), base.GraphicsDevice.Viewport);
         }
 
         public extern void orig_Initialize();
@@ -42,7 +42,7 @@ namespace FezGame {
             if (ServiceHelper.FirstLoadDone)
                 return;
             orig_LoadComponents(game);
-            ServiceHelper.AddComponent(chaosMod = new FezChaosMod(game));
+            ServiceHelper.AddComponent(ChaosMod = new FezChaosMod(game));
             ServiceHelper.FirstLoadDone = true;
         }
 

@@ -77,10 +77,10 @@ namespace FezGame.ChaosMod
             public Action Func { get; }
             private double _ratio;
             public double Ratio { get => Enabled ? _ratio : 0; set => _ratio = value; }
-            public bool CanUse => Enabled && (Category == null || patch_Fez.chaosMod.activeChaosEffects.FindIndex(a => !a.IsDone && Category.Equals(a.Category)) < 0) && (Condition == null || Condition());
+            public bool CanUse => Enabled && (Category == null || patch_Fez.ChaosMod.activeChaosEffects.FindIndex(a => !a.IsDone && Category.Equals(a.Category)) < 0) && (Condition == null || Condition());
             public bool Enabled = true;
             private double _duration;
-            public double Duration { get => _duration <= 0 ? 0 : _duration * patch_Fez.chaosMod.EffectsDurationMultiplier; set => _duration = value; }
+            public double Duration { get => _duration <= 0 ? 0 : _duration * patch_Fez.ChaosMod.EffectsDurationMultiplier; set => _duration = value; }
             public Action OnDone { get; }
             public string Category { get; }
             private readonly Func<bool> _pauseTimerTest;

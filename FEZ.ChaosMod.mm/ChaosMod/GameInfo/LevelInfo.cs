@@ -463,7 +463,7 @@ namespace FezGame.Randomizer
             levelName = levelName.Replace('\\', '/');
             string text = levelName;
             Level level;
-            using (MemoryContentManager memoryContentManager = new MemoryContentManager(patch_Fez.chaosMod.Game.Services, patch_Fez.chaosMod.Game.Content.RootDirectory))
+            using (MemoryContentManager memoryContentManager = new MemoryContentManager(patch_Fez.ChaosMod.Game.Services, patch_Fez.ChaosMod.Game.Content.RootDirectory))
             {
                 if (!string.IsNullOrEmpty(levelName))
                 {
