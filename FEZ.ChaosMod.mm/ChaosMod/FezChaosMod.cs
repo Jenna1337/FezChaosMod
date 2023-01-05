@@ -15,7 +15,7 @@ using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using FezEngine.Components.Scripting;
-using FezGame.Randomizer;
+using FezGame.GameInfo;
 
 namespace FezGame.ChaosMod
 {

@@ -10,7 +10,7 @@ using FezEngine.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace FezGame.Randomizer
+namespace FezGame.GameInfo
 {
     public class LevelInfo : Loot
     {

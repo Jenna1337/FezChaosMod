@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace FezGame.Randomizer
+namespace FezGame.GameInfo
 {
     public static class TypeExtensions
     {

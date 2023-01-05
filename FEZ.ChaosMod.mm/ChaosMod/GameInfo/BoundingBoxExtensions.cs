@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FezGame.Randomizer
+namespace FezGame.GameInfo
 {
     static class BoundingBoxExtensions
     {

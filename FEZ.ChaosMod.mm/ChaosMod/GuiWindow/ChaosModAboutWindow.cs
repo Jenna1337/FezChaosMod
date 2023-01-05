@@ -1,5 +1,5 @@
 ﻿using FezGame.ChaosMod;
-using FezGame.Randomizer;
+using FezGame.GameInfo;
 using System;
 using System.Windows.Forms;
 
@@ -7,7 +7,6 @@ namespace FezGame
 {
     class ChaosModAboutWindow : Form
     {
-        private Label labelVersionRandomizer;
         private Button buttonOk;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Label labelMadeBy;
@@ -23,7 +22,6 @@ namespace FezGame
         private void InitializeComponent()
         {
             this.labelVersionChaosMod = new System.Windows.Forms.Label();
-            this.labelVersionRandomizer = new System.Windows.Forms.Label();
             this.buttonOk = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.labelMadeBy = new System.Windows.Forms.Label();
@@ -38,16 +36,6 @@ namespace FezGame
             this.labelVersionChaosMod.Size = new System.Drawing.Size(195, 22);
             this.labelVersionChaosMod.TabIndex = 0;
             this.labelVersionChaosMod.Text = "labelVersionChaosMod";
-            // 
-            // labelVersionRandomizer
-            // 
-            this.labelVersionRandomizer.AutoSize = true;
-            this.labelVersionRandomizer.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelVersionRandomizer.Location = new System.Drawing.Point(31, 143);
-            this.labelVersionRandomizer.Name = "labelVersionRandomizer";
-            this.labelVersionRandomizer.Size = new System.Drawing.Size(204, 22);
-            this.labelVersionRandomizer.TabIndex = 1;
-            this.labelVersionRandomizer.Text = "labelVersionRandomizer";
             // 
             // buttonOk
             // 
@@ -74,7 +62,6 @@ namespace FezGame
             this.ClientSize = new System.Drawing.Size(379, 313);
             this.Controls.Add(this.labelMadeBy);
             this.Controls.Add(this.buttonOk);
-            this.Controls.Add(this.labelVersionRandomizer);
             this.Controls.Add(this.labelVersionChaosMod);
             this.Name = "ChaosModAboutWindow";
             this.ShowIcon = false;

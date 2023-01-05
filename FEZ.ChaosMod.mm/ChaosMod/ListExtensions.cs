@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FezGame.Randomizer
+namespace FezGame.GameInfo
 {
     public static class ListExtensions
 	{

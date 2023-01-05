@@ -86,7 +86,6 @@ namespace FezGame.ChaosMod
             this.EffectsDurationMultiplierSpinner.Value = (decimal)chaosMod.EffectsDurationMultiplier;
             this.MaxEffectsToDisplaySpinner.Value = (decimal)chaosMod.MaxActiveEffectsToDisplay;
 
-            //this.RoomRandoSeedSpinner.Value = FezRandomizer.Seed;
 
 
             DefaultSettings = this.GetAllInputsValues();

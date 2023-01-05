@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FezGame.Randomizer
+namespace FezGame.GameInfo
 {
 	public class Loot
 	{

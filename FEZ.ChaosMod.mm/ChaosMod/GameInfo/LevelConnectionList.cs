@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using static FezGame.Randomizer.LevelInfo;
-using static FezGame.Randomizer.WorldInfo;
+using static FezGame.GameInfo.LevelInfo;
+using static FezGame.GameInfo.WorldInfo;
 
-namespace FezGame.Randomizer
+namespace FezGame.GameInfo
 {
     class LevelConnectionList : List<LevelConnection>
     {
