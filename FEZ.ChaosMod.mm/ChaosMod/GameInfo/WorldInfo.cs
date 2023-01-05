@@ -36,7 +36,7 @@ namespace FezGame.GameInfo
         private static readonly List<LevelInfo> levelInfos = new List<LevelInfo>();
         static WorldInfo()
         {
-            levelInfos = GetLevelInfo(LevelNames.All);//use LevelNames.Main instead of LevelNames.All so as to exclude unused levels
+            levelInfos = GetAllLevelInfoByTravelingConnections(LevelInfo.GetLevelInfo("GOMEZ_HOUSE"));//note: does not include intro, ending, or unused levels
             foreach (var levelInfo in levelInfos)
             {
                 foreach (Entrance toLevel in levelInfo.Entrances)
@@ -45,6 +45,29 @@ namespace FezGame.GameInfo
                 }
             }
             ;
+        }
+
+        private static List<LevelInfo> GetAllLevelInfoByTravelingConnections(LevelInfo initialLevelInfo)
+        {
+            List<LevelInfo> levelInfos = new List<LevelInfo>() { initialLevelInfo };
+            HashSet<string> VisitedRooms = new HashSet<string>() { initialLevelInfo.Name };
+
+            Queue<Entrance> doorsToCheck = new Queue<Entrance>();
+            initialLevelInfo.Entrances.ForEach(doorsToCheck.Enqueue);
+
+
+            while (doorsToCheck.Count > 0)
+            {
+                string otherlevelname = doorsToCheck.Dequeue().Exit.TargetLevelName;
+                if (!VisitedRooms.Contains(otherlevelname))
+                {
+                    LevelInfo newinfo = LevelInfo.GetLevelInfo(otherlevelname);
+                    levelInfos.Add(newinfo);
+                    newinfo.Entrances.ForEach(doorsToCheck.Enqueue);
+                    VisitedRooms.Add(otherlevelname);
+                }
+            }
+            return levelInfos;
         }
 
         public static LevelConnectionList GetConnections()

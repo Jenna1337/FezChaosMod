@@ -147,7 +147,7 @@ namespace FezGame.ChaosMod
             if (instance == null || !instance.Created || instance.IsDisposed || !instance.Visible)
                 return;
             if (instance.chaosMod.ShowDebugInfo)
-                LogLine(text);
+                LogLine("Debug: " + text);
         }
         public static void ClearLog()
         {

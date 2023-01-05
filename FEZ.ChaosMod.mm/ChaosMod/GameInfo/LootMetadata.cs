@@ -105,7 +105,6 @@ namespace FezGame.GameInfo
                 AddGlitchyDespawner(actorType, level.Volumes[(int)ent.Identifier].BoundingBox.Center(), "Volume", level.Name, codePattern, conditions);
                 return;
             }
-            System.Diagnostics.Debugger.Break();
         }
         internal void AddHardcoded(ActorType actorType, Vector3 vector3, string SpawnTypeName, string levelName)
         {

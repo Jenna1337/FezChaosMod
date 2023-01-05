@@ -13,7 +13,7 @@ namespace FezGame
             Intro = 2,
             Ending = 4,
             Unused = 8,
-            Hub = 16,
+            Hub = 16,//Levels with the big teleporter thingy
 
         }
         private struct LevelIdentifiers
@@ -27,7 +27,7 @@ namespace FezGame
             }
         }
 
-        //TODO dynamically generate this list instead of having hardcoded values?
+        //TODO dynamically generate this list instead of having hardcoded values? see WorldInfo.GetAllLevelInfoByTravelingConnections
         private static readonly ReadOnlyCollection<LevelIdentifiers> list = new ReadOnlyCollection<LevelIdentifiers>(new List<LevelIdentifiers>(){
             new LevelIdentifiers("ABANDONED_A", LevelType.Main),
             new LevelIdentifiers("ABANDONED_B", LevelType.Main),

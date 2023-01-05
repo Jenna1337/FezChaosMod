@@ -177,8 +177,6 @@ namespace FezGame.GameInfo
                         }
                         if (action.Operation.Equals("FocusCamera"))
                         {
-                            if (tentativePixelsPerTrixel != 0)
-                                System.Diagnostics.Debugger.Break();
                             tentativePixelsPerTrixel = Int32.Parse(action.Arguments[0]);
                         }
                         if (trigger.Object.Type == "Volume" && trigger.Object.Identifier != null && levelData.Volumes.ContainsKey((int)trigger.Object.Identifier))
