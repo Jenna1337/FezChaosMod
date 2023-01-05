@@ -113,7 +113,7 @@ namespace FezGame.GameInfo
                 {
                     {
                         var m = System.Reflection.MethodBase.GetCurrentMethod();
-                        System.Diagnostics.Debug.WriteLine($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Warning: Target level volume ({TargetVolumeId}) does not exist as an entrance in the target level ({TargetLevelName}). Returning first entrance that leads back to this level.");
+                        ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Warning: Target level volume ({TargetVolumeId}) does not exist as an entrance in the target level ({TargetLevelName}). Returning first entrance that leads back to this level.");
                     }
                     en = ents.Find(te => te.LevelName == targlvlname);
                     if (en.LevelName == null || en.LevelName == "")
@@ -367,7 +367,7 @@ namespace FezGame.GameInfo
                     if (entrances.Any())
                         PixelsPerTrixel = entrances.GroupBy(a => a).OrderByDescending(a => a.Count()).First().Key;
                     else
-                        System.Diagnostics.Debug.WriteLine("No zoom info found for " + levelName);
+                        ChaosModWindow.LogLineDebug("No zoom info found for " + levelName);
                 }
 
             }
@@ -479,7 +479,7 @@ namespace FezGame.GameInfo
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e);
+                    ChaosModWindow.LogLineDebug(e);
                     System.Diagnostics.Debugger.Break();
                     return null;
                 }

@@ -29,7 +29,7 @@ namespace FezGame.GameInfo
         {
             if (fromLevel.Exit.TargetLevelName == null || toLevel.Exit.TargetLevelName == null)
                 System.Diagnostics.Debugger.Break();
-            //System.Diagnostics.Debug.WriteLine(Connections.HasConnection(fromLevel, toLevel) + ": " + fromLevel.TargetLevelName + " to " + toLevel.TargetLevelName);
+            //ChaosModWindow.LogLineDebug(Connections.HasConnection(fromLevel, toLevel) + ": " + fromLevel.TargetLevelName + " to " + toLevel.TargetLevelName);
             if (!Connections.HasConnection(fromLevel, toLevel))
                 Connections.Add(new LevelConnection(fromLevel, toLevel));
         }

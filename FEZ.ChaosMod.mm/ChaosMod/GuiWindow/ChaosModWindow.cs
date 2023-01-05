@@ -92,6 +92,8 @@ namespace FezGame.ChaosMod
             this.MaxEffectsToDisplaySpinner.Value = (decimal)chaosMod.MaxActiveEffectsToDisplay;
 
 
+            //TODO add something somewhere that shows the sum of all the effect ratios, and the sum of all the enabled effect ratios
+
 
             DefaultSettings = this.GetAllInputsValues();
 
@@ -139,6 +141,13 @@ namespace FezGame.ChaosMod
                 else
                     instance.EffectLogger.AppendText(text + Environment.NewLine);
             }));
+        }
+        public static void LogLineDebug(string text)
+        {
+            if (instance == null || !instance.Created || instance.IsDisposed || !instance.Visible)
+                return;
+            if (instance.chaosMod.ShowDebugInfo)
+                LogLine(text);
         }
         public static void ClearLog()
         {
@@ -607,7 +616,7 @@ namespace FezGame.ChaosMod
         private void SaveSettingsToFile(string file)
         {
             ActiveSaveFile = Path.GetFullPath(file);
-            System.Diagnostics.Debug.WriteLine("Saving to file: " + file);
+            ChaosModWindow.LogLineDebug("Saving to file: " + file);
             ChaosModSettingsHelper.Write(this, file);
         }
         private void LoadSettingsFromFile(string file)
@@ -615,12 +624,12 @@ namespace FezGame.ChaosMod
             try
             {
                 ActiveSaveFile = Path.GetFullPath(file);
-                System.Diagnostics.Debug.WriteLine("Loading from file: " + file);
+                ChaosModWindow.LogLineDebug("Loading from file: " + file);
                 ChaosModSettingsHelper.Read(this, file);
             }
             catch
             {
-                System.Diagnostics.Debug.WriteLine("Failed to load from file: " + file);
+                ChaosModWindow.LogLineDebug("Failed to load from file: " + file);
             }
         }
         private void AboutFEZChaosModToolStripMenuItem_Click(object sender, EventArgs e) { AboutForm.Show(this); }
@@ -655,7 +664,7 @@ namespace FezGame.ChaosMod
                 }
             }
             catch (Exception e) {
-                System.Diagnostics.Debug.WriteLine(e);
+                ChaosModWindow.LogLineDebug(e);
             }
         }
         private void StereoModeCheckBox_CheckedChanged(object sender, EventArgs e) { FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>().StereoMode = StereoModeCheckBox.Checked; }

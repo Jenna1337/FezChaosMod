@@ -34,7 +34,7 @@ namespace FezGame.ChaosMod
 
             ResizeLabelsSoEverythingLooksNice();
 
-            System.Diagnostics.Debug.WriteLine($"Effect categories: {{{String.Join(", ", Groups.Keys)}}}");
+            ChaosModWindow.LogLineDebug($"Effect categories: {{{String.Join(", ", Groups.Keys)}}}");
 
             //TODO make it load faster when switching tabs in ChaosModWindow
             //TODO add a thing to each group to indicate how many are enabled
@@ -121,7 +121,7 @@ namespace FezGame.ChaosMod
                 for (int i = 0; i < lastcatindex; ++i)
                 {
                     string subcatname = categories[i];
-                    System.Diagnostics.Debug.WriteLine(subcatname);
+                    ChaosModWindow.LogLineDebug(subcatname);
                     var subcat = container[subcatname];
                     subcat.GroupContainer.Dock = DockStyle.Fill;
                     var controls = subcat.GroupContainer.Controls;
@@ -131,7 +131,7 @@ namespace FezGame.ChaosMod
                         controls.Add(newlist);
                     }
                     container = (CollapsableGroupedListControl)controls[0];
-                    System.Diagnostics.Debug.WriteLine(String.Join(", ", controls));
+                    ChaosModWindow.LogLineDebug(String.Join(", ", controls));
                     //.Controls.Add()
                     ;
                 }
@@ -165,7 +165,7 @@ namespace FezGame.ChaosMod
                     effCheckboxControl.AutoSize = false;
                     effCheckboxControl.Width = longestEffectNameWidth;
                 }
-                //System.Diagnostics.Debug.WriteLine(control.ClientSize.Width);//should write the same number every time
+                //ChaosModWindow.LogLineDebug(control.ClientSize.Width);//should write the same number every time
                 int availwidth = control.ClientSize.Width;
                 Control c = lineControl;
                 while (c!=this)

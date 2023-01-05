@@ -130,7 +130,7 @@ namespace FezGame.ChaosMod
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"Effect with the name {name} already exists!");
+                ChaosModWindow.LogLineDebug($"Effect with the name {name} already exists!");
                 System.Diagnostics.Debugger.Break();
             }
         }
@@ -447,8 +447,6 @@ namespace FezGame.ChaosMod
                 });
 
                 OnHurt += () => ++HurtCount;
-                OnHurt += () => System.Diagnostics.Debug.WriteLine(HurtCount);
-                //TODO add hurt counter on screen; see IsHurting and PlayerManager.Respawn()
 
                 #region AddEffect calls
 
@@ -635,7 +633,7 @@ namespace FezGame.ChaosMod
                 DidInit = true;
             }
             Timer.Start();
-            System.Diagnostics.Debug.WriteLine(WorldInfo.GetAllLevelDataAsString());
+            ChaosModWindow.LogLineDebug(WorldInfo.GetAllLevelDataAsString());
         }
         public class ActiveChaosEffect // Needs to be a  class because if it's a struct then HasDoneOnDone will never be set to true
         {
@@ -743,7 +741,13 @@ namespace FezGame.ChaosMod
 
         private ulong _updatesDone = 0, _framesRendered = 0, _ups = 0, _fps = 0;
         private DateTime _lastTime = DateTime.Now;
-        public bool ShowDebugInfo = System.Diagnostics.Debugger.IsAttached;
+        public bool ShowDebugInfo =
+#if DEBUG
+true
+#else
+false
+#endif
+        || System.Diagnostics.Debugger.IsAttached;
         public bool AllowRotateAnywhere = false;
         public bool AllowFirstPersonAnywhere = false;
 
@@ -899,7 +903,8 @@ namespace FezGame.ChaosMod
                    $"Gomez Position: {PlayerManager.Position.ToString().Replace("{", "").Replace("}", "")}\n" +
                    $"Camera Orientation: {CameraManager.VisibleOrientation}\n" +
                    $"Camera Rotation: {CameraManager.Rotation.ToString().Replace("{", "").Replace("}", "")}\n" +
-                   $"PixelsPerTrixel: {CameraManager.PixelsPerTrixel}";
+                   $"PixelsPerTrixel: {CameraManager.PixelsPerTrixel}\n" +
+                   $"HurtCount: {HurtCount}";
 
             drawingTools.DrawShadowedText(debugText, ShowDebugInfo ? Color.White : Color.Transparent, Vector2.Zero, scale);
 
