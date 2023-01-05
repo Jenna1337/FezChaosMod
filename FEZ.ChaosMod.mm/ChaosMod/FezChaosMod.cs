@@ -278,7 +278,7 @@ namespace FezGame.ChaosMod
         private bool InCutsceneLevel // i.e., intro or ending
 => InIntro || InEnding;
 
-        private static readonly List<ActionType> HurtingActions = new List<ActionType>()
+        private static readonly HashSet<ActionType> HurtingActions = new HashSet<ActionType>()
         {
             ActionType.FreeFalling,//fell too far
             ActionType.Dying,//splatting into the ground
