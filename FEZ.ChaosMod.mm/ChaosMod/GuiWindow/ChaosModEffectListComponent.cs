@@ -42,7 +42,7 @@ namespace FezGame.ChaosMod
             //TODO add a button to manually and immediately start an effect
             //TODO add a thing to enable/disable all the effects in a category
         }
-        private Regex subcatregex = new Regex(@"(?<=\D)\.(?=\D)");
+        private static readonly Regex subcatregex = new Regex(@"(?<=\D)\.(?=\D)");
         private void AddEffect(ChaosEffect effect)
         {
             //CheckBox, NumericUpDown, NumericUpDown

@@ -664,7 +664,7 @@ namespace FezGame.ChaosMod
                 }
             }
             catch (Exception e) {
-                ChaosModWindow.LogLineDebug(e);
+                ChaosModWindow.LogLineDebug(e.ToString());
             }
         }
         private void StereoModeCheckBox_CheckedChanged(object sender, EventArgs e) { FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>().StereoMode = StereoModeCheckBox.Checked; }

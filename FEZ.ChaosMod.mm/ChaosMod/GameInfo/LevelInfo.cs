@@ -7,6 +7,7 @@ using FezEngine;
 using FezEngine.Services;
 using FezEngine.Structure;
 using FezEngine.Tools;
+using FezGame.ChaosMod;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
