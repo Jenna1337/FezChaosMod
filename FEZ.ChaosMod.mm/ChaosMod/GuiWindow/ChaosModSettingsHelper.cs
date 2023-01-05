@@ -275,6 +275,11 @@ namespace FezGame.ChaosMod
     {
         private static readonly string MetadataSectionName = "Metadata";
         private static readonly string FezChaosModVersionName = "ChaosMod.Version";
+        /// <summary>
+        /// Loads chaos mod settings file
+        /// </summary>
+        /// <param name="chaosModWindow">The ChaosModWindow into which the settings will be loaded</param>
+        /// <param name="filepath">The file path of the settings file</param>
         public static void Read(ChaosModWindow chaosModWindow, string filepath)
         {
             Dictionary<string, Dictionary<string, string>> ctrlvals = ReadIniFile(filepath);
@@ -292,6 +297,11 @@ namespace FezGame.ChaosMod
             }
             chaosModWindow.SetAllInputsValues(ctrlvals);
         }
+        /// <summary>
+        /// Saves chaos mod settings file
+        /// </summary>
+        /// <param name="chaosModWindow">The ChaosModWindow from which the settings will be saved</param>
+        /// <param name="filepath">The file path to save the settings file</param>
         public static void Write(ChaosModWindow chaosModWindow, string filepath)
         {
             Dictionary<string, Dictionary<string, object>> ctrlvals = chaosModWindow.GetAllInputsValues(false);

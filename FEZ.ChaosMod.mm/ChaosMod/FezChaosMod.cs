@@ -19,6 +19,9 @@ using FezGame.GameInfo;
 
 namespace FezGame.ChaosMod
 {
+    /// <summary>
+    /// The class where all the Chaos Mod logic is handled.
+    /// </summary>
     public class FezChaosMod : GameComponent //Note: changing this to a DrawableGameComponent causes the sizes of things to be wrong
     {
         public static readonly string Version = "0.9.1";//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
@@ -72,16 +75,33 @@ namespace FezGame.ChaosMod
 
         public class ChaosEffect
         {
+            /// <summary>
+            /// The function to test if the effect can be activated.
+            /// </summary>
             private readonly Func<bool> Condition = null;
             public string Name { get; }
+            /// <summary>
+            /// Function to run every time the game is drawn.
+            /// </summary>
             public Action Func { get; }
             private double _ratio;
+            /// <summary>
+            /// The number used for the weighted random.
+            /// </summary>
             public double Ratio { get => Enabled ? _ratio : 0; set => _ratio = value; }
+            /// <summary>
+            /// Should be true iff the effect is enabled, there isn't another active effect with the same category, and the effect can be activated.
+            /// </summary>
             public bool CanUse => Enabled && (Category == null || patch_Fez.ChaosMod.activeChaosEffects.FindIndex(a => !a.IsDone && Category.Equals(a.Category)) < 0) && (Condition == null || Condition());
             public bool Enabled = true;
             private double _duration;
             public double Duration { get => _duration <= 0 ? 0 : _duration * patch_Fez.ChaosMod.EffectsDurationMultiplier; set => _duration = value; }
             public Action OnDone { get; }
+            /// <summary>
+            /// The category of the effect. 
+            /// Determines the heading this effect appears under in ChaosModWindow.
+            /// Also used to prevent other effects with the same category from being active at the same time. 
+            /// </summary>
             public string Category { get; }
             private readonly Func<bool> _pauseTimerTest;
             public bool ShouldPauseTimer => _pauseTimerTest!=null && _pauseTimerTest();
@@ -188,19 +208,43 @@ namespace FezGame.ChaosMod
         //TODO fix visibility of NesGlitches
         //private NesGlitches Glitches;
 
+        /// <summary>
+        /// The delay that occurs between the activation of effects, in seconds.
+        /// </summary>
         public double DelayBetweenEffects = 10f;
+        /// <summary>
+        /// The multiplier used to multiply the duration of all the effects.
+        /// </summary>
         public double EffectsDurationMultiplier = 1f;
+        /// <summary>
+        /// How many effects are active but not displayed on screen.
+        /// </summary>
         private int UnlistedActiveEffects = 0;
+        /// <summary>
+        /// The timer that keeps track of how long it's been since the previous effect has activated.
+        /// </summary>
         private readonly Stopwatch Timer = new Stopwatch();
         private static readonly Random random = new Random();
+        /// <summary>
+        /// The list of all the chaos mod effects.
+        /// </summary>
         public readonly List<ChaosEffect> ChaosEffectsList = new List<ChaosEffect>();
         private static bool DidInit = false;
         private static readonly Stopwatch SongStarterDelayTimer = new Stopwatch();
         private static readonly Stopwatch SkyChangerDelayTimer = new Stopwatch();
         private static readonly Stopwatch TimeInLevelTimer = new Stopwatch();
         private static ChaosModEffectText ChaosModEffectTextDrawer;
+        /// <summary>
+        /// The bar showing the time until the next effect activates.
+        /// </summary>
         private static LinearProgressBar ChaosModNextEffectCountDownProgressBar;
+        /// <summary>
+        /// The list of effects that are currently active or being displayed on screen.
+        /// </summary>
         private readonly List<ActiveChaosEffect> activeChaosEffects = new List<ActiveChaosEffect>();
+        /// <summary>
+        /// The thing used to draw text and textures to the game window.
+        /// </summary>
         private DrawingTools drawingTools;
 
         #endregion
@@ -237,13 +281,13 @@ namespace FezGame.ChaosMod
         private static readonly List<ActionType> HurtingActions = new List<ActionType>()
         {
             ActionType.FreeFalling,//fell too far
-            ActionType.Dying,
+            ActionType.Dying,//splatting into the ground
             ActionType.Sinking,//fell into deadly liquid, such as acid/lava
             ActionType.HurtSwim,
             ActionType.CrushHorizontal,//squashed horizontal
             ActionType.CrushVertical,//squashed vertical
             ActionType.SuckedIn,//black hole
-            ActionType.Suffering,
+            ActionType.Suffering,//exploded
         };
         private bool LastHurtValue = false;
         private bool IsHurting => HurtingActions.Contains(PlayerManager.Action);

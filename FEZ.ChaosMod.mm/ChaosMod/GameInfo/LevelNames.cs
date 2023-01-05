@@ -26,6 +26,8 @@ namespace FezGame
                 this.LevelType = levelType;
             }
         }
+
+        //TODO dynamically generate this list instead of having hardcoded values?
         private static readonly ReadOnlyCollection<LevelIdentifiers> list = new ReadOnlyCollection<LevelIdentifiers>(new List<LevelIdentifiers>(){
             new LevelIdentifiers("ABANDONED_A", LevelType.Main),
             new LevelIdentifiers("ABANDONED_B", LevelType.Main),
