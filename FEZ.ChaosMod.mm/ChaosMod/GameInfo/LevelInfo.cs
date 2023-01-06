@@ -339,7 +339,7 @@ namespace FezGame.GameInfo
                 //handles the smaller warp panel things
                 if (ao.ArtObject.ActorType == ActorType.LesserGate)
                 {
-                    //TODO figure out where the warp panels lead and add the Entrance to Entrances 
+                    Entrances.Add(new Entrance(levelName, null, ao.ActorSettings.DestinationLevel, null, null, 0));
                 }
             }
 
