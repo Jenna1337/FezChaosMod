@@ -13,12 +13,12 @@ using Microsoft.Xna.Framework.Content;
 
 namespace FezGame.GameInfo
 {
-    public class LevelInfo : Loot
+    public class LevelInfo : Loot, IComparable
     {
         public struct Entrance
         {
             public string LevelName { get; }
-            public int VolumeId { get; }
+            public int? VolumeId { get; }
             private int Requirement { get; }
             public bool IsShortcut { get { return Requirement == -2; } } // GameLevelManager.WentThroughSecretPassage
             public bool IsPipe { get { return Requirement == -3; } }
@@ -30,7 +30,7 @@ namespace FezGame.GameInfo
             public Entrance(string LevelName, int? myVolume, FaceOrientation? fromOrientation, int requirement, LevelTarget target)
             {
                 this.LevelName = LevelName;
-                VolumeId = myVolume.Value;
+                VolumeId = myVolume;
                 FromOrientation = fromOrientation;
                 Requirement = requirement;
                 Exit = target;
@@ -339,7 +339,10 @@ namespace FezGame.GameInfo
                 //handles the smaller warp panel things
                 if (ao.ArtObject.ActorType == ActorType.LesserGate)
                 {
-                    Entrances.Add(new Entrance(levelName, null, ao.ActorSettings.DestinationLevel, null, null, 0));
+                    if (ao.ActorSettings.DestinationLevel != null && ao.ActorSettings.DestinationLevel.Length > 0)
+                    {
+                        Entrances.Add(new Entrance(levelName, null, ao.ActorSettings.DestinationLevel, null, null, 0));
+                    }
                 }
             }
 
@@ -593,5 +596,9 @@ namespace FezGame.GameInfo
             return levelInfos;
         }
 
+        public int CompareTo(object obj)
+        {
+            return obj != null && obj is LevelInfo info ? Name.CompareTo(info.Name) : Name.CompareTo(obj);
+        }
     }
 }
