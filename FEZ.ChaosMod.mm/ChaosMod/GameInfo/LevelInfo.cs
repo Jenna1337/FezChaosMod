@@ -261,6 +261,12 @@ namespace FezGame.GameInfo
                                     Entrances.Add(new Entrance(levelName, trigger.Object.Identifier, action.Arguments[0], targetvolumeid, orientation, 0));
                                 }
                                 break;
+                            case "LoadHexahedronAt":
+                                {
+                                    ChaosModWindow.LogLineDebug(String.Join(", ", action.Object.Identifier));
+                                    Entrances.Add(new Entrance(levelName, trigger.Object.Identifier, action.Arguments[0], action.Object.Identifier, null, 0));
+                                }
+                                break;
                             default:
                                 {
                                     //the anticubes and pieces of hearts and other things spawned by scripts
