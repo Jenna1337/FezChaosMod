@@ -135,7 +135,9 @@ namespace FezGame.GameInfo
         public float Gravity { get; }
         public Sky Sky => levelData?.Sky;
         public TrackedSong Song => levelData?.Song;
+        public LiquidType? WaterType => levelData?.WaterType;
         public IEnumerable<NpcInstance> NonPlayerCharacters => levelData?.NonPlayerCharacters.Values;
+        public readonly bool IsHubLevel;
 
         private static readonly HashSet<string> LevelNamesBeingLoaded = new HashSet<string>();
 
@@ -324,7 +326,13 @@ namespace FezGame.GameInfo
                 if (ao.ArtObjectName.IndexOf("fork", StringComparison.InvariantCultureIgnoreCase) >= 0)
                     AntiCubes.AddFork(ao, Name);
 
-
+                //handles big hub warp gate
+                if (ao.ArtObject.ActorType == ActorType.WarpGate)
+                    IsHubLevel = true;
+                if (ao.ArtObject.ActorType == ActorType.LesserGate)
+                {
+                    //TODO
+                }
             }
 
             //handles hardcoded stuff

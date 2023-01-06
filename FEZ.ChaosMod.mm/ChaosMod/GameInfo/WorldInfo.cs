@@ -114,5 +114,17 @@ namespace FezGame.GameInfo
         {
             return $"{typeof(WorldInfo).GetFormattedName()}(LevelInfos: {levelInfos.GetType().GetFormattedName()}(Count = {levelInfos.Count}, Values = {{{String.Join(", ", levelInfos)}}}))";
         }
+
+        //Note: this method is only ever meant to be called once.
+        internal static string[] GetSkiesNames()
+        {
+            return levelInfos.Select(a => a.Sky?.Name).Distinct(StringComparer.OrdinalIgnoreCase).Where(a => a != null).OrderBy(a => a).ToArray();
+        }
+
+        //Note: this method is only ever meant to be called once.
+        internal static string[] GetBGMusicNames()
+        {
+            return levelInfos.Select(a => a.Song?.Name).Distinct(StringComparer.OrdinalIgnoreCase).Where(a => a != null).OrderBy(a => a).ToArray();
+        }
     }
 }

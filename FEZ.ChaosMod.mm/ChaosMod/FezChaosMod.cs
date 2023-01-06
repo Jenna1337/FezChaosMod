@@ -24,7 +24,7 @@ namespace FezGame.ChaosMod
     /// </summary>
     public class FezChaosMod : GameComponent //Note: changing this to a DrawableGameComponent causes the sizes of things to be wrong
     {
-        public static readonly string Version = "0.9.1";//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
+        public static readonly string Version = "0.9.2";//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
 
         public static new bool Enabled { get => patch_Fez.ChaosMode; set => patch_Fez.ChaosMode = value; }
         public int MaxActiveEffectsToDisplay = 5;
@@ -141,69 +141,11 @@ namespace FezGame.ChaosMod
         private static Sky[] Skies;
         private static Sky BlackSky;
         private static StarField Starfield;
-        private static readonly string[] SkiesNames = {
-        "ABOVE",
-        //"BLACK",//sometimes makes everything black
-        "BLUE",
-        "CAVE",
-        "CMY",
-        "CRYPT",
-        "DEATHSKY",
-        "DEFAULT",
-        "DRAPES",
-        "GRAVE",
-        "INDUST_CAVE",
-        "INDUST_SKY",
-        "INDUS_CITY",
-        "LAVA",
-        "LIB_INT_SKY",
-        "LOVELINE",
-        "MEMORY_GRID",
-        "MINE",
-        "OBS_SKY",
-        "ORR_SKY",
-        "OUTERSPACE",
-        "PYRAMID_SKY",
-        "ROOTS",
-        "SEWER",
-        "STARLINE",
-        "TREE",
-        "WALL",
-        "WATERFRONT",
-        "WATERWHEEL",
-        "ZUSKY",
-        };
+        private static readonly string[] SkiesNames = WorldInfo.GetSkiesNames(); //Note: does not include "DEFAULT", "STARLINE", or "ZUSKY"
 
         private static readonly string[] HubLevelNames = LevelNames.Hub.ToArray();
 
-        private static readonly string[] BGMusicNames = {
-        "CMYKave",
-        "Cave",
-        "Cycle",
-        "Death",
-        "Forgotten",
-        "Grave",
-        "Grave_Bats",
-        "Grave_Rain",
-        "Industrial",
-        "Lava",
-        "Lighthouse",
-        "Loom",
-        "Love",
-        "Majesty",
-        "Mines",
-        "Pentatonics",
-        "Poly",
-        "Pyramid",
-        "Quantum",
-        "Ruins",
-        "Sewers",
-        "Spire",
-        "Storm Chords",
-        "Tree",
-        "Villageville",
-        "Zuins",
-        };
+        private static readonly string[] BGMusicNames = WorldInfo.GetBGMusicNames(); //Note: does not include "Grave_Rain"
 
         //TODO fix visibility of NesGlitches
         //private NesGlitches Glitches;
@@ -631,9 +573,14 @@ namespace FezGame.ChaosMod
                 thread.Start();
 
                 DidInit = true;
+                Timer.Start();
+                _ = FezEngine.Components.Waiters.Wait(() => ChaosModWindow != null && ChaosModWindow.Created && !ChaosModWindow.IsDisposed && ChaosModWindow.Visible, () =>
+                {
+                    ChaosModWindow.LogLineDebug(WorldInfo.GetAllLevelDataAsString());
+                    ChaosModWindow.LogLineDebug($"Skies: {{{String.Join(", ", SkiesNames)}}}");
+                    ChaosModWindow.LogLineDebug($"Songs: {{{String.Join(", ", BGMusicNames)}}}");
+                });
             }
-            Timer.Start();
-            ChaosModWindow.LogLineDebug(WorldInfo.GetAllLevelDataAsString());
         }
         public class ActiveChaosEffect // Needs to be a  class because if it's a struct then HasDoneOnDone will never be set to true
         {
@@ -898,6 +845,8 @@ false
                    $"Frames/second: {_fps}\n" +
                    $"Level Name: {LevelManager.Name}\n" +
                    $"Sky Name: {(LevelManager.Sky != null ? LevelManager.Sky.Name : "")}\n" +
+                   $"Water Type: {Enum.GetName(typeof(LiquidType), LevelManager.WaterType)}\n" +
+                   $"Water Height: {LevelManager.WaterHeight}\n" +
                    $"Time in Level: {TimeInLevelTimer.Elapsed.TotalSeconds}\n" +
                    $"Gomez Action: {PlayerManager.Action}\n" +
                    $"Gomez Position: {PlayerManager.Position.ToString().Replace("{", "").Replace("}", "")}\n" +
