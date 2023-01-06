@@ -373,6 +373,7 @@ namespace FezGame.ChaosMod
 
             if (!DidInit)
             {
+
                 ChaosModNextEffectCountDownProgressBar = new LinearProgressBar();
                 ChaosModEffectTextDrawer = new ChaosModEffectText();
                 SetColors(Color.Blue, Color.White);//TODO make this customizable

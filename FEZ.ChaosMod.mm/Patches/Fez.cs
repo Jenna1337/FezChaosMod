@@ -19,6 +19,8 @@ namespace FezGame {
 
         public static FezChaosMod ChaosMod { get; internal set; }
         public static bool ChaosMode = true;
+        public static bool RoomRandoMode = true;
+        public static bool ItemRandoMode;
 
         public extern void orig_Update(GameTime gameTime);
         protected override void Update(GameTime gameTime) {
@@ -38,7 +40,7 @@ namespace FezGame {
         }
 
         public static extern void orig_LoadComponents(Fez game);
-        public static void LoadComponents(Fez game) {
+        protected static void LoadComponents(Fez game) {
             if (ServiceHelper.FirstLoadDone)
                 return;
             orig_LoadComponents(game);
