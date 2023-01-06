@@ -136,16 +136,13 @@ namespace FezGame.ChaosMod
         }
 
         #region Constants and variables
-        public readonly List<string> LevelNamesForRandTele = LevelNames.Main.Where(a => a != "QUANTUM").ToList();
+        public List<string> LevelNamesForRandTele;
 
         private static Sky[] Skies;
-        private static Sky BlackSky;
         private static StarField Starfield;
-        private static readonly string[] SkiesNames = WorldInfo.GetSkiesNames(); //Note: does not include "DEFAULT", "STARLINE", or "ZUSKY"
-
-        private static readonly string[] HubLevelNames = LevelNames.Hub.ToArray();
-
-        private static readonly string[] BGMusicNames = WorldInfo.GetBGMusicNames(); //Note: does not include "Grave_Rain"
+        private static string[] SkiesNames;
+        private static string[] HubLevelNames;
+        private static string[] BGMusicNames;
 
         //TODO fix visibility of NesGlitches
         //private NesGlitches Glitches;
@@ -214,7 +211,7 @@ namespace FezGame.ChaosMod
 => LevelNames.Intro.Contains(LevelManager.Name);/*LevelManager.Name.Contains("2D")
 						|| LevelManager.Name.Equals("ELDERS");*/
         private bool InEnding // i.e., after ascending the pyramid
-=> LevelNames.Ending.Where(a => a != "PYRAMID").Contains(LevelManager.Name); /*LevelManager.Name.Contains("_END_")
+=> LevelNames.Ending.Contains(LevelManager.Name); /*LevelManager.Name.Contains("_END_")
 						|| LevelManager.Name.Equals("HEX_REBUILD")
 						|| LevelManager.Name.Equals("DRUM");*/
         private bool InCutsceneLevel // i.e., intro or ending
@@ -380,8 +377,15 @@ namespace FezGame.ChaosMod
                 ChaosModEffectTextDrawer = new ChaosModEffectText();
                 SetColors(Color.Blue, Color.White);//TODO make this customizable
 
+                LevelNamesForRandTele = LevelNames.Main.Where(a => a != "QUANTUM").ToList();
+
+                SkiesNames = WorldInfo.GetSkiesNames(); //Note: does not include "DEFAULT", "STARLINE", or "ZUSKY"
+
+                HubLevelNames = LevelNames.Hub.ToArray();
+
+                BGMusicNames = WorldInfo.GetBGMusicNames(); //Note: does not include "Grave_Rain"
+
                 Skies = SkiesNames.Select(skyname => CMProvider.Global.Load<Sky>("Skies/" + skyname)).ToArray();
-                BlackSky = CMProvider.Global.Load<Sky>("Skies/BLACK");
                 ServiceHelper.AddComponent(Starfield = new StarField(base.Game)
                 {
                     Opacity = 0f,
@@ -577,8 +581,10 @@ namespace FezGame.ChaosMod
                 _ = FezEngine.Components.Waiters.Wait(() => ChaosModWindow != null && ChaosModWindow.Created && !ChaosModWindow.IsDisposed && ChaosModWindow.Visible, () =>
                 {
                     ChaosModWindow.LogLineDebug(WorldInfo.GetAllLevelDataAsString());
+
                     ChaosModWindow.LogLineDebug($"Skies: {{{String.Join(", ", SkiesNames)}}}");
                     ChaosModWindow.LogLineDebug($"Songs: {{{String.Join(", ", BGMusicNames)}}}");
+                    ChaosModWindow.LogLineDebug($"Hubs: {{{String.Join(", ", HubLevelNames)}}}");
                 });
             }
         }

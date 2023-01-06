@@ -8,7 +8,6 @@ namespace FezGame
     class ChaosModAboutWindow : Form
     {
         private Button buttonOk;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private Label labelMadeBy;
         private Label labelVersionChaosMod;
 
@@ -23,7 +22,6 @@ namespace FezGame
         {
             this.labelVersionChaosMod = new System.Windows.Forms.Label();
             this.buttonOk = new System.Windows.Forms.Button();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.labelMadeBy = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 

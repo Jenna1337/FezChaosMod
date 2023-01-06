@@ -563,5 +563,33 @@ namespace FezGame.GameInfo
         {
             return GetLevelInfo(levelName).levelData.TrileSet.Triles.TryGetValue(trile.TrileId, out Trile trile2) ? trile2 : null;
         }
+
+        public static List<LevelInfo> GetAllLevelInfoByTravelingConnections(string initialLevelName)
+        {
+            return GetAllLevelInfoByTravelingConnections(GetLevelInfo(initialLevelName));
+        }
+        private static List<LevelInfo> GetAllLevelInfoByTravelingConnections(LevelInfo initialLevelInfo)
+        {
+            List<LevelInfo> levelInfos = new List<LevelInfo>() { initialLevelInfo };
+            HashSet<string> VisitedRooms = new HashSet<string>() { initialLevelInfo.Name };
+
+            Queue<Entrance> doorsToCheck = new Queue<Entrance>();
+            initialLevelInfo.Entrances.ForEach(doorsToCheck.Enqueue);
+
+
+            while (doorsToCheck.Count > 0)
+            {
+                string otherlevelname = doorsToCheck.Dequeue().Exit.TargetLevelName;
+                if (!VisitedRooms.Contains(otherlevelname))
+                {
+                    LevelInfo newinfo = LevelInfo.GetLevelInfo(otherlevelname);
+                    levelInfos.Add(newinfo);
+                    newinfo.Entrances.ForEach(doorsToCheck.Enqueue);
+                    VisitedRooms.Add(otherlevelname);
+                }
+            }
+            return levelInfos;
+        }
+
     }
 }

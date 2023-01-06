@@ -36,7 +36,7 @@ namespace FezGame.GameInfo
         private static readonly List<LevelInfo> levelInfos = new List<LevelInfo>();
         static WorldInfo()
         {
-            levelInfos = GetAllLevelInfoByTravelingConnections(LevelInfo.GetLevelInfo("GOMEZ_HOUSE"));//note: does not include intro, ending, or unused levels
+            levelInfos = GetLevelInfo(LevelNames.All);
             foreach (var levelInfo in levelInfos)
             {
                 foreach (Entrance toLevel in levelInfo.Entrances)
@@ -47,69 +47,6 @@ namespace FezGame.GameInfo
             ;
         }
 
-        private static List<LevelInfo> GetAllLevelInfoByTravelingConnections(LevelInfo initialLevelInfo)
-        {
-            List<LevelInfo> levelInfos = new List<LevelInfo>() { initialLevelInfo };
-            HashSet<string> VisitedRooms = new HashSet<string>() { initialLevelInfo.Name };
-
-            Queue<Entrance> doorsToCheck = new Queue<Entrance>();
-            initialLevelInfo.Entrances.ForEach(doorsToCheck.Enqueue);
-
-
-            while (doorsToCheck.Count > 0)
-            {
-                string otherlevelname = doorsToCheck.Dequeue().Exit.TargetLevelName;
-                if (!VisitedRooms.Contains(otherlevelname))
-                {
-                    LevelInfo newinfo = LevelInfo.GetLevelInfo(otherlevelname);
-                    levelInfos.Add(newinfo);
-                    newinfo.Entrances.ForEach(doorsToCheck.Enqueue);
-                    VisitedRooms.Add(otherlevelname);
-                }
-            }
-            return levelInfos;
-        }
-
-        public static LevelConnectionList GetConnections()
-        {
-            return new LevelConnectionList(Connections);
-        }
-        public static LevelConnectionList GetConnectionsForLevels(IEnumerable<string> enumerable)
-        {
-            LevelConnectionList r = new LevelConnectionList();
-
-            foreach (var i in Connections)
-                if (enumerable.Contains(i.FromLevel.Exit.TargetLevelName) && enumerable.Contains(i.ToLevel.Exit.TargetLevelName))
-                    r.Add(i);
-
-            return r;
-        }
-        public static LevelConnectionList GetConnectionsWithoutLevels(IEnumerable<string> enumerable)
-        {
-            LevelConnectionList r = new LevelConnectionList();
-
-            foreach (var i in Connections)
-                if (!(enumerable.Contains(i.FromLevel.Exit.TargetLevelName) || enumerable.Contains(i.ToLevel.Exit.TargetLevelName)))
-                    r.Add(i);
-
-            return r;
-        }
-        public static Loot GetLoot()
-        {
-            Loot loot = new Loot();
-            foreach (LevelInfo levelInfo in levelInfos)
-            {
-                loot.Add(levelInfo);
-            }
-            //TODO
-            //loot.AntiCubes -= 1;//Sewer QR code; used in both ZU_THRONE_RUINS and ZU_HOUSE_EMPTY
-            /**
-			 * Note: GameWideCodes has two codes, and GameWideCodes.MapCode is also in WATERTOWER_SECRET
-			 * GameWideCodes.AchievementCode is not used in any level files, and therefore will not be included as a part of WorldInfo
-			**/
-
-            return loot;
-        }
         public static string GetAllLevelDataAsString()
         {
             return $"{typeof(WorldInfo).GetFormattedName()}(LevelInfos: {levelInfos.GetType().GetFormattedName()}(Count = {levelInfos.Count}, Values = {{{String.Join(", ", levelInfos)}}}))";

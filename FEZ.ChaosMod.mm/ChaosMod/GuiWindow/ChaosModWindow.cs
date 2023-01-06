@@ -126,6 +126,7 @@ namespace FezGame.ChaosMod
         private static readonly int MaxLines = 1000;
         public static void LogLine(string text)
         {
+            Common.Logger.Log("ChaosMod", text);
             System.Diagnostics.Debug.WriteLine(text);
             if (instance==null || !instance.Created || instance.IsDisposed || !instance.Visible)
                 return;
