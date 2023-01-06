@@ -335,9 +335,11 @@ namespace FezGame.GameInfo
                 //handles big hub warp gate
                 if (ao.ArtObject.ActorType == ActorType.WarpGate)
                     IsHubLevel = true;
+
+                //handles the smaller warp panel things
                 if (ao.ArtObject.ActorType == ActorType.LesserGate)
                 {
-                    //TODO
+                    //TODO figure out where the warp panels lead and add the Entrance to Entrances 
                 }
             }
 
