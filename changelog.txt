@@ -142,4 +142,8 @@ Also removed the janky randomizer.
 Note the effects that utilize `NesGlitches` have been disabled because the class `NesGlitches` is flagged as an internal class, which apparently causes errors and I have yet to figure out how to fix this issue. 
 Older versions have been archived.
 
+0.9.2
+Added support for custom level packs.
+
+
 
