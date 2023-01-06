@@ -19,7 +19,7 @@ namespace FezGame {
 
         public static FezChaosMod ChaosMod { get; internal set; }
         public static bool ChaosMode = true;
-        public static bool RoomRandoMode = true;
+        public static bool RoomRandoMode;// = true;
         public static bool ItemRandoMode;
 
         public extern void orig_Update(GameTime gameTime);

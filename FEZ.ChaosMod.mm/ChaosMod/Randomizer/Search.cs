@@ -75,7 +75,8 @@ namespace FezGame.Randomizer
                 System.Diagnostics.Debugger.Break();
             if (can_reach("STARGATE") && can_reach("TEMPLE_OF_LOVE"))
                 System.Diagnostics.Debugger.Break();
-            return can_reach("STARGATE") && can_reach("TEMPLE_OF_LOVE");
+            //return can_reach("STARGATE") && can_reach("TEMPLE_OF_LOVE");
+            return can_reach_all();
         }
         internal bool can_reach(string levelName)
         {

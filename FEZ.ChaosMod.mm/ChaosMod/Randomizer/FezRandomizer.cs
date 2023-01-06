@@ -25,6 +25,7 @@ namespace FezGame.Randomizer
 		"CABIN_INTERIOR_B",//has one-directional transitions
 		"PIVOT_THREE_CAVE",//has two bidirectional doors leading to the same "level", one of which is far above the rest of the level and has a lesser warp panel
 		"QUANTUM",//seems to often crash the game
+        "PYRAMID",//final level
 		};
 
         private static readonly BidirectionalLevelConnectionMap NewConnections = new BidirectionalLevelConnectionMap();
@@ -86,6 +87,7 @@ namespace FezGame.Randomizer
             {
                 shuffleThread.Abort();
                 patch_Fez.RoomRandoMode = false;
+                ChaosModWindow.LogLine("Shuffling aborted.");
             }
         }
     }

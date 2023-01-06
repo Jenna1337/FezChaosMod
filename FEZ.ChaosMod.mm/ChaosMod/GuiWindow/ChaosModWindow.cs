@@ -70,7 +70,7 @@ namespace FezGame.ChaosMod
             InitializeComponent();
 
             RoomRandoCheckBox.Checked = patch_Fez.RoomRandoMode;
-            RoomRandoCheckBox.Checked = patch_Fez.ItemRandoMode;
+            ItemRandoCheckBox.Checked = patch_Fez.ItemRandoMode;
 
             DebugInfoCheckBox.Checked = chaosMod.ShowDebugInfo;
             AllowRotateAnywhereCheckBox.Checked = chaosMod.AllowRotateAnywhere;
@@ -655,6 +655,8 @@ namespace FezGame.ChaosMod
             patch_Fez.RoomRandoMode = RoomRandoCheckBox.Checked;
             if (FezRandomizer.Enabled)
                 FezRandomizer.Shuffle();
+            else
+                FezRandomizer.TryAbortShuffleThread();
         }
 
         private void EffectsDelaySpinner_ValueChanged(object sender, EventArgs e) { chaosMod.DelayBetweenEffects = Decimal.ToDouble(EffectsDelaySpinner.Value); }
