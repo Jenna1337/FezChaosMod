@@ -1,4 +1,9 @@
 # FezChaosMod
+MonoMod mod for FEZ adding random effects 
+
+[![GitHub releases](https://img.shields.io/github/downloads/Jenna1337/FezChaosMod/total.svg?style=flat)](https://github.com/Jenna1337/FezChaosMod/releases)
+[![Version](https://img.shields.io/github/v/release/Jenna1337/FezChaosMod.svg?style=flat)](https://github.com/Jenna1337/FezChaosMod/releases/latest)
+
 ![thumbnail](thumbnail.png)
 
 ## Overview 
@@ -17,7 +22,7 @@ For a full list of features, see [changelog.txt](/changelog.txt)
 ## Installation
 
 1. Download [MonoMod](https://github.com/MonoMod/MonoMod/releases) and unpack it in the game's directory.
-2. Download FEZ.ChaosMod.mm.dll and put it in the game's directory.
+2. Download FEZ.ChaosMod.mm.dll from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the game's directory.
 3. Run command `MonoMod.exe FEZ.exe` (or drag `FEZ.exe` onto `MonoMod.exe`). This should generate new executable file called `MONOMODDED_FEZ.exe`.
 4. Run `MONOMODDED_FEZ.exe` and enjoy!
 
