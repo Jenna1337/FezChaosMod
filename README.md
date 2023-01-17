@@ -4,7 +4,7 @@ MonoMod mod for FEZ adding random effects
 [![GitHub releases](https://img.shields.io/github/downloads/Jenna1337/FezChaosMod/total.svg?style=flat)](https://github.com/Jenna1337/FezChaosMod/releases)
 [![Version](https://img.shields.io/github/v/release/Jenna1337/FezChaosMod.svg?style=flat)](https://github.com/Jenna1337/FezChaosMod/releases/latest)
 
-![thumbnail](thumbnail.png)
+<img src="thumbnail.png" width="50%" alt="Fez Chaos Mod in action" title="FezChaosMod in action" />
 
 ## Overview 
 
