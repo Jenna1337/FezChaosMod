@@ -12,7 +12,7 @@ This mod is also available on my website: https://sloan4.com/mymods/fez/list_sec
 
 ## Features
 
-For a full list of features, see [changelog.txt](https://github.com/Jenna1337/FezChaosMod/blob/master/changelog.txt)
+For a full list of features, see [changelog.txt](/changelog.txt)
 
 ## Installation
 
