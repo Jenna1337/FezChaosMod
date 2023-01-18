@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="ChaosMod\NesGlitchesWrapper.cs" />
     <Compile Include="ChaosMod\GameInfo\BoundingBoxExtensions.cs" />
     <Compile Include="ChaosMod\GuiWindow\ChaosModAboutWindow.cs">
       <SubType>Form</SubType>

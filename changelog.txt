@@ -145,5 +145,6 @@ Older versions have been archived.
 0.9.2
 Added support for custom level packs.
 Bug fixes
+Fixed glitch effects
 
 

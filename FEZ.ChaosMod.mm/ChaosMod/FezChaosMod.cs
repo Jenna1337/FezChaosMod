@@ -148,8 +148,8 @@ namespace FezGame.ChaosMod
         private static string[] HubLevelNames;
         private static string[] BGMusicNames;
 
-        //TODO fix visibility of NesGlitches
-        //private NesGlitches Glitches;
+        //NesGlitches
+        private NesGlitchesWrapper Glitches;
 
         /// <summary>
         /// The delay that occurs between the activation of effects, in seconds.
@@ -264,20 +264,21 @@ namespace FezGame.ChaosMod
             base.Dispose();
         }
         #region Effect-specific stuff
-        /*
-        //TODO fix visibility of NesGlitches
         private void EnsureGlitches()
         {
             if (Glitches == null)
             {
-                ServiceHelper.AddComponent(Glitches = new NesGlitches(Game));
+                Type NesGlitchesType = Type.GetType("FezGame.Components.NesGlitches");
+                var glitches = NesGlitchesType.GetConstructor(new[] { typeof(Game) }).Invoke(new[] { Game });
+                ServiceHelper.AddComponent((DrawableGameComponent)glitches);
+                Glitches = new NesGlitchesWrapper(glitches);
 
-                (typeof(NesGlitches).GetField("GlitchMesh", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(Glitches) as Mesh)
+                (NesGlitchesType.GetField("GlitchMesh", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(glitches) as Mesh)
                     .Texture = CMProvider.Global.Load<Texture2D>("Other Textures/glitches/glitch_atlas");
-                typeof(NesGlitches).GetField("sGlitches", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(Glitches,
+                NesGlitchesType.GetField("sGlitches", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(glitches,
                     (from x in CMProvider.GetAllIn("Sounds/Intro\\Elders\\Glitches")
                      select CMProvider.Global.Load<SoundEffect>(x)).ToArray());
-                typeof(NesGlitches).GetField("sTimestretches", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(Glitches,
+                NesGlitchesType.GetField("sTimestretches", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(glitches,
                     (from x in CMProvider.GetAllIn("Sounds/Intro\\Elders\\Timestretches")
                      select CMProvider.Global.Load<SoundEffect>(x)).ToArray());
 
@@ -285,12 +286,10 @@ namespace FezGame.ChaosMod
         }
         private void ResetGlitches()
         {
-            //TODO fix visibility of NesGlitches
             Glitches.ActiveGlitches = 0;
             Glitches.FreezeProbability = 0;
             Glitches.DisappearProbability = 0;
         }
-        */
 
         private float NormalLevelZoom => CurrentLevelInfo.PixelsPerTrixel;
         private float NormalLevelGravity => CurrentLevelInfo.Gravity;
@@ -517,8 +516,7 @@ namespace FezGame.ChaosMod
                 LevelManager.LevelChanged += TimeInLevelTimer.Restart;
                 TimeInLevelTimer.Start();
 
-                /*
-                //TODO fix visibility of NesGlitches
+                
                 AddEffect("Glitches5", () =>
                 {
                     EnsureGlitches();
@@ -559,7 +557,7 @@ namespace FezGame.ChaosMod
                     EnsureGlitches();
                     Glitches.FreezeProbability = 1f;
                 }, 1f, duration: 3, onDone: ResetGlitches, category: "Glitches.FreezeProbability");
-                */
+                
 
                 /*AddEffect("SpawnVase", () =>
                 {
