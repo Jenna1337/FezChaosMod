@@ -22,7 +22,7 @@ namespace FezGame.ChaosMod
     /// <summary>
     /// The class where all the Chaos Mod logic is handled.
     /// </summary>
-    public class FezChaosMod : DrawableGameComponent //Note: changing this to a DrawableGameComponent causes the sizes of things to be wrong
+    public class FezChaosMod : DrawableGameComponent
     {
         public static readonly string Version = "0.9.2";//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
 
