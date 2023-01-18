@@ -30,7 +30,8 @@ namespace FezGame.ChaosMod
 #endif
         ;//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
 
-        public static new bool Enabled { get => patch_Fez.ChaosMode; set => patch_Fez.ChaosMode = value; }
+        public static new bool Enabled = true;
+        public static FezChaosMod Instance;
         public int MaxActiveEffectsToDisplay = 5;
 
         #region ServiceDependencies
@@ -96,10 +97,10 @@ namespace FezGame.ChaosMod
             /// <summary>
             /// Should be true iff the effect is enabled, there isn't another active effect with the same category, and the effect can be activated.
             /// </summary>
-            public bool CanUse => Enabled && (Category == null || patch_Fez.ChaosMod.activeChaosEffects.FindIndex(a => !a.IsDone && Category.Equals(a.Category)) < 0) && (Condition == null || Condition());
+            public bool CanUse => Enabled && (Category == null || FezChaosMod.Instance.activeChaosEffects.FindIndex(a => !a.IsDone && Category.Equals(a.Category)) < 0) && (Condition == null || Condition());
             public bool Enabled = true;
             private double _duration;
-            public double Duration { get => _duration <= 0 ? 0 : _duration * patch_Fez.ChaosMod.EffectsDurationMultiplier; set => _duration = value; }
+            public double Duration { get => _duration <= 0 ? 0 : _duration * FezChaosMod.Instance.EffectsDurationMultiplier; set => _duration = value; }
             public Action OnDone { get; }
             /// <summary>
             /// The category of the effect. 
@@ -240,7 +241,6 @@ namespace FezGame.ChaosMod
         public FezChaosMod(Game game)
             : base(game)
         {
-            this.DrawOrder = int.MaxValue;
         }
 
         private bool disposing = false;
@@ -377,6 +377,8 @@ namespace FezGame.ChaosMod
 
             if (!DidInit)
             {
+                this.DrawOrder = int.MaxValue;
+                Instance = this;
 
                 ChaosModNextEffectCountDownProgressBar = new LinearProgressBar();
                 ChaosModEffectTextDrawer = new ChaosModEffectText();

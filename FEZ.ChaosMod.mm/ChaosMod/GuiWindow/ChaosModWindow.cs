@@ -69,8 +69,8 @@ namespace FezGame.ChaosMod
             this.chaosMod = chaosMod;
             InitializeComponent();
 
-            RoomRandoCheckBox.Checked = patch_Fez.RoomRandoMode;
-            ItemRandoCheckBox.Checked = patch_Fez.ItemRandoMode;
+            RoomRandoCheckBox.Checked = FezRandomizer.RoomRandoMode;
+            ItemRandoCheckBox.Checked = FezRandomizer.ItemRandoMode;
 
             DebugInfoCheckBox.Checked = chaosMod.ShowDebugInfo;
             AllowRotateAnywhereCheckBox.Checked = chaosMod.AllowRotateAnywhere;
@@ -652,7 +652,7 @@ namespace FezGame.ChaosMod
 
         private void RoomRandoCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            patch_Fez.RoomRandoMode = RoomRandoCheckBox.Checked;
+            FezRandomizer.RoomRandoMode = RoomRandoCheckBox.Checked;
             if (FezRandomizer.Enabled)
                 FezRandomizer.Shuffle();
             else
@@ -703,7 +703,7 @@ namespace FezGame.ChaosMod
             FezRandomizer.TryAbortShuffleThread();
         }
 
-        private void ItemRandoCheckBox_CheckedChanged(object sender, EventArgs e) { patch_Fez.ItemRandoMode = ItemRandoCheckBox.Checked; }
+        private void ItemRandoCheckBox_CheckedChanged(object sender, EventArgs e) { FezRandomizer.ItemRandoMode = ItemRandoCheckBox.Checked; }
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {

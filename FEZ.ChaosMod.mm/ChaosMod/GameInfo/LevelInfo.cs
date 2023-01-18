@@ -463,7 +463,7 @@ namespace FezGame.GameInfo
         private static readonly Dictionary<string, LevelInfo> LevelInfoDict = new Dictionary<string, LevelInfo>();
         public static LevelInfo GetLevelInfo(string LevelName)
         {
-            return LevelInfoDict.TryGetValue(LevelName, out LevelInfo levelInfo) ? levelInfo : new LevelInfo(LevelName);
+            return LevelName != null ? (LevelInfoDict.TryGetValue(LevelName, out LevelInfo levelInfo) ? levelInfo : new LevelInfo(LevelName)) : null;
         }
         public static List<LevelInfo> GetLevelInfo(IEnumerable<string> LevelNames)
         {
@@ -481,7 +481,7 @@ namespace FezGame.GameInfo
             levelName = levelName.Replace('\\', '/');
             string text = levelName;
             Level level;
-            using (MemoryContentManager memoryContentManager = new MemoryContentManager(patch_Fez.ChaosMod.Game.Services, patch_Fez.ChaosMod.Game.Content.RootDirectory))
+            using (MemoryContentManager memoryContentManager = new MemoryContentManager(FezChaosMod.Instance.Game.Services, FezChaosMod.Instance.Game.Content.RootDirectory))
             {
                 if (!string.IsNullOrEmpty(levelName))
                 {

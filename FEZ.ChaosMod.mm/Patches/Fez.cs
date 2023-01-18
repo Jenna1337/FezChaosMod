@@ -17,11 +17,6 @@ using FezGame.ChaosMod;
 namespace FezGame {
     class patch_Fez : Fez {
 
-        public static FezChaosMod ChaosMod { get; internal set; }
-        public static bool ChaosMode = true;
-        public static bool RoomRandoMode;// = true;
-        public static bool ItemRandoMode;
-
         public extern void orig_Update(GameTime gameTime);
         protected override void Update(GameTime gameTime) {
             orig_Update(gameTime);
@@ -42,7 +37,7 @@ namespace FezGame {
             if (ServiceHelper.FirstLoadDone)
                 return;
             orig_LoadComponents(game);
-            ServiceHelper.AddComponent(ChaosMod = new FezChaosMod(game));
+            ServiceHelper.AddComponent(new FezChaosMod(game));
             ServiceHelper.FirstLoadDone = true;
         }
 

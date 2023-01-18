@@ -13,7 +13,10 @@ namespace FezGame.Randomizer
     {
         public static readonly string Version = "0.7.2";
 
-        public static bool Enabled { get => patch_Fez.ItemRandoMode || patch_Fez.RoomRandoMode; }
+        public static bool RoomRandoMode;// = true;
+        public static bool ItemRandoMode;
+
+        public static bool Enabled { get => ItemRandoMode || RoomRandoMode; }
 
         private static readonly List<string> LevelNamesNotForRando = new List<string>()
         {
@@ -86,7 +89,7 @@ namespace FezGame.Randomizer
             if (shuffleThread != null && shuffleThread.IsAlive)
             {
                 shuffleThread.Abort();
-                patch_Fez.RoomRandoMode = false;
+                FezRandomizer.RoomRandoMode = false;
                 ChaosModWindow.LogLine("Shuffling aborted.");
             }
         }

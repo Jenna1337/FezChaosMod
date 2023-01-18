@@ -37,7 +37,7 @@ namespace FezGame.Services {
 			LevelTarget newLevelTarget;
 			bool newLevelTargetDidInit = false;
 			ChaosModWindow.LogLine("Changing Level from " + base.Name + " to " + levelName);
-			if (patch_Fez.RoomRandoMode)
+			if (FezRandomizer.RoomRandoMode)
 			{
 				if (FezRandomizer.HasConnection(base.Name, levelName, PlayerManager.DoorVolume, DestinationVolumeId))
 				{
@@ -49,7 +49,7 @@ namespace FezGame.Services {
 				}
 			}
 			orig_ChangeLevel(levelName);
-			if (patch_Fez.RoomRandoMode && newLevelTargetDidInit)
+			if (FezRandomizer.RoomRandoMode && newLevelTargetDidInit)
 			{
 				if (PlayerManager.DoorVolume.HasValue && levelData.Volumes.TryGetValue(PlayerManager.DoorVolume.Value, out Volume volume))
 				{
