@@ -30,8 +30,8 @@ namespace FezGame {
         public extern void orig_Draw(GameTime gameTime);
         protected override void Draw(GameTime gameTime) {
             orig_Draw(gameTime);
-            if (ChaosMod != null)
-                ChaosMod.Draw((float)Math.Floor(base.GraphicsDevice.GetViewScale()), base.GraphicsDevice.Viewport);
+            //if (ChaosMod != null)
+            //    ChaosMod.Draw((float)Math.Floor(base.GraphicsDevice.GetViewScale()), base.GraphicsDevice.Viewport);
         }
 
         public extern void orig_Initialize();

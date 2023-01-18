@@ -22,7 +22,7 @@ namespace FezGame.ChaosMod
     /// <summary>
     /// The class where all the Chaos Mod logic is handled.
     /// </summary>
-    public class FezChaosMod : GameComponent //Note: changing this to a DrawableGameComponent causes the sizes of things to be wrong
+    public class FezChaosMod : DrawableGameComponent //Note: changing this to a DrawableGameComponent causes the sizes of things to be wrong
     {
         public static readonly string Version = "0.9.2";//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
 
@@ -236,6 +236,7 @@ namespace FezGame.ChaosMod
         public FezChaosMod(Game game)
             : base(game)
         {
+            this.DrawOrder = int.MaxValue;
         }
 
         private bool disposing = false;
@@ -697,7 +698,7 @@ namespace FezGame.ChaosMod
         private DateTime _lastTime = DateTime.Now;
         public bool ShowDebugInfo =
 #if DEBUG
-true
+true //if debug build
 #else
 false
 #endif
@@ -705,8 +706,12 @@ false
         public bool AllowRotateAnywhere = false;
         public bool AllowFirstPersonAnywhere = false;
 
-        public void Draw(float scale, Viewport viewport)
+        public override void Draw(GameTime gameTime)
         {
+            float scale = (float)Math.Floor(Game.GraphicsDevice.GetViewScale());
+            Viewport viewport = Game.GraphicsDevice.Viewport;
+            bool ChaosTimerPaused = this.ChaosTimerPaused;
+
             if (drawingTools == null)
             {
                 drawingTools = DrawingTools.Instance;
@@ -735,22 +740,24 @@ false
                 ActiveChaosEffect activeEffect;
                 while (activeChaosEffects.Count > 0)
                 {
-                    activeEffect = activeChaosEffects[activeChaosEffects.Count - 1];
+                    int index = activeChaosEffects.Count - 1;
+                    activeEffect = activeChaosEffects[index];
                     activeEffect.OnDone();
-                    activeChaosEffects.RemoveAt(activeChaosEffects.Count - 1);
+                    activeChaosEffects.RemoveAt(index);
                 }
 
             }
 
             foreach (var activeEffect in activeChaosEffects)
             {
-                if (ChaosTimerPaused)
+                if (ChaosTimerPaused || activeEffect.ShouldPauseTimer)
                 {
                     activeEffect.Pause();
-                    continue;
                 }
-                if(!activeEffect.ShouldPauseTimer)
-                activeEffect.Resume();
+                else
+                {
+                    activeEffect.Resume();
+                }
             }
 
             var elapsedtime = Timer.Elapsed.TotalSeconds;
@@ -787,38 +794,47 @@ false
                     drawingTools.DrawShadowedText("Initializing Chaos Mod settings window...", InitializingChaosModSettingsWindowWaitingTextColor, new Vector2(vp.Width * .01f, vp.Height * .9f), scale);
                 }
 
+                //draw the big countdown timer bar thing
                 double timeLeft = DelayBetweenEffects - elapsedtime;
                 if (timeLeft < 0)
                     timeLeft = 0;
                 string Text = Math.Ceiling(timeLeft).ToString();
-                ChaosModNextEffectCountDownProgressBar.DrawProgressBar(elapsedtime / DelayBetweenEffects,
-                                                                       Text,
-                                                                       new Rectangle(0, 0, viewport.Width, (int)Math.Ceiling(DrawingTools.Instance.MeasureString("0").Y * scale) + 4),
-                                                                       scale);
-                foreach (var activeEffect in activeChaosEffects)
-                {
-                    //process finished and active effects
-                    if (activeEffect.IsDone)
-                        activeEffect.OnDone();
-                    else
-                        activeEffect.Func();
-                }
-                int index = 0;
-                //try to clear finished active effects to make room to display new active effects
-                while (activeChaosEffects.Count > MaxActiveEffectsToDisplay)
-                {
-                    if (index >= activeChaosEffects.Count)
-                        break;
-                    var item = activeChaosEffects[index];
-                    if (item.IsDone)
+                ChaosModNextEffectCountDownProgressBar.DrawProgressBar(
+                    elapsedtime / DelayBetweenEffects,
+                    Text,
+                    new Rectangle(0, 0, viewport.Width, (int)Math.Ceiling(DrawingTools.Instance.MeasureString("0").Y * scale) + 4),
+                    scale);
+
+                int index;
+
+                //process effects
+                if (!ChaosTimerPaused) {
+                    foreach (var activeEffect in activeChaosEffects)
                     {
-                        activeChaosEffects.Remove(item);
-                        index = 0;
+                        //process finished and active effects
+                        if (activeEffect.IsDone)
+                            activeEffect.OnDone();
+                        else
+                            activeEffect.Func();
                     }
-                    else if (++index >= activeChaosEffects.Count)
-                        break;
+                    index = 0;
+                    //try to clear finished active effects to make room to display new active effects
+                    while (activeChaosEffects.Count > MaxActiveEffectsToDisplay)
+                    {
+                        if (index >= activeChaosEffects.Count)
+                            break;
+                        var item = activeChaosEffects[index];
+                        if (item.IsDone)
+                        {
+                            activeChaosEffects.Remove(item);
+                            index = 0;
+                        }
+                        else if (++index >= activeChaosEffects.Count)
+                            break;
+                    }
                 }
 
+                //draw the active effects info to the screen
                 if (activeChaosEffects.Count > MaxActiveEffectsToDisplay)
                 {
                     //there are too many active effects to display

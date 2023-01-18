@@ -1,0 +1,19 @@
+
+@REM reg query HKCU\SOFTWARE\Valve\Steam /v SteamPath
+
+set fezpath
+
+@FOR /F "tokens=2* skip=2" %%a in ('reg query "HKCU\SOFTWARE\Valve\Steam" /v "SteamPath"') do set fezpath="%%b/steamapps/common/FEZ/"
+
+cd /d %fezpath%
+@rem cd "%ProgramFiles(x86)%/Steam/steamapps/common/FEZ/"
+copy "D:\Github\FezChaosMod\FEZ.ChaosMod.mm\bin\Debug\*"
+MonoMod.exe FEZ.exe
+@echo Exit Code is %errorlevel%
+@if ERRORLEVEL 0 (
+	start MONOMODDED_FEZ.exe
+) ELSE (
+	@echo Did you leave FEZ open?
+	@pause
+)
+
