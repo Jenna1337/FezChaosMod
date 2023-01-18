@@ -9,13 +9,18 @@
 
 cd /d %fezpath%
 @rem cd "%ProgramFiles(x86)%/Steam/steamapps/common/FEZ/"
-copy "D:\Github\FezChaosMod\FEZ.ChaosMod.mm\bin\Debug\*"
-MonoMod.exe FEZ.exe
-@echo Exit Code is %errorlevel%
-@if ERRORLEVEL 0 (
-	start MONOMODDED_FEZ.exe
-) ELSE (
-	@echo Did you leave FEZ open?
-	@pause
-)
 
+@if ERRORLEVEL 0 (
+	@REM 
+	copy "D:\Github\FezChaosMod\FEZ.ChaosMod.mm\bin\Debug\*"
+	MonoMod.exe FEZ.exe
+	@echo Exit Code is %errorlevel%
+	@if ERRORLEVEL 0 (
+		start MONOMODDED_FEZ.exe
+	) ELSE (
+		@echo Did you leave FEZ open?
+		@pause
+	)
+) ELSE (
+	@echo Error: Could not locate FEZ game folder.
+)
