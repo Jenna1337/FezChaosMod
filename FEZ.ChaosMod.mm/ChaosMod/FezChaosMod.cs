@@ -24,7 +24,11 @@ namespace FezGame.ChaosMod
     /// </summary>
     public class FezChaosMod : DrawableGameComponent
     {
-        public static readonly string Version = "0.9.2";//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
+        public static readonly string Version = "0.9.2"
+#if DEBUG
+        + " (debug)"
+#endif
+        ;//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
 
         public static new bool Enabled { get => patch_Fez.ChaosMode; set => patch_Fez.ChaosMode = value; }
         public int MaxActiveEffectsToDisplay = 5;
