@@ -156,7 +156,10 @@ namespace FezGame.ChaosMod
         public static void LogLineDebug(string text)
         {
             if (instance == null || !instance.Created || instance.IsDisposed || !instance.Visible)
+            {
+                Common.Logger.Log("ChaosMod", text);
                 return;
+            }
             if (instance.chaosMod.ShowDebugInfo)
                 LogLine("Debug: " + text);
         }
