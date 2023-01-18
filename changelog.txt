@@ -146,5 +146,6 @@ Older versions have been archived.
 Added support for custom level packs.
 Bug fixes
 Fixed glitch effects
+Re-added janky randomizer
 
 
