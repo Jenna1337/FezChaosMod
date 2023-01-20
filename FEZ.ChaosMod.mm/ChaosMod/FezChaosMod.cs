@@ -378,7 +378,7 @@ namespace FezGame.ChaosMod
             if (!DidInit)
             {
                 this.DrawOrder = int.MaxValue;
-                Instance = this;
+                Instance = this; CMProvider.Global.Load<Sky>("Skies/DEFAULT");
 
                 ChaosModNextEffectCountDownProgressBar = new LinearProgressBar();
                 ChaosModEffectTextDrawer = new ChaosModEffectText();

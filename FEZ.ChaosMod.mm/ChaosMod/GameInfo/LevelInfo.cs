@@ -15,6 +15,9 @@ namespace FezGame.GameInfo
 {
     public class LevelInfo : Loot, IComparable
     {
+        [ServiceDependency]
+        public IContentManagerProvider CMProvider { get; set; }
+
         public struct Entrance
         {
             public string LevelName { get; }
@@ -112,13 +115,15 @@ namespace FezGame.GameInfo
                 var en = ents.Find(te => te.VolumeId == tvid);
                 if (en.LevelName == null || en.LevelName == "")
                 {
-                    {
-                        var m = System.Reflection.MethodBase.GetCurrentMethod();
-                        ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Warning: Target level volume ({TargetVolumeId}) does not exist as an entrance in the target level ({TargetLevelName}). Returning first entrance that leads back to this level.");
-                    }
+                    var m = System.Reflection.MethodBase.GetCurrentMethod();
+                    ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Warning: Target level volume ({TargetVolumeId}) does not exist as an entrance in the target level ({TargetLevelName}). Returning first entrance that leads back to this level.");
+                    
                     en = ents.Find(te => te.LevelName == targlvlname);
                     if (en.LevelName == null || en.LevelName == "")
+                    {
+                        ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Failed to find an appropriate entrance");
                         System.Diagnostics.Debugger.Break();
+                    }
                 }
                 return en;
             }
@@ -145,7 +150,9 @@ namespace FezGame.GameInfo
         {
             if (levelName == null || levelName.Length <= 0)
                 return;
-            
+
+            ServiceHelper.InjectServices(this);
+
             LevelNamesBeingLoaded.Add(levelName);
             levelData = LoadLevelData(levelName);
 
@@ -481,8 +488,6 @@ namespace FezGame.GameInfo
             levelName = levelName.Replace('\\', '/');
             string text = levelName;
             Level level;
-            using (MemoryContentManager memoryContentManager = new MemoryContentManager(FezChaosMod.Instance.Game.Services, FezChaosMod.Instance.Game.Content.RootDirectory))
-            {
                 if (!string.IsNullOrEmpty(levelName))
                 {
                     levelName = levelName.Substring(0, levelName.LastIndexOf("/") + 1) + levelName.Substring(levelName.LastIndexOf("/") + 1);
@@ -493,7 +498,8 @@ namespace FezGame.GameInfo
                 }
                 try
                 {
-                    level = memoryContentManager.Load<Level>("Levels/" + levelName);
+                    ChaosModWindow.LogLineDebug(FezChaosMod.Instance.Game.Content.RootDirectory);
+                    level = CMProvider.Global.Load<Level>("Levels/" + levelName);
                 }
                 catch (Exception e)
                 {
@@ -501,7 +507,7 @@ namespace FezGame.GameInfo
                     System.Diagnostics.Debugger.Break();
                     throw e;
                 }
-            }
+            
             level.Name = levelName;
             ContentManager forLevel = ServiceHelper.Get<IContentManagerProvider>().GetForLevel(levelName);
             foreach (ArtObjectInstance value in level.ArtObjects.Values)
