@@ -499,7 +499,7 @@ namespace FezGame.GameInfo
                 {
                     ChaosModWindow.LogLineDebug(e.ToString());
                     System.Diagnostics.Debugger.Break();
-                    return null;
+                    throw e;
                 }
             }
             level.Name = levelName;
