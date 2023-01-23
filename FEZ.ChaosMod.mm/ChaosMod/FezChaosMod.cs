@@ -371,15 +371,17 @@ namespace FezGame.ChaosMod
         {
                 this.DrawOrder = int.MaxValue;
                 Instance = this;
+
+            _ = Waiters.Wait(() => MemoryContentManager.AssetExists("Skies/DEFAULT"), Initialize0);//wait until the assets are loaded
         }
         private void Initialize0()
         {
             //Game.IsFixedTimeStep = true;
             //Game.TargetElapsedTime = TimeSpan.FromTicks(1);
 
-            if (!DidInit && MemoryContentManager.AssetExists("Skies/DEFAULT"))//wait until the assets are loaded
+            if (!DidInit)
             {
-                DidInit = true;
+                //DidInit = true;
                 
                 ChaosModNextEffectCountDownProgressBar = new LinearProgressBar();
                 ChaosModEffectTextDrawer = new ChaosModEffectText();
@@ -658,7 +660,7 @@ namespace FezGame.ChaosMod
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            Initialize0();
+            //Initialize0();
             _updatesDone++;
             if(!SpiralInterrupted && LastDotBehave == Components.DotHost.BehaviourType.SpiralAroundWithCamera && DotHost.Behaviour == Components.DotHost.BehaviourType.ReadyToTalk)
             {
@@ -791,6 +793,11 @@ false
                 }
             }
 
+            if (!DidInit)
+            {
+                var vp = ServiceHelper.Get<IGraphicsDeviceService>().GraphicsDevice.Viewport;
+                drawingTools.DrawShadowedText("Initializing Chaos Mod...", InitializingChaosModSettingsWindowWaitingTextColor, new Vector2(vp.Width * .01f, vp.Height * .9f), scale);
+            }
 
             if (Enabled && DidInit)
             {
