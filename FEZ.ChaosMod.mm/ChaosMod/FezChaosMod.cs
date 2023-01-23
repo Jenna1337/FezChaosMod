@@ -378,7 +378,9 @@ namespace FezGame.ChaosMod
             if (!DidInit)
             {
                 this.DrawOrder = int.MaxValue;
-                Instance = this; CMProvider.Global.Load<Sky>("Skies/DEFAULT");
+                Instance = this;
+                
+                CMProvider.Global.Load<Sky>("Skies/DEFAULT");//This causes a DirectoryNotFoundException on HAT for some reason
 
                 ChaosModNextEffectCountDownProgressBar = new LinearProgressBar();
                 ChaosModEffectTextDrawer = new ChaosModEffectText();
