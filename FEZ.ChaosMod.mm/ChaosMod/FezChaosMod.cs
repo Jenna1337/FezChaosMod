@@ -369,16 +369,18 @@ namespace FezGame.ChaosMod
         private static readonly Color InitializingChaosModSettingsWindowWaitingTextColor = Color.SlateGray;
         public override void Initialize()
         {
+                this.DrawOrder = int.MaxValue;
+                Instance = this;
+        }
+        private void Initialize0()
+        {
             //Game.IsFixedTimeStep = true;
             //Game.TargetElapsedTime = TimeSpan.FromTicks(1);
 
-            if (!DidInit)
+            if (!DidInit && MemoryContentManager.AssetExists("Skies/DEFAULT"))//wait until the assets are loaded
             {
-                this.DrawOrder = int.MaxValue;
-                Instance = this;
+                DidInit = true;
                 
-                CMProvider.Global.Load<Sky>("Skies/DEFAULT");//This causes a DirectoryNotFoundException on HAT for some reason
-
                 ChaosModNextEffectCountDownProgressBar = new LinearProgressBar();
                 ChaosModEffectTextDrawer = new ChaosModEffectText();
                 SetColors(Color.Blue, Color.White);//TODO make this customizable
@@ -656,6 +658,7 @@ namespace FezGame.ChaosMod
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            Initialize0();
             _updatesDone++;
             if(!SpiralInterrupted && LastDotBehave == Components.DotHost.BehaviourType.SpiralAroundWithCamera && DotHost.Behaviour == Components.DotHost.BehaviourType.ReadyToTalk)
             {

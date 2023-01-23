@@ -498,7 +498,6 @@ namespace FezGame.GameInfo
                 }
                 try
                 {
-                    ChaosModWindow.LogLineDebug(FezChaosMod.Instance.Game.Content.RootDirectory);
                     level = CMProvider.Global.Load<Level>("Levels/" + levelName);
                 }
                 catch (Exception e)

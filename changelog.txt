@@ -151,4 +151,6 @@ Re-added janky randomizer
 0.9.3
 New inverted gravity effect
 Bug fixes
+Miscellaneous improvements
+HAT Compatible
 
