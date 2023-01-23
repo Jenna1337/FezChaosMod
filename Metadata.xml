@@ -1,6 +1,6 @@
 <Metadata>
    <Name>FezChaosMod</Name>
-   <Description>Mod that add random effects that activate every so many seconds.</Description>
+   <Description>Adds random effects that activate every so many seconds!</Description>
    <Author>Jenna Sloan</Author>
    <Version>0.9.3</Version>
    <LibraryName>FEZ.ChaosMod.mm.dll</LibraryName>
