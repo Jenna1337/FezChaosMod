@@ -109,7 +109,7 @@ namespace FezGame.ChaosMod
             /// </summary>
             public string Category { get; }
             private readonly Func<bool> _pauseTimerTest;
-            public bool ShouldPauseTimer => _pauseTimerTest!=null && _pauseTimerTest();
+            public bool ShouldPauseTimer => _pauseTimerTest != null && _pauseTimerTest();
 
             public ChaosEffect(string name, Action func, double ratio, Func<bool> test, double duration, Action onDone, string category, Func<bool> pauseTimerTest)
             {
@@ -265,7 +265,6 @@ namespace FezGame.ChaosMod
         {
             if (Glitches == null)
             {
-                System.Diagnostics.Debugger.Break();
                 Type NesGlitchesType = typeof(FezGame.Fez).Assembly.GetType("FezGame.Components.NesGlitches");
                 var glitches = NesGlitchesType.GetConstructor(new[] { typeof(Game) }).Invoke(new[] { Game });
                 ServiceHelper.AddComponent((DrawableGameComponent)glitches);
@@ -370,20 +369,26 @@ namespace FezGame.ChaosMod
         private static readonly Color InitializingChaosModSettingsWindowWaitingTextColor = Color.SlateGray;
         public override void Initialize()
         {
-                this.DrawOrder = int.MaxValue;
-                Instance = this;
+            if (Instance != null
+                || (Instance == null && typeof(Fez).Assembly != typeof(FezChaosMod).Assembly && typeof(Fez).Assembly.GetType("FezGame.ChaosMod.FezChaosMod") != null))//Injected via MonoMod and as HAT
+            {
+                ServiceHelper.RemoveComponent(this);
+                return;
+            }
 
-            _ = Waiters.Wait(() => MemoryContentManager.AssetExists("Skies/DEFAULT"), ()=> { Waiters.Wait(1, Initialize0); });//wait until the assets are loaded
+            Instance = this;
+            this.DrawOrder = int.MaxValue;
+
+            _ = Waiters.Wait(() => MemoryContentManager.AssetExists("Skies/DEFAULT"), () => { Waiters.Wait(1, Initialize0); });//wait until the assets are loaded
         }
         private void Initialize0()
         {
             //Game.IsFixedTimeStep = true;
             //Game.TargetElapsedTime = TimeSpan.FromTicks(1);
-
             if (!DidInit)
             {
                 //DidInit = true;
-                
+
                 ChaosModNextEffectCountDownProgressBar = new LinearProgressBar();
                 ChaosModEffectTextDrawer = new ChaosModEffectText();
                 SetColors(Color.Blue, Color.White);//TODO make this customizable
@@ -524,7 +529,7 @@ namespace FezGame.ChaosMod
                 LevelManager.LevelChanged += TimeInLevelTimer.Restart;
                 TimeInLevelTimer.Start();
 
-                
+
                 AddEffect("Glitches5", () =>
                 {
                     EnsureGlitches();
@@ -565,7 +570,7 @@ namespace FezGame.ChaosMod
                     EnsureGlitches();
                     Glitches.FreezeProbability = 1f;
                 }, 1f, duration: 3, onDone: ResetGlitches, category: "Glitches.FreezeProbability");
-                
+
 
                 /*AddEffect("SpawnVase", () =>
                 {
@@ -663,7 +668,7 @@ namespace FezGame.ChaosMod
             base.Update(gameTime);
             //Initialize0();
             _updatesDone++;
-            if(!SpiralInterrupted && LastDotBehave == Components.DotHost.BehaviourType.SpiralAroundWithCamera && DotHost.Behaviour == Components.DotHost.BehaviourType.ReadyToTalk)
+            if (!SpiralInterrupted && LastDotBehave == Components.DotHost.BehaviourType.SpiralAroundWithCamera && DotHost.Behaviour == Components.DotHost.BehaviourType.ReadyToTalk)
             {
                 SpiralInterrupted = true;
             }
@@ -696,7 +701,7 @@ namespace FezGame.ChaosMod
             bool hurt = IsHurting;
             if (hurt != LastHurtValue)
             {
-                if(LastHurtValue = hurt)
+                if (LastHurtValue = hurt)
                 {
                     OnHurt();
                 }
@@ -802,7 +807,7 @@ false
 
             if (Enabled && DidInit)
             {
-                if (ChaosModWindow!=null && ChaosModWindow.Initializing)
+                if (ChaosModWindow != null && ChaosModWindow.Initializing)
                 {
                     var vp = ServiceHelper.Get<IGraphicsDeviceService>().GraphicsDevice.Viewport;
                     drawingTools.DrawShadowedText("Initializing Chaos Mod settings window...", InitializingChaosModSettingsWindowWaitingTextColor, new Vector2(vp.Width * .01f, vp.Height * .9f), scale);
@@ -822,7 +827,8 @@ false
                 int index;
 
                 //process effects
-                if (!ChaosTimerPaused) {
+                if (!ChaosTimerPaused)
+                {
                     foreach (var activeEffect in activeChaosEffects)
                     {
                         //process finished and active effects
