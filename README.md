@@ -21,10 +21,16 @@ For a full list of features, see [changelog.txt](/changelog.txt)
 
 ## Installation
 
+###Method 1: MonoMod
 1. Download [MonoMod](https://github.com/MonoMod/MonoMod/releases) and unpack it in the game's directory.
 2. Download FEZ.ChaosMod.mm.dll from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the game's directory.
 3. Run command `MonoMod.exe FEZ.exe` (or drag `FEZ.exe` onto `MonoMod.exe`). This should generate new executable file called `MONOMODDED_FEZ.exe`.
 4. Run `MONOMODDED_FEZ.exe` and enjoy!
+
+###Method 2: HAT
+1. Install [HAT](https://github.com/Krzyhau/HAT) via the instructions there
+2. Download FEZ.ChaosMod.mm.dll from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the "Mods" directory.
+3. Run `MONOMODDED_FEZ.exe` and enjoy!
 
 ## Building
 
