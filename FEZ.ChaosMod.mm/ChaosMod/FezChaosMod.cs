@@ -24,7 +24,7 @@ namespace FezGame.ChaosMod
     /// </summary>
     public class FezChaosMod : DrawableGameComponent
     {
-        public static readonly string Version = "0.9.2"
+        public static readonly string Version = "0.9.3"
 #if DEBUG
         + " (debug)"
 #endif
@@ -251,16 +251,13 @@ namespace FezGame.ChaosMod
             this.disposing = true;
             drawingTools?.Dispose();
             ChaosModEffectTextDrawer?.Dispose();
-            /*
-            //TODO fix visibility of NesGlitches
             if (Glitches != null)
             {
                 Glitches.ActiveGlitches = 0;
                 Glitches.FreezeProbability = 0f;
-                ServiceHelper.RemoveComponent(Glitches);
+                Glitches.Dispose();
                 Glitches = null;
             }
-            */
             base.Dispose();
         }
         #region Effect-specific stuff

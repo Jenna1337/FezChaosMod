@@ -36,5 +36,10 @@ namespace FezGame.ChaosMod
             get => (float)DisappearProbabilityInfo.GetValue(glitches, null);
             set => DisappearProbabilityInfo.SetValue(glitches, value, null);
         }
+
+        public void Dispose()
+        {
+            FezEngine.Tools.ServiceHelper.RemoveComponent((Microsoft.Xna.Framework.IGameComponent)glitches);
+        }
     }
 }
