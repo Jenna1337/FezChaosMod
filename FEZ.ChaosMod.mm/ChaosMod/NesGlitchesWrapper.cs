@@ -9,17 +9,19 @@ namespace FezGame.ChaosMod
     class NesGlitchesWrapper
     {
         private readonly object glitches;
-        private static readonly Type NesGlitchesType = Type.GetType("FezGame.Components.NesGlitches");
+        private static Type NesGlitchesType;
+        private PropertyInfo ActiveGlitchesInfo;
+        private PropertyInfo FreezeProbabilityInfo;
+        private PropertyInfo DisappearProbabilityInfo;
 
-        public NesGlitchesWrapper(object glitches)
+        public NesGlitchesWrapper(object glitches, Type type)
         {
             this.glitches = glitches;
-
+            NesGlitchesType = type;
+            ActiveGlitchesInfo = NesGlitchesType.GetProperty("ActiveGlitches");
+            FreezeProbabilityInfo = NesGlitchesType.GetProperty("FreezeProbability");
+            DisappearProbabilityInfo = NesGlitchesType.GetProperty("DisappearProbability");
         }
-
-        private readonly PropertyInfo ActiveGlitchesInfo = NesGlitchesType.GetProperty("ActiveGlitches");
-        private readonly PropertyInfo FreezeProbabilityInfo = NesGlitchesType.GetProperty("FreezeProbability");
-        private readonly PropertyInfo DisappearProbabilityInfo = NesGlitchesType.GetProperty("DisappearProbability");
 
         public int ActiveGlitches
         {

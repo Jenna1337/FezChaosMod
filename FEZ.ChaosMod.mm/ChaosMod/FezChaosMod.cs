@@ -265,10 +265,11 @@ namespace FezGame.ChaosMod
         {
             if (Glitches == null)
             {
-                Type NesGlitchesType = Type.GetType("FezGame.Components.NesGlitches");
+                System.Diagnostics.Debugger.Break();
+                Type NesGlitchesType = typeof(FezGame.Fez).Assembly.GetType("FezGame.Components.NesGlitches");
                 var glitches = NesGlitchesType.GetConstructor(new[] { typeof(Game) }).Invoke(new[] { Game });
                 ServiceHelper.AddComponent((DrawableGameComponent)glitches);
-                Glitches = new NesGlitchesWrapper(glitches);
+                Glitches = new NesGlitchesWrapper(glitches, NesGlitchesType);
 
                 (NesGlitchesType.GetField("GlitchMesh", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(glitches) as Mesh)
                     .Texture = CMProvider.Global.Load<Texture2D>("Other Textures/glitches/glitch_atlas");
@@ -372,7 +373,7 @@ namespace FezGame.ChaosMod
                 this.DrawOrder = int.MaxValue;
                 Instance = this;
 
-            _ = Waiters.Wait(() => MemoryContentManager.AssetExists("Skies/DEFAULT"), Initialize0);//wait until the assets are loaded
+            _ = Waiters.Wait(() => MemoryContentManager.AssetExists("Skies/DEFAULT"), ()=> { Waiters.Wait(1, Initialize0); });//wait until the assets are loaded
         }
         private void Initialize0()
         {
