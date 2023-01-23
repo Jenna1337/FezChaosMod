@@ -21,7 +21,7 @@ cd /d %fezpath%
 	@REM MonoMod.exe FEZ.exe
 	@echo Exit Code is %errorlevel%
 	@if ERRORLEVEL 0 (
-		start MONOMODDED_FEZ.exe
+		start MONOMODDED_FEZ_HAT.exe
 	) ELSE (
 		@echo Did you leave FEZ open?
 		@pause
