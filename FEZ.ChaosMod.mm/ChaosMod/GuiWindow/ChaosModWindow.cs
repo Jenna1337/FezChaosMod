@@ -122,6 +122,17 @@ namespace FezGame.ChaosMod
 
             //ActiveSaveFile
 
+            Timer updateDataTimer = new Timer
+            {
+                Interval = 100 //milliseconds
+            };
+            updateDataTimer.Tick += (object sender, EventArgs e) =>
+            {
+                var GameState = FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>();
+                instance.StereoModeCheckBox.Checked = GameState.StereoMode;
+            };
+            updateDataTimer.Start();
+
         }
 
         private void RandTeleCheckList_ItemCheck(object sender, ItemCheckEventArgs e)
@@ -717,29 +728,6 @@ namespace FezGame.ChaosMod
 
         private void AllowRotateAnywhereCheckBox_CheckedChanged(object sender, EventArgs e) { chaosMod.AllowRotateAnywhere = AllowRotateAnywhereCheckBox.Checked; }
 
-        private static readonly System.Diagnostics.Stopwatch UpdateStereoModeCheckBoxTimer = System.Diagnostics.Stopwatch.StartNew();
-        private readonly MethodInvoker UpdateStereoModeCheckBoxInternal = new MethodInvoker(delegate
-        {
-            var GameState = FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>();
-            instance.StereoModeCheckBox.Checked = GameState.StereoMode;
-        });
-        public static void UpdateStereoModeCheckBox()
-        {
-            if (instance == null || !instance.Created || instance.IsDisposed || !instance.Visible)
-                return;
-            try
-            {
-                if (UpdateStereoModeCheckBoxTimer.ElapsedMilliseconds > 100)//might not need this?
-                {
-                    _ = instance.Invoke(instance.UpdateStereoModeCheckBoxInternal);//TODO fix this and remove the surrounding try catch
-                    UpdateStereoModeCheckBoxTimer.Restart();
-                }
-            }
-            catch (Exception e)
-            {
-                ChaosModWindow.LogLineDebug(e.ToString());
-            }
-        }
         private void StereoModeCheckBox_CheckedChanged(object sender, EventArgs e) { FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>().StereoMode = StereoModeCheckBox.Checked; }
 
         private void FirstPersonAnywhereCheckBox_CheckedChanged(object sender, EventArgs e) { chaosMod.AllowFirstPersonAnywhere = FirstPersonAnywhereCheckBox.Checked; }

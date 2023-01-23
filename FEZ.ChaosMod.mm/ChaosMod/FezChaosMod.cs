@@ -695,8 +695,6 @@ namespace FezGame.ChaosMod
                     OnHurt();
                 }
             }
-
-            ChaosModWindow.UpdateStereoModeCheckBox();
         }
 
         private ulong _updatesDone = 0, _framesRendered = 0, _ups = 0, _fps = 0;
