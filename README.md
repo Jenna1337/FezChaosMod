@@ -29,7 +29,7 @@ For a full list of features, see [changelog.txt](/changelog.txt)
 
 ###Method 2: HAT
 1. Install [HAT](https://github.com/Krzyhau/HAT) via the instructions there
-2. Download FEZ.ChaosMod.mm.dll from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the "Mods" directory.
+2. Download FezChaosMod.zip from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the "Mods" directory.
 3. Run `MONOMODDED_FEZ.exe` and enjoy!
 
 ## Building
