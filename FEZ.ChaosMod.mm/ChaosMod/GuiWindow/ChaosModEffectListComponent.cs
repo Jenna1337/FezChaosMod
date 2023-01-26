@@ -34,8 +34,6 @@ namespace FezGame.ChaosMod
 
             ResizeLabelsSoEverythingLooksNice();
 
-            ChaosModWindow.LogLineDebug($"Effect categories: {{{String.Join(", ", Groups.Keys)}}}");
-
             //TODO make it load faster when switching tabs in ChaosModWindow
             //TODO add a thing to each group to indicate how many are enabled
             //TODO indicate if/when an effect can start?; maybe change the color of the text or something
