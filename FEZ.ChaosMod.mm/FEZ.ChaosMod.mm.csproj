@@ -27,6 +27,9 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MonoMod.RuntimeDetour">
+      <HintPath>..\libs\MonoMod.RuntimeDetour.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="FNA">
       <HintPath>..\libs\FNA.dll</HintPath>
@@ -101,7 +104,6 @@
     <Compile Include="ChaosMod\Randomizer\Search.cs" />
     <Compile Include="ChaosMod\VolumeExtensions.cs" />
     <Compile Include="ChaosMod\GameInfo\WorldInfo.cs" />
-    <Compile Include="Patches\GameLevelManager.cs" />
     <Compile Include="Patches\Fez.cs" />
   </ItemGroup>
   <ItemGroup>

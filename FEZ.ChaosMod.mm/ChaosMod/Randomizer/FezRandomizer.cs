@@ -6,6 +6,9 @@ using System.Threading;
 using FezEngine.Structure;
 using FezGame.GameInfo;
 using static FezGame.GameInfo.LevelInfo;
+using FezGame.Services;
+using FezEngine.Tools;
+using MonoMod.RuntimeDetour;
 
 namespace FezGame.Randomizer
 {
@@ -15,6 +18,13 @@ namespace FezGame.Randomizer
 
         public static bool RoomRandoMode;// = true;
         public static bool ItemRandoMode;
+
+        [ServiceDependency]
+        public IPlayerManager PlayerManager { private get; set; }
+
+        [ServiceDependency]
+        public IGameCameraManager CameraManager { private get; set; }
+        private IDetour ChangeLevelDetour;
 
         public static bool Enabled { get => ItemRandoMode || RoomRandoMode; }
 
@@ -31,13 +41,55 @@ namespace FezGame.Randomizer
         "PYRAMID",//final level
 		};
 
-        private static readonly BidirectionalLevelConnectionMap NewConnections = new BidirectionalLevelConnectionMap();
-
+        private static BidirectionalLevelConnectionMap NewConnections = new BidirectionalLevelConnectionMap();
+        public FezRandomizer Instance;
         public static int Seed { get; private set; }
-        static FezRandomizer()
+        public FezRandomizer()
         {
+            ServiceHelper.InjectServices(this);
             //UnshuffledConnections = WorldInfo.GetConnectionsForLevels(LevelNamesForRando).Unique();
             NewConnections = new BidirectionalLevelConnectionMap(WorldInfo.GetConnectionsWithoutLevels(LevelNamesNotForRando));
+            Instance = this;
+
+            ChangeLevelDetour = new Hook(typeof(GameLevelManager).GetMethod("ChangeLevel"),
+            (Action<Action<GameLevelManager, string>, GameLevelManager, string>)delegate (Action<GameLevelManager, string> original, GameLevelManager self, string levelName)
+            {
+                ChangeLevelHooked(original, self, levelName);
+            });
+        }
+
+        private void ChangeLevelHooked(Action<GameLevelManager, string> original, GameLevelManager self, string levelName)//TODO have this use RuntimeDetour 
+        {
+            LevelTarget newLevelTarget;
+            bool newLevelTargetDidInit = false;
+            ChaosModWindow.LogLine("Changing Level from " + self.Name + " to " + levelName);
+            if (FezRandomizer.RoomRandoMode)
+            {
+                if (FezRandomizer.HasConnection(self.Name, levelName, PlayerManager.DoorVolume, self.DestinationVolumeId))
+                {
+                    newLevelTarget = FezRandomizer.GetLevelTargetReplacement(self.Name, levelName, PlayerManager.DoorVolume, self.DestinationVolumeId);
+                    levelName = newLevelTarget.TargetLevelName;
+                    self.DestinationVolumeId = newLevelTarget.TargetVolumeId;
+                    ChaosModWindow.LogLine("Hijacked Level load; now to " + newLevelTarget.TargetLevelName);
+                    newLevelTargetDidInit = true;
+                }
+            }
+            original(self, levelName);
+            if (FezRandomizer.RoomRandoMode && newLevelTargetDidInit)
+            {
+                //TODO orient the camera in the correct direction?; changed some stuff here but have yet to test it
+
+                CameraManager.RebuildView();
+                CameraManager.ResetViewpoints();
+
+                var doors = LevelInfo.GetLevelInfo(levelName).Entrances.Where(a => a.VolumeId == self.DestinationVolumeId);
+                if (doors.Any())
+                {
+                    Entrance d;
+                    CameraManager.ChangeViewpoint((d = doors.Single()).Exit.AsEntrance(d).FromOrientation.Value.AsViewpoint());
+                }
+                self.DestinationVolumeId = null;
+            }
         }
         public static void Shuffle()
         {
