@@ -142,6 +142,8 @@ namespace FezGame.GameInfo
         public TrackedSong Song => levelData?.Song;
         public LiquidType? WaterType => levelData?.WaterType;
         public IEnumerable<NpcInstance> NonPlayerCharacters => levelData?.NonPlayerCharacters.Values;
+        public List<Volume> BlackHoles => levelData?.Volumes?.Values?.Where(v => v != null && v.ActorSettings != null && v.ActorSettings.IsBlackHole).ToList();
+
         public readonly bool IsHubLevel;
 
         private static readonly HashSet<string> LevelNamesBeingLoaded = new HashSet<string>();
@@ -565,6 +567,8 @@ namespace FezGame.GameInfo
                 str += $", Song: \"{Song.Name}\"";
             if(NonPlayerCharacters.Any())
                 str += $", NonPlayerCharacters: {{{String.Join(", ", NonPlayerCharacters.Select(npc => $"\"{npc.Name}\""))}}}";
+            if (BlackHoles.Any())
+                str += $", BlackHoles: {BlackHoles.GetType().GetFormattedName()}(Count = {BlackHoles.Count}, Values = {{{String.Join(", ", BlackHoles.Select(bh => $"{{From:{bh.From}, To: {bh.To}}}"))}}})";
             str += ")";
             return str;
         }
