@@ -25,7 +25,7 @@ namespace FezGame.ChaosMod
     /// </summary>
     public class FezChaosMod : DrawableGameComponent
     {
-        public static readonly string Version = "0.9.3"
+        public static readonly string Version = "0.9.4"
 #if DEBUG
         + " (debug)"
 #endif

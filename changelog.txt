@@ -154,3 +154,5 @@ Bug fixes
 Miscellaneous improvements
 HAT Compatible
 
+0.9.4
+
