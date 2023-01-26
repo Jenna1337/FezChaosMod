@@ -27,6 +27,7 @@ namespace FezGame.GameInfo
             public bool IsPipe { get { return Requirement == -3; } }
             public bool NeedsAllOwls { get { return Requirement == -4; } }
             public bool NeedsKey { get { return Requirement == -1; } }
+            public bool IsWarpGate { get { return Requirement == -5; } }
             public int RequiredCubes { get { return Requirement > 0 ? Requirement : 0; } }
             public FaceOrientation? FromOrientation { get; }
             public LevelTarget Exit { get; }
@@ -48,6 +49,8 @@ namespace FezGame.GameInfo
                     str += $", IsShortcut: {IsShortcut}";
                 if (IsPipe)
                     str += $", IsPipe: {IsPipe}";
+                if (IsWarpGate)
+                    str += $", IsWarpGate: {IsWarpGate}";
                 if (NeedsAllOwls)
                     str += $", NeedsAllOwls: {NeedsAllOwls}";
                 if (NeedsKey)
@@ -113,7 +116,7 @@ namespace FezGame.GameInfo
                 string targlvlname = TargetLevelName;
                 var ents = GetLevelInfo(targlvlname).Entrances;
                 var en = ents.Find(te => te.VolumeId == tvid);
-                if (en.LevelName == null || en.LevelName == "")
+                if (!FromWhere.IsWarpGate && (en.LevelName == null || en.LevelName == ""))
                 {
                     var m = System.Reflection.MethodBase.GetCurrentMethod();
                     ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Warning: Target level volume ({TargetVolumeId}) does not exist as an entrance in the target level ({TargetLevelName}). Returning first entrance that leads back to this level.");
@@ -350,7 +353,7 @@ namespace FezGame.GameInfo
                 {
                     if (ao.ActorSettings.DestinationLevel != null && ao.ActorSettings.DestinationLevel.Length > 0)
                     {
-                        Entrances.Add(new Entrance(levelName, null, ao.ActorSettings.DestinationLevel, null, null, 0));
+                        Entrances.Add(new Entrance(levelName, null, ao.ActorSettings.DestinationLevel, null, null, -5));
                     }
                 }
             }
