@@ -41,7 +41,7 @@ namespace FezGame.GameInfo
             {
                 foreach (Entrance toLevel in levelInfo.Entrances)
                 {
-                    AddConnection(toLevel.Exit.AsEntrance(), toLevel);
+                    AddConnection(toLevel.Exit.AsEntrance(toLevel), toLevel);
                 }
             }
             ;

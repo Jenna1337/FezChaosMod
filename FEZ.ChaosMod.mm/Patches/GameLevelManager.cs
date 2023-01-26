@@ -64,7 +64,8 @@ namespace FezGame.Services {
 				var doors = LevelInfo.GetLevelInfo(levelName).Entrances.Where(a => a.VolumeId == DestinationVolumeId);
 				if (doors.Any())
 				{
-					CameraManager.ChangeViewpoint(doors.Single().Exit.AsEntrance().FromOrientation.Value.AsViewpoint());
+                    Entrance d;
+                    CameraManager.ChangeViewpoint((d=doors.Single()).Exit.AsEntrance(d).FromOrientation.Value.AsViewpoint());
 				}
 				DestinationVolumeId = null;
 			}

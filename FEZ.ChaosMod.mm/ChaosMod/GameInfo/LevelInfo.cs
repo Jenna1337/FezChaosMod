@@ -107,7 +107,7 @@ namespace FezGame.GameInfo
                 return TargetLevelName.GetHashCode() ^
                     TargetVolumeId.GetHashCode();
             }
-            public Entrance AsEntrance()
+            public Entrance AsEntrance(Entrance FromWhere)
             {
                 int? tvid = TargetVolumeId;
                 string targlvlname = TargetLevelName;
@@ -118,7 +118,7 @@ namespace FezGame.GameInfo
                     var m = System.Reflection.MethodBase.GetCurrentMethod();
                     ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Warning: Target level volume ({TargetVolumeId}) does not exist as an entrance in the target level ({TargetLevelName}). Returning first entrance that leads back to this level.");
                     
-                    en = ents.Find(te => te.LevelName == targlvlname);
+                    en = ents.Find(te => te.LevelName == FromWhere.LevelName);
                     if (en.LevelName == null || en.LevelName == "")
                     {
                         ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Failed to find an appropriate entrance");
