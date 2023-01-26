@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using FezEngine.Components.Scripting;
 using FezGame.GameInfo;
+using FezEngine.Structure.Input;
 
 namespace FezGame.ChaosMod
 {
@@ -898,10 +899,42 @@ false
                    $"Camera Orientation: {CameraManager.VisibleOrientation}\n" +
                    $"Camera Rotation: {CameraManager.Rotation.ToString().Replace("{", "").Replace("}", "")}\n" +
                    $"PixelsPerTrixel: {CameraManager.PixelsPerTrixel}\n" +
-                   $"HurtCount: {HurtCount}";
+                   $"HurtCount: {HurtCount}\n" +
+                   $"Inputs: {GetCurrentButtonInputsAsString()}\n" +
+                   $"Movement: {InputManager.Movement}\n" +
+                   $"FreeLook: {InputManager.FreeLook}";
 
             drawingTools.DrawShadowedText(debugText, ShowDebugInfo ? Color.White : Color.Transparent, Vector2.Zero, scale);
 
+        }
+
+        private string GetCurrentButtonInputsAsString()
+        {
+            string s = "";
+            s += InputManager.Up != 0 ? "u " : "  ";
+            s += InputManager.Down != 0 ? "d " : "  ";
+            s += InputManager.Left != 0 ? "l " : "  ";
+            s += InputManager.Right != 0 ? "r " : "  ";
+
+            s += InputManager.Jump != 0 ? "a " : "  ";
+            s += InputManager.GrabThrow != 0 ? "x " : "  ";
+            s += InputManager.CancelTalk != 0 ? "b " : "  ";
+            s += InputManager.OpenInventory != 0 ? "y " : "  ";
+
+            s += InputManager.RotateLeft != 0 ? "lt " : "   ";
+            s += InputManager.RotateRight != 0 ? "rt " : "   ";
+
+            s += InputManager.MapZoomIn != 0 ? "rb " : "   ";
+            s += InputManager.MapZoomOut != 0 ? "lb " : "   ";
+
+            s += InputManager.Back != 0 ? "m " : "  ";
+            s += InputManager.Start != 0 ? "s " : "  ";
+            s += InputManager.ClampLook != 0 ? "rs " : "   ";
+            s += InputManager.FpsToggle != 0 ? "ls " : "   ";
+
+            //s += InputManager.ExactUp       != 0 ? "u "  : "  ";
+
+            return s;
         }
     }
 }
