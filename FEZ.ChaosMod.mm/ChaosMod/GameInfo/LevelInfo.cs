@@ -119,7 +119,7 @@ namespace FezGame.GameInfo
                 if (!FromWhere.IsWarpGate && (en.LevelName == null || en.LevelName == ""))
                 {
                     var m = System.Reflection.MethodBase.GetCurrentMethod();
-                    ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Warning: Target level volume ({TargetVolumeId}) does not exist as an entrance in the target level ({TargetLevelName}). Returning first entrance that leads back to this level.");
+                    ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Warning: Target level volume ({TargetVolumeId}) does not exist as an entrance in the target level ({TargetLevelName}). Attempting to locate the first entrance in the target level that leads back to this level.");
                     
                     en = ents.Find(te => te.LevelName == FromWhere.LevelName);
                     if (en.LevelName == null || en.LevelName == "")
