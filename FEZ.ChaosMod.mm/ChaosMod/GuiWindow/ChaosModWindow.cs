@@ -48,6 +48,7 @@ namespace FezGame.ChaosMod
         private Label MaxEffectsCountUnit;
         private NumericUpDown MaxEffectsToDisplaySpinner;
         private readonly ChaosModEffectListControl GroupedEffectsList;
+        private CheckBox ZuSpeakEnglishCheckBox;
         private readonly Dictionary<string, Dictionary<string, object>> DefaultSettings;
 
         public bool Initializing { get; private set; }
@@ -107,7 +108,7 @@ namespace FezGame.ChaosMod
 
             DefaultSettings = this.GetAllInputsValues();
 
-            //TODO load settings from last opened valid settings file
+            //TODO load settings from last opened valid settings file (gotta figure out where to save the path to the last settings file)
 
             //RegistryKey key = Registry.CurrentUser.OpenSubKey("Software", true);
             //
@@ -122,6 +123,9 @@ namespace FezGame.ChaosMod
 
             //ActiveSaveFile
 
+
+            //TODO ask to save if the settings were modified
+
             Timer updateDataTimer = new Timer
             {
                 Interval = 100 //milliseconds
@@ -132,6 +136,8 @@ namespace FezGame.ChaosMod
                 instance.StereoModeCheckBox.Checked = GameState.StereoMode;
             };
             updateDataTimer.Start();
+
+
 
         }
 
@@ -211,6 +217,7 @@ namespace FezGame.ChaosMod
             this.ItemRandoCheckBox = new System.Windows.Forms.CheckBox();
             this.RoomRandoCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.ZuSpeakEnglishCheckBox = new System.Windows.Forms.CheckBox();
             this.FirstPersonAnywhereCheckBox = new System.Windows.Forms.CheckBox();
             this.StereoModeCheckBox = new System.Windows.Forms.CheckBox();
             this.AllowRotateAnywhereCheckBox = new System.Windows.Forms.CheckBox();
@@ -409,6 +416,7 @@ namespace FezGame.ChaosMod
             // 
             // menuStrip1
             // 
+            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileToolStripMenuItem,
@@ -558,6 +566,7 @@ namespace FezGame.ChaosMod
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.ZuSpeakEnglishCheckBox);
             this.tabPage1.Controls.Add(this.FirstPersonAnywhereCheckBox);
             this.tabPage1.Controls.Add(this.StereoModeCheckBox);
             this.tabPage1.Controls.Add(this.AllowRotateAnywhereCheckBox);
@@ -569,6 +578,17 @@ namespace FezGame.ChaosMod
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Miscellaneous";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // ZuSpeakEnglishCheckBox
+            // 
+            this.ZuSpeakEnglishCheckBox.AutoSize = true;
+            this.ZuSpeakEnglishCheckBox.Location = new System.Drawing.Point(9, 127);
+            this.ZuSpeakEnglishCheckBox.Name = "ZuSpeakEnglishCheckBox";
+            this.ZuSpeakEnglishCheckBox.Size = new System.Drawing.Size(193, 24);
+            this.ZuSpeakEnglishCheckBox.TabIndex = 4;
+            this.ZuSpeakEnglishCheckBox.Text = "All Zu speak is English";
+            this.ZuSpeakEnglishCheckBox.UseVisualStyleBackColor = true;
+            this.ZuSpeakEnglishCheckBox.CheckedChanged += new System.EventHandler(this.ZuSpeakEnglishCheckBox_CheckedChanged);
             // 
             // FirstPersonAnywhereCheckBox
             // 
@@ -733,5 +753,7 @@ namespace FezGame.ChaosMod
         private void FirstPersonAnywhereCheckBox_CheckedChanged(object sender, EventArgs e) { chaosMod.AllowFirstPersonAnywhere = FirstPersonAnywhereCheckBox.Checked; }
 
         private void MaxEffectsToDisplaySpinner_ValueChanged(object sender, EventArgs e) { chaosMod.MaxActiveEffectsToDisplay = Decimal.ToInt32(MaxEffectsToDisplaySpinner.Value); }
+
+        private void ZuSpeakEnglishCheckBox_CheckedChanged(object sender, EventArgs e) { chaosMod.ZuSpeakEnglish = ZuSpeakEnglishCheckBox.Checked; }
     }
 }

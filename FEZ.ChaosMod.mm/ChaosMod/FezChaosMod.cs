@@ -666,6 +666,9 @@ namespace FezGame.ChaosMod
         }
         private DotHost.BehaviourType LastDotBehave;
         private bool SpiralInterrupted = false;
+        public bool AllowRotateAnywhere = false;
+        public bool AllowFirstPersonAnywhere = false;
+        public bool ZuSpeakEnglish = false;
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -700,6 +703,10 @@ namespace FezGame.ChaosMod
                 GameState.SaveData.HasFPView = true;
                 LevelManager.Flat = false;
             }
+            if (ZuSpeakEnglish)
+            {
+                SpeechBubble.Font = SpeechFont.Pixel;
+            }
 
             bool hurt = IsHurting;
             if (hurt != LastHurtValue)
@@ -709,6 +716,7 @@ namespace FezGame.ChaosMod
                     OnHurt();
                 }
             }
+
         }
 
         private ulong _updatesDone = 0, _framesRendered = 0, _ups = 0, _fps = 0;
@@ -720,8 +728,6 @@ true //if debug build
 false
 #endif
         || System.Diagnostics.Debugger.IsAttached;
-        public bool AllowRotateAnywhere = false;
-        public bool AllowFirstPersonAnywhere = false;
 
         public override void Draw(GameTime gameTime)
         {
