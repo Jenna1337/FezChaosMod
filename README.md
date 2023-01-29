@@ -21,6 +21,8 @@ For a full list of features, see [changelog.txt](/changelog.txt)
 
 ## Installation
 
+> __Note__: due to how winforms doesn't seem to work that great on any OS besides Windows, the currently only supported OS is Windows 10.
+
 ### Method 1: MonoMod
 1. Download [MonoMod](https://github.com/MonoMod/MonoMod/releases) and unpack it in the game's directory.
 2. Download FEZ.ChaosMod.mm.dll from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the game's directory.
