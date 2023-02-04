@@ -13,8 +13,6 @@ This library is a [MonoMod](https://github.com/MonoMod/MonoMod) mod which adds a
 
 Please support me on Patreon: https://www.patreon.com/jenna1337 
 
-This mod is also available on my website: https://sloan4.com/mymods/fez/list_secure.php
-
 ## Features
 
 For a full list of features, see [changelog.txt](/changelog.txt)
@@ -23,16 +21,16 @@ For a full list of features, see [changelog.txt](/changelog.txt)
 
 > __Note__: due to how winforms doesn't seem to work that great on any OS besides Windows, the currently only supported OS is Windows 10.
 
-### Method 1: MonoMod
+### Method 1: HAT
+1. Install [HAT](https://github.com/Krzyhau/HAT) via the instructions there
+2. Download FezChaosMod.zip from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the "Mods" directory.
+3. Run `MONOMODDED_FEZ.exe` and enjoy!
+
+### Method 2 (deprecated): MonoMod
 1. Download [MonoMod](https://github.com/MonoMod/MonoMod/releases) and unpack it in the game's directory.
 2. Download FEZ.ChaosMod.mm.dll from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the game's directory.
 3. Run command `MonoMod.exe FEZ.exe` (or drag `FEZ.exe` onto `MonoMod.exe`). This should generate new executable file called `MONOMODDED_FEZ.exe`.
 4. Run `MONOMODDED_FEZ.exe` and enjoy!
-
-### Method 2: HAT
-1. Install [HAT](https://github.com/Krzyhau/HAT) via the instructions there
-2. Download FezChaosMod.zip from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the "Mods" directory.
-3. Run `MONOMODDED_FEZ.exe` and enjoy!
 
 ## Building
 
