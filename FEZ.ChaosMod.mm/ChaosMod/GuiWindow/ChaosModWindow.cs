@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 namespace FezGame.ChaosMod
 {
+    //TODO somehow change this from winforms to an in-game UI so we can cut dependencies on winforms
     class ChaosModWindow : Form
     {
         private readonly FezChaosMod chaosMod;
