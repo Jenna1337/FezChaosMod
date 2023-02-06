@@ -50,8 +50,7 @@ namespace FezGame.ChaosMod
             //ArrowImageList.Images.Add((System.Drawing.Image)null);//TODO make showHideButton look nicer without relying on specific characters; see https://learn.microsoft.com/en-us/dotnet/desktop/winforms/controls/how-to-add-or-remove-images-with-the-windows-forms-imagelist-component?view=netframeworkdesktop-4.8
         }
 
-        public const string NameSeperator = ".";
-        private const int LabelRowHeight = 24;
+        public static readonly string NameSeperator = ".";
         public CollapsableGroupControl(string groupName, string parentName)
         {
             GroupName = groupName;

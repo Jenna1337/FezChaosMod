@@ -19,7 +19,7 @@ namespace FezGame.ChaosMod
 
     public static class ControlExtensions
     {
-        public const string InputGroupInputGroupSeperator = "---";
+        public static readonly string InputGroupInputGroupSeperator = "---";
         public static bool? AsNullableBool(this CheckState checkState)
         {
             switch(checkState)

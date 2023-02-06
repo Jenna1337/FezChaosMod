@@ -13,7 +13,7 @@ namespace FezGame.ChaosMod
         private static readonly bool ignoresubcategories = true;
 
         private readonly ToolTip tooltip;
-        private const string NameSeperator = CollapsableGroupControl.NameSeperator;
+        private static readonly string NameSeperator = CollapsableGroupControl.NameSeperator;
         public ChaosModEffectListControl(FezChaosMod chaosMod)
         {
             tooltip = new ToolTip
