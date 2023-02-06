@@ -13,6 +13,9 @@ using Microsoft.Xna.Framework.Content;
 
 namespace FezGame.GameInfo
 {
+    /// <summary>
+    /// Contains static level data
+    /// </summary>
     public class LevelInfo : Loot, IComparable
     {
         [ServiceDependency]
@@ -142,10 +145,17 @@ namespace FezGame.GameInfo
         public float PixelsPerTrixel { get; }
         public float Gravity { get; }
         public Sky Sky => levelData?.Sky;
+        public TrileSet TrileSet => levelData?.TrileSet;
         public TrackedSong Song => levelData?.Song;
         public LiquidType? WaterType => levelData?.WaterType;
         public IEnumerable<NpcInstance> NonPlayerCharacters => levelData?.NonPlayerCharacters.Values;
         public List<Volume> BlackHoles => levelData?.Volumes?.Values?.Where(v => v != null && v.ActorSettings != null && v.ActorSettings.IsBlackHole).ToList();
+
+        public bool Quantum => levelData.Quantum;
+        public bool Rainy => levelData.Rainy;
+        public bool Flat => levelData.Flat;
+        public Vector3 Size => levelData.Size;
+
 
         public readonly bool IsHubLevel;
 
@@ -538,7 +548,11 @@ namespace FezGame.GameInfo
         public override string ToString()
         {
             string str = $"{this.GetType().GetFormattedName()}(Name: \"{Name}\"";
+            str += $", Size: {Size}";
             str += $", LevelTypes: {{{String.Join(", ", LevelNames.GetLevelTypes(Name))}}}";
+            str += $", Quantum: {(Quantum ? "true" : "false")}";
+            str += $", Rainy: {(Rainy ? "true" : "false")}";
+            str += $", Flat: {(Flat ? "true" : "false")}";
             if (Entrances.Count > 0)
                 str += $", Entrances: {Entrances.GetType().GetFormattedName()}(Count = {Entrances.Count}, Values = {{{String.Join(", ", Entrances)}}})";
             if (LowestLiquidHeight.HasValue)
@@ -564,11 +578,13 @@ namespace FezGame.GameInfo
             }
             if(PixelsPerTrixel != 0)
                 str += $", PixelsPerTrixel: {PixelsPerTrixel}";
-            if(Sky != null)
+            if (Sky != null)
                 str += $", Sky: \"{Sky.Name}\"";
+            if (TrileSet != null)
+                str += $", TrileSet: \"{TrileSet.Name}\"";
             if (Song != null)
                 str += $", Song: \"{Song.Name}\"";
-            if(NonPlayerCharacters.Any())
+            if (NonPlayerCharacters.Any())
                 str += $", NonPlayerCharacters: {{{String.Join(", ", NonPlayerCharacters.Select(npc => $"\"{npc.Name}\""))}}}";
             if (BlackHoles.Any())
                 str += $", BlackHoles: {BlackHoles.GetType().GetFormattedName()}(Count = {BlackHoles.Count}, Values = {{{String.Join(", ", BlackHoles.Select(bh => $"{{From:{bh.From}, To: {bh.To}}}"))}}})";
