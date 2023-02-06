@@ -90,7 +90,6 @@
     <Compile Include="ChaosMod\GuiInGame\ColorExtensions.cs" />
     <Compile Include="ChaosMod\GuiInGame\DrawingTools.cs" />
     <Compile Include="ChaosMod\FezChaosMod.cs" />
-    <Compile Include="ChaosMod\GameInfo\LevelConnectionList.cs" />
     <Compile Include="ChaosMod\GameInfo\LevelInfo.cs" />
     <Compile Include="ChaosMod\GameInfo\LevelNames.cs" />
     <Compile Include="ChaosMod\GuiInGame\LinearProgressBar.cs" />
@@ -99,9 +98,6 @@
     <Compile Include="ChaosMod\GameInfo\LootMetadata.cs" />
     <Compile Include="ChaosMod\GuiInGame\ProgressBars.cs" />
     <Compile Include="ChaosMod\GameInfo\TypeExtensions.cs" />
-    <Compile Include="ChaosMod\Randomizer\BidirectionalLevelConnectionMap.cs" />
-    <Compile Include="ChaosMod\Randomizer\FezRandomizer.cs" />
-    <Compile Include="ChaosMod\Randomizer\Search.cs" />
     <Compile Include="ChaosMod\VolumeExtensions.cs" />
     <Compile Include="ChaosMod\GameInfo\WorldInfo.cs" />
     <Compile Include="Patches\Fez.cs" />
