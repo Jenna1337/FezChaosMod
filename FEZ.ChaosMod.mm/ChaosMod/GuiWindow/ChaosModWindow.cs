@@ -1,5 +1,4 @@
-﻿using FezGame.Randomizer;
-using System;
+﻿using System;
 using System.Windows.Forms;
 using System.Linq;
 using System.IO;
@@ -35,9 +34,6 @@ namespace FezGame.ChaosMod
         private TabPage tabPageChaosMod;
         private GroupBox EffectsDurationMultiplierSpinnerContainer;
         private NumericUpDown EffectsDurationMultiplierSpinner;
-        private TabPage tabPageRandomizer;
-        private CheckBox ItemRandoCheckBox;
-        private CheckBox RoomRandoCheckBox;
         private ToolStripMenuItem NewToolStripMenuItem;
         private readonly ChaosModAboutWindow AboutForm = new ChaosModAboutWindow();
         private TabPage tabPage1;
@@ -70,9 +66,6 @@ namespace FezGame.ChaosMod
 
             this.chaosMod = chaosMod;
             InitializeComponent();
-
-            RoomRandoCheckBox.Checked = FezRandomizer.RoomRandoMode;
-            ItemRandoCheckBox.Checked = FezRandomizer.ItemRandoMode;
 
             DebugInfoCheckBox.Checked = chaosMod.ShowDebugInfo;
             AllowRotateAnywhereCheckBox.Checked = chaosMod.AllowRotateAnywhere;
@@ -214,9 +207,6 @@ namespace FezGame.ChaosMod
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageChaosMod = new System.Windows.Forms.TabPage();
-            this.tabPageRandomizer = new System.Windows.Forms.TabPage();
-            this.ItemRandoCheckBox = new System.Windows.Forms.CheckBox();
-            this.RoomRandoCheckBox = new System.Windows.Forms.CheckBox();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.ZuSpeakEnglishCheckBox = new System.Windows.Forms.CheckBox();
             this.FirstPersonAnywhereCheckBox = new System.Windows.Forms.CheckBox();
@@ -237,7 +227,6 @@ namespace FezGame.ChaosMod
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPageChaosMod.SuspendLayout();
-            this.tabPageRandomizer.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -511,7 +500,6 @@ namespace FezGame.ChaosMod
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPageChaosMod);
-            this.tabControl1.Controls.Add(this.tabPageRandomizer);
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Location = new System.Drawing.Point(0, 36);
             this.tabControl1.Name = "tabControl1";
@@ -529,41 +517,6 @@ namespace FezGame.ChaosMod
             this.tabPageChaosMod.TabIndex = 0;
             this.tabPageChaosMod.Text = "Chaos Mod";
             this.tabPageChaosMod.UseVisualStyleBackColor = true;
-            // 
-            // tabPageRandomizer
-            // 
-            this.tabPageRandomizer.Controls.Add(this.ItemRandoCheckBox);
-            this.tabPageRandomizer.Controls.Add(this.RoomRandoCheckBox);
-            this.tabPageRandomizer.Location = new System.Drawing.Point(4, 29);
-            this.tabPageRandomizer.Name = "tabPageRandomizer";
-            this.tabPageRandomizer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageRandomizer.Size = new System.Drawing.Size(1084, 712);
-            this.tabPageRandomizer.TabIndex = 1;
-            this.tabPageRandomizer.Text = "Randomizer";
-            this.tabPageRandomizer.UseVisualStyleBackColor = true;
-            // 
-            // ItemRandoCheckBox
-            // 
-            this.ItemRandoCheckBox.AutoSize = true;
-            this.ItemRandoCheckBox.Enabled = false;
-            this.ItemRandoCheckBox.Location = new System.Drawing.Point(262, 6);
-            this.ItemRandoCheckBox.Name = "ItemRandoCheckBox";
-            this.ItemRandoCheckBox.Size = new System.Drawing.Size(157, 24);
-            this.ItemRandoCheckBox.TabIndex = 10;
-            this.ItemRandoCheckBox.Text = "Item Randomizer";
-            this.ItemRandoCheckBox.UseVisualStyleBackColor = true;
-            this.ItemRandoCheckBox.CheckedChanged += new System.EventHandler(this.ItemRandoCheckBox_CheckedChanged);
-            // 
-            // RoomRandoCheckBox
-            // 
-            this.RoomRandoCheckBox.AutoSize = true;
-            this.RoomRandoCheckBox.Location = new System.Drawing.Point(6, 6);
-            this.RoomRandoCheckBox.Name = "RoomRandoCheckBox";
-            this.RoomRandoCheckBox.Size = new System.Drawing.Size(168, 24);
-            this.RoomRandoCheckBox.TabIndex = 8;
-            this.RoomRandoCheckBox.Text = "Room Randomizer";
-            this.RoomRandoCheckBox.UseVisualStyleBackColor = true;
-            this.RoomRandoCheckBox.CheckedChanged += new System.EventHandler(this.RoomRandoCheckBox_CheckedChanged);
             // 
             // tabPage1
             // 
@@ -666,8 +619,6 @@ namespace FezGame.ChaosMod
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPageChaosMod.ResumeLayout(false);
-            this.tabPageRandomizer.ResumeLayout(false);
-            this.tabPageRandomizer.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.ResumeLayout(false);
@@ -683,15 +634,6 @@ namespace FezGame.ChaosMod
             //EffectsDurationMultiplierSpinner.Enabled = chaosChecked;
             //EffectsCheckList.Enabled = chaosChecked;
             //RandTeleCheckList.Enabled = chaosChecked;
-        }
-
-        private void RoomRandoCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            FezRandomizer.RoomRandoMode = RoomRandoCheckBox.Checked;
-            if (FezRandomizer.Enabled)
-                FezRandomizer.Shuffle();
-            else
-                FezRandomizer.TryAbortShuffleThread();
         }
 
         private void EffectsDelaySpinner_ValueChanged(object sender, EventArgs e) { chaosMod.DelayBetweenEffects = Decimal.ToDouble(EffectsDelaySpinner.Value); }
@@ -735,10 +677,7 @@ namespace FezGame.ChaosMod
 
         private void ChaosModWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            FezRandomizer.TryAbortShuffleThread();
         }
-
-        private void ItemRandoCheckBox_CheckedChanged(object sender, EventArgs e) { FezRandomizer.ItemRandoMode = ItemRandoCheckBox.Checked; }
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {

@@ -23,52 +23,10 @@ namespace FezGame.GameInfo
             }
         }
 
-        private static readonly LevelConnectionList Connections = new LevelConnectionList();
-
-        private static void AddConnection(Entrance fromLevel, Entrance toLevel)
-        {
-            if (fromLevel.Exit.TargetLevelName == null || toLevel.Exit.TargetLevelName == null)
-                System.Diagnostics.Debugger.Break();
-            //ChaosModWindow.LogLineDebug(Connections.HasConnection(fromLevel, toLevel) + ": " + fromLevel.TargetLevelName + " to " + toLevel.TargetLevelName);
-            if (!Connections.HasConnection(fromLevel, toLevel))
-                Connections.Add(new LevelConnection(fromLevel, toLevel));
-        }
         private static readonly List<LevelInfo> levelInfos = new List<LevelInfo>();
         static WorldInfo()
         {
             levelInfos = GetLevelInfo(LevelNames.All);
-            foreach (var levelInfo in levelInfos)
-            {
-                foreach (Entrance toLevel in levelInfo.Entrances)
-                {
-                    AddConnection(toLevel.Exit.AsEntrance(toLevel), toLevel);
-                }
-            }
-            ;
-        }
-        public static LevelConnectionList GetConnections()
-        {
-            return new LevelConnectionList(Connections);
-        }
-        public static LevelConnectionList GetConnectionsForLevels(IEnumerable<string> enumerable)
-        {
-            LevelConnectionList r = new LevelConnectionList();
-
-            foreach (var i in Connections)
-                if (enumerable.Contains(i.FromLevel.Exit.TargetLevelName) && enumerable.Contains(i.ToLevel.Exit.TargetLevelName))
-                    r.Add(i);
-
-            return r;
-        }
-        public static LevelConnectionList GetConnectionsWithoutLevels(IEnumerable<string> enumerable)
-        {
-            LevelConnectionList r = new LevelConnectionList();
-
-            foreach (var i in Connections)
-                if (!(enumerable.Contains(i.FromLevel.Exit.TargetLevelName) || enumerable.Contains(i.ToLevel.Exit.TargetLevelName)))
-                    r.Add(i);
-
-            return r;
         }
         public static Loot GetLoot()
         {
