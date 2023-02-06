@@ -151,6 +151,7 @@ namespace FezGame.GameInfo
         public IEnumerable<NpcInstance> NonPlayerCharacters => levelData?.NonPlayerCharacters.Values;
         public List<Volume> BlackHoles => levelData?.Volumes?.Values?.Where(v => v != null && v.ActorSettings != null && v.ActorSettings.IsBlackHole).ToList();
 
+        //TODO test these to make sure they don't cause null pointer exceptions 
         public bool Quantum => levelData.Quantum;
         public bool Rainy => levelData.Rainy;
         public bool Flat => levelData.Flat;
