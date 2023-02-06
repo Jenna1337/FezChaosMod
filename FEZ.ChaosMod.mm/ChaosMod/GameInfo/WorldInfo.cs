@@ -5,6 +5,9 @@ using static FezGame.GameInfo.LevelInfo;
 
 namespace FezGame.GameInfo
 {
+    /// <summary>
+    /// Aggregates <see cref="LevelInfo"/>
+    /// </summary>
     class WorldInfo
     {
         public struct LevelConnection // to differentiate from FezEngine.Structure.MapNode.Connection
