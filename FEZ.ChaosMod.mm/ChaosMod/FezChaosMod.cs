@@ -210,8 +210,10 @@ namespace FezGame.ChaosMod
         }
 
         private bool ChaosTimerPaused => !Enabled || GameState.TimePaused || GameState.InCutscene || GameState.Loading || PlayerManager.Action == ActionType.GateWarp || PlayerManager.Action == ActionType.LesserWarp
-          || /*LevelManager.Name.Equals("GOMEZ_HOUSE_2D") ||*/ !PlayerManager.CanControl /*PlayerManager.Action != ActionType.EnteringPipe
-			|| PlayerManager.Action != ActionType.Dying || PlayerManager.Action != ActionType.Suffering || PlayerManager.Action != ActionType.SuckedIn || PlayerManager.Action != ActionType.CollectingFez
+          || /*LevelManager.Name.Equals("GOMEZ_HOUSE_2D") ||*/ !PlayerManager.CanControl
+          || PlayerManager.Action == ActionType.EnteringPipe || PlayerManager.Action.IsEnteringDoor()
+          || PlayerManager.Action==ActionType.ExitDoor || PlayerManager.Action == ActionType.ExitDoorCarry || PlayerManager.Action == ActionType.ExitDoorCarryHeavy
+            /* || PlayerManager.Action != ActionType.Dying || PlayerManager.Action != ActionType.Suffering || PlayerManager.Action != ActionType.SuckedIn || PlayerManager.Action != ActionType.CollectingFez
 			|| PlayerManager.Action != ActionType.FindingTreasure*/;
         private bool InIntro // i.e., before getting the FEZ
 => LevelNames.Intro.Contains(LevelManager.Name);/*LevelManager.Name.Contains("2D")
@@ -465,7 +467,9 @@ namespace FezGame.ChaosMod
                 //AddEffect("DebugModeEnable", () => { GameState.DebugMode = true; }, 1f);
                 //AddEffect("DebugModeDisable", () => { GameState.DebugMode = false; }, 1f);
 
-                AddEffect("SetGravityInverted", () => { CollisionManager.GravityFactor = -1.0f; }, 1f, duration: 3d, onDone: ResetGravity, category: "Gravity");
+                AddEffect("SetGravityInverted", () => {
+                    CollisionManager.GravityFactor = PlayerManager.Action.IsEnteringDoor() ? 1f : -1.0f;//so the door puts Gomez on the top trile surface instead of the bottom
+                }, 1f, duration: 3d, onDone: ResetGravity, category: "Gravity");
                 //AddEffect("SetGravity1.0", () => { CollisionManager.GravityFactor = 1.0f; }, 1f, duration: 10d, category: "Gravity");
                 AddEffect("SetGravityMoon", () => { CollisionManager.GravityFactor = 0.165f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity");//The gravity of Earth's moon, assuming 1f is equivalent to Earth's gravity
                 AddEffect("SetGravityFezMoon", () => { CollisionManager.GravityFactor = 0.25f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity");//The gravity of the game's moon level, "PYRAMID"
