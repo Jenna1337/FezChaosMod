@@ -234,7 +234,7 @@ namespace FezGame.ChaosMod
             ActionType.CrushHorizontal,//squashed horizontal
             ActionType.CrushVertical,//squashed vertical
             ActionType.SuckedIn,//black hole
-            ActionType.Suffering,//exploded
+            ActionType.Suffering,//exploded or touched hurt trile
         };
         private bool LastHurtValue = false;
         private bool IsHurting => HurtingActions.Contains(PlayerManager.Action);
