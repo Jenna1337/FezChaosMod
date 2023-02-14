@@ -10,9 +10,9 @@ namespace FezGame.ChaosMod
     {
         private readonly object glitches;
         private static Type NesGlitchesType;
-        private PropertyInfo ActiveGlitchesInfo;
-        private PropertyInfo FreezeProbabilityInfo;
-        private PropertyInfo DisappearProbabilityInfo;
+        private readonly PropertyInfo ActiveGlitchesInfo;
+        private readonly PropertyInfo FreezeProbabilityInfo;
+        private readonly PropertyInfo DisappearProbabilityInfo;
 
         public NesGlitchesWrapper(object glitches, Type type)
         {

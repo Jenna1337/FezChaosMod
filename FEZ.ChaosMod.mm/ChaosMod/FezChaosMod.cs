@@ -353,7 +353,6 @@ namespace FezGame.ChaosMod
         public static Color EffectTextColorActive = Color.White;
 
         private static readonly Color DefaultUnsaturatedTextBlinkColor = Color.Yellow;
-        private static readonly Color DefaultPausedColor = Color.Gray;
         public static void SetColors(Color ProgressColor, Color TextColor)
         {
             SetColors(ProgressColor, ProgressColor.Desaturate(0.5f).Darken(0.5f), TextColor, TextColor.Darken(0.5f), TextColor.GetSaturation() == 0 ? DefaultUnsaturatedTextBlinkColor : TextColor.HueRotate(180));
@@ -610,7 +609,7 @@ namespace FezGame.ChaosMod
 
                 DidInit = true;
                 Timer.Start();
-                _ = FezEngine.Components.Waiters.Wait(() => ChaosModWindow != null && ChaosModWindow.Created && !ChaosModWindow.IsDisposed && ChaosModWindow.Visible, () =>
+                _ = Waiters.Wait(() => ChaosModWindow != null && ChaosModWindow.Created && !ChaosModWindow.IsDisposed && ChaosModWindow.Visible, () =>
                 {
                     ChaosModWindow.LogLineDebug(WorldInfo.GetAllLevelDataAsString());
 
