@@ -21,7 +21,7 @@ namespace FezGame.ChaosMod
         private static readonly System.Drawing.Color __BackColor = BackColor.ToDrawingColor();
         private static readonly System.Drawing.Color __BarColor1 = BarColor1.ToDrawingColor();
 
-        internal void DrawProgressCircle(double progress, string Text, Vector2 pos, float scale)
+        internal void DrawProgressCircle(double progress, string Text, Vector2 pos, float scale, bool isPaused)
         {
             if (progress > 1)
                 progress = 1;
@@ -34,7 +34,7 @@ namespace FezGame.ChaosMod
                     BackTexture = GenerateBackTexture();
                 }
                 DrawingTools.Instance.DrawTexture(BackTexture, pos, scale / PieRenderScale, SamplerState.AnisotropicClamp, null, BackColor);
-                DrawingTools.Instance.DrawTexture(GetCircleTextureForProgress(progress), pos, scale / PieRenderScale, SamplerState.AnisotropicClamp, null, ProgressColor);
+                DrawingTools.Instance.DrawTexture(GetCircleTextureForProgress(progress), pos, scale / PieRenderScale, SamplerState.AnisotropicClamp, null, isPaused ? PausedColor : ProgressColor);
 
             }
             if (Text != null)

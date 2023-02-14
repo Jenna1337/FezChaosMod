@@ -17,11 +17,11 @@ namespace FezGame.ChaosMod
         }
 
         private static readonly int ProgressCirclePadding = 4;
-        internal void Draw(string text, double progress, int offset, string Text, Color color)
+        internal void Draw(string text, double progress, int offset, string Text, Color color, bool isPaused)
         {
             float scale = (float)Math.Floor(GraphicsDevice.GetViewScale());
             Vector2 vector = new Vector2(15, GraphicsDevice.Viewport.Height * .75f - (CircularProgressBar.Size + ProgressCirclePadding) * offset * scale);
-            circularProgressBar.DrawProgressCircle(progress, Text, vector, scale);
+            circularProgressBar.DrawProgressCircle(progress, Text, vector, scale, isPaused);
             DrawingTools.Instance.DrawShadowedText(text, color, vector + new Vector2((CircularProgressBar.Size + ProgressCirclePadding) * scale, 0), scale);
         }
 

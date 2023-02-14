@@ -15,7 +15,7 @@ namespace FezGame.ChaosMod
         private static Texture2D barTexture = null;
         private static readonly bool ShouldBarEmpty = false;//TODO figure out which direction the bar should travel
 
-        internal void DrawProgressBar(double progress, string Text, Rectangle dest, float scale)
+        internal void DrawProgressBar(double progress, string Text, Rectangle dest, float scale, bool isPaused)
         {
             if (progress > 1)
                 progress = 1;
@@ -37,7 +37,7 @@ namespace FezGame.ChaosMod
             DrawingTools.Instance.DrawTexture(backTexture, dest, SamplerState.AnisotropicClamp, null, BackColor);
             int progWidth = (int)Math.Round(dest.Width * progress);
             Rectangle progdest = new Rectangle(dest.X, dest.Y, progWidth, dest.Height);
-            DrawingTools.Instance.DrawTexture(barTexture, progdest, SamplerState.AnisotropicClamp, null, ProgressColor);
+            DrawingTools.Instance.DrawTexture(barTexture, progdest, SamplerState.AnisotropicClamp, null, isPaused ? PausedColor : ProgressColor);
 
             //draw the text centered
             var textSize = DrawingTools.Instance.MeasureString(Text);

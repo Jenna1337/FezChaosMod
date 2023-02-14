@@ -353,20 +353,21 @@ namespace FezGame.ChaosMod
         public static Color EffectTextColorActive = Color.White;
 
         private static readonly Color DefaultUnsaturatedTextBlinkColor = Color.Yellow;
+        private static readonly Color DefaultPausedColor = Color.Gray;
         public static void SetColors(Color ProgressColor, Color TextColor)
         {
-            SetColors(ProgressColor, TextColor, TextColor.Darken(0.5f), TextColor.GetSaturation() == 0 ? DefaultUnsaturatedTextBlinkColor : TextColor.HueRotate(180));
+            SetColors(ProgressColor, ProgressColor.Desaturate(0.5f).Darken(0.5f), TextColor, TextColor.Darken(0.5f), TextColor.GetSaturation() == 0 ? DefaultUnsaturatedTextBlinkColor : TextColor.HueRotate(180));
         }
-        public static void SetColors(Color ProgressColor, Color TextColor, Color EffectTextColorDone, Color EffectTextColorBlink)
+        public static void SetColors(Color ProgressColor, Color PausedColor, Color TextColor, Color EffectTextColorDone, Color EffectTextColorBlink)
         {
-            SetColors(ProgressColor, TextColor, TextColor, EffectTextColorDone, EffectTextColorBlink);
+            SetColors(ProgressColor, PausedColor, TextColor, TextColor, EffectTextColorDone, EffectTextColorBlink);
         }
-        public static void SetColors(Color ProgressColor, Color ProgressTextColor, Color EffectTextColorActive, Color EffectTextColorDone, Color EffectTextColorBlink)
+        public static void SetColors(Color ProgressColor, Color PausedColor, Color ProgressTextColor, Color EffectTextColorActive, Color EffectTextColorDone, Color EffectTextColorBlink)
         {
             FezChaosMod.EffectTextColorBlink = EffectTextColorBlink;
             FezChaosMod.EffectTextColorDone = EffectTextColorDone;
             FezChaosMod.EffectTextColorActive = EffectTextColorActive;
-            ProgressBar.SetColors(ProgressColor, ProgressTextColor);
+            ProgressBar.SetColors(ProgressColor, ProgressTextColor, PausedColor);
         }
 
         private ChaosModWindow ChaosModWindow;
@@ -645,7 +646,7 @@ namespace FezGame.ChaosMod
                     double timeLeft = Effect.Duration - (ActiveTimer != null ? ActiveTimer.Elapsed.TotalSeconds : 0);
                     string Text = timeLeft < 60 ? Math.Ceiling(timeLeft).ToString() : null;
                     Color color = Hidden ? Color.Transparent : (ShouldBlink ? EffectTextColorBlink : (Progress >= 1 ? EffectTextColorDone : EffectTextColorActive));
-                    ChaosModEffectTextDrawer.Draw(Effect.Name, Progress, index, Text, color);
+                    ChaosModEffectTextDrawer.Draw(Effect.Name, Progress, index, Text, color, ActiveTimer!=null && !ActiveTimer.IsRunning);
                 }
             }
             public void Func()
@@ -842,7 +843,7 @@ false
                     elapsedtime / DelayBetweenEffects,
                     Text,
                     new Rectangle(0, 0, viewport.Width, (int)Math.Ceiling(DrawingTools.Instance.MeasureString("0").Y * scale) + 4),
-                    scale);
+                    scale, ChaosTimerPaused);
 
                 int index;
 
