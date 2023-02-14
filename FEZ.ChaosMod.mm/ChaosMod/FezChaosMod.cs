@@ -581,6 +581,7 @@ namespace FezGame.ChaosMod
                 }, 1f, duration: 3, onDone: ResetGlitches, category: "Glitches.FreezeProbability");
 
 
+                //TODO add effects that spawn things
                 /*AddEffect("SpawnVase", () =>
                 {
                     var trile = new TrileInstance(PlayerManager.Ground.First.Position, LevelManager.ActorTriles(ActorType.Vase).FirstOrDefault().Id);
@@ -595,6 +596,10 @@ namespace FezGame.ChaosMod
                         DontCullIn = true
                     });
                 }, 5f, () => PlayerManager.Ground.First != null);*/
+
+
+                //TODO add effects that mess with the controls
+
 
                 #endregion
 
