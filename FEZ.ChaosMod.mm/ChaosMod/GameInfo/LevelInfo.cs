@@ -151,6 +151,10 @@ namespace FezGame.GameInfo
         public IEnumerable<NpcInstance> NonPlayerCharacters => levelData?.NonPlayerCharacters.Values;
         public List<Volume> BlackHoles => levelData?.Volumes?.Values?.Where(v => v != null && v.ActorSettings != null && v.ActorSettings.IsBlackHole).ToList();
 
+        private readonly Dictionary<ActorType, int> TrileCountByActorType = new Dictionary<ActorType, int>();
+        private bool hasSinkBlocks = false;
+        public bool HasSinkBlocks { get => hasSinkBlocks; }
+
         //TODO test these to make sure they don't cause null pointer exceptions 
         public bool Quantum => levelData.Quantum;
         public bool Rainy => levelData.Rainy;
@@ -464,6 +468,12 @@ namespace FezGame.GameInfo
                 {
                     if (trile2 == null)
                         continue;
+
+                    if (!TrileCountByActorType.ContainsKey(trile2.ActorSettings.Type))
+                        TrileCountByActorType.Add(trile2.ActorSettings.Type, 1);
+                    else
+                        TrileCountByActorType[trile2.ActorSettings.Type] += 1;
+
                     switch (trile2.ActorSettings.Type)
                     {
                     case ActorType.CubeShard:
@@ -477,6 +487,9 @@ namespace FezGame.GameInfo
                         break;
                     case ActorType.PieceOfHeart:
                         PieceOfHeart.AddTrile(trile.Emplacement, trile2.ActorSettings.Type, Name, ContainingTrile);
+                        break;
+                    case ActorType.SinkPickup:
+                        hasSinkBlocks = true;
                         break;
                     }
                 }
@@ -554,6 +567,8 @@ namespace FezGame.GameInfo
             str += $", Quantum: {(Quantum ? "true" : "false")}";
             str += $", Rainy: {(Rainy ? "true" : "false")}";
             str += $", Flat: {(Flat ? "true" : "false")}";
+            str += $", HasSinkBlocks: {(HasSinkBlocks ? "true" : "false")}";
+            str += $", TrileCountByActorType: {{{String.Join(", ", TrileCountByActorType)}}}";
             if (Entrances.Count > 0)
                 str += $", Entrances: {Entrances.GetType().GetFormattedName()}(Count = {Entrances.Count}, Values = {{{String.Join(", ", Entrances)}}})";
             if (LowestLiquidHeight.HasValue)
