@@ -616,6 +616,8 @@ namespace FezGame.ChaosMod
                     ChaosModWindow.LogLineDebug($"Skies: {{{String.Join(", ", SkiesNames)}}}");
                     ChaosModWindow.LogLineDebug($"Songs: {{{String.Join(", ", BGMusicNames)}}}");
                     ChaosModWindow.LogLineDebug($"Hubs: {{{String.Join(", ", HubLevelNames)}}}");
+
+                    ChaosModWindow.LogLineDebug("{\"ScriptEntityTypeDescriptors\": " + ScriptDescriptor.ListAllScriptEntityTypeDescriptors() + "}");
                 });
             }
         }
