@@ -137,7 +137,7 @@ namespace FezGame.GameInfo
 
         public List<Entrance> Entrances = new List<Entrance>();
 
-        public float? LowestLiquidHeight { get; } // TODO See LiquidHost.ReestablishLiquidHeight() and LevelManager.WaterHeight // Should be set to (the Y position of the lowestmost door)-1f
+        public float? LowestLiquidHeight { get; } // Should be set to (the Y position of the lowestmost door)-1f
 
         private readonly Level levelData;
 

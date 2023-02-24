@@ -38,8 +38,7 @@ namespace FezGame.GameInfo
             {
                 loot.Add(levelInfo);
             }
-            //TODO
-            //loot.AntiCubes -= 1;//Sewer QR code; used in both ZU_THRONE_RUINS and ZU_HOUSE_EMPTY
+            //Note: Sewer QR code is used in both ZU_THRONE_RUINS and ZU_HOUSE_EMPTY
             /**
 			 * Note: GameWideCodes has two codes, and GameWideCodes.MapCode is also in WATERTOWER_SECRET
 			 * GameWideCodes.AchievementCode is not used in any level files, and therefore will not be included as a part of WorldInfo
