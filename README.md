@@ -1,6 +1,6 @@
 # FezChaosMod
 
-MonoMod mod for FEZ adding random effects 
+Game modification for FEZ adding random effects 
 
 [![GitHub releases](https://img.shields.io/github/downloads/Jenna1337/FezChaosMod/total.svg?style=flat)](https://github.com/Jenna1337/FezChaosMod/releases)
 [![Version](https://img.shields.io/github/v/release/Jenna1337/FezChaosMod.svg?style=flat)](https://github.com/Jenna1337/FezChaosMod/releases/latest)
