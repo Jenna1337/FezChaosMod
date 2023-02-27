@@ -9,7 +9,7 @@ Game modification for FEZ adding random effects
 
 ## Overview 
 
-This library is a [MonoMod](https://github.com/MonoMod/MonoMod) mod which adds a chaos mod (game modification that activate a random effect every so many seconds) to FEZ.
+This library is a game modification for the video game FEZ which adds a chaos mod (game modification that activate a random effect every so many seconds).
 
 
 Please support me on Patreon: https://www.patreon.com/jenna1337 
