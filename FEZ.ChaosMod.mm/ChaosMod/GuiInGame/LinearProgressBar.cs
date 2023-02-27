@@ -13,16 +13,12 @@ namespace FezGame.ChaosMod
 
         private static Texture2D backTexture = null;
         private static Texture2D barTexture = null;
-        private static readonly bool ShouldBarEmpty = false;//TODO figure out which direction the bar should travel
 
         internal void DrawProgressBar(double progress, string Text, Rectangle dest, float scale, bool isPaused)
         {
             if (progress > 1)
-                progress = 1;
-
-            if (ShouldBarEmpty)
             {
-                progress = 1f - progress;
+                progress = 1;
             }
             
             if (backTexture == null)
@@ -46,8 +42,7 @@ namespace FezGame.ChaosMod
                 X = dest.Center.X - textSize.X * scale,
                 Y = dest.Center.Y - textSize.Y * scale
             };
-            DrawingTools.Instance.DrawShadowedText(Text, TextColor, shifted,
-                                        scale);
+            DrawingTools.Instance.DrawShadowedText(Text, TextColor, shifted, scale);
         }
 
         public void Dispose()

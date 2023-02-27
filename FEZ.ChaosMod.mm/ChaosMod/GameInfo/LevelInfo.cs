@@ -155,7 +155,6 @@ namespace FezGame.GameInfo
         private bool hasSinkBlocks = false;
         public bool HasSinkBlocks { get => hasSinkBlocks; }
 
-        //TODO test these to make sure they don't cause null pointer exceptions 
         public bool Quantum => levelData.Quantum;
         public bool Rainy => levelData.Rainy;
         public bool Flat => levelData.Flat;

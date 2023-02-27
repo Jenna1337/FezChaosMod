@@ -376,7 +376,7 @@ namespace FezGame.ChaosMod
             if (Instance != null
                 || (Instance == null && typeof(Fez).Assembly != typeof(FezChaosMod).Assembly && typeof(Fez).Assembly.GetType("FezGame.ChaosMod.FezChaosMod") != null))//Injected via MonoMod and as HAT
             {
-                //TODO keep ONLY whatever instance of FezChaosMod has the highest Version
+                //TODO keep ONLY whatever instance of FezChaosMod has the highest Version; could probably remove this if we rely on HAT, and remove support for MonoMod 
                 Common.Logger.Log("ChaosMod", "Warning: Attempted to initialize another instance of FezChaosMod");
                 ServiceHelper.RemoveComponent(this);
                 return;
