@@ -159,6 +159,6 @@ re-removed janky randomizer; use https://github.com/admoore0/fez-randomizer if y
 bug fixes
 progress bars different color when paused
 optimizations
-
+Added a thing to always show the latest effects even if those effects have done being active
 
 

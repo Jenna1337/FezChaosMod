@@ -34,6 +34,10 @@ namespace FezGame.ChaosMod
         public static new bool Enabled = true;
         public static FezChaosMod Instance;
         public int MaxActiveEffectsToDisplay = 5;
+        /// <summary>
+        /// The number of effects that always display the latest effects even if the effects are done
+        /// </summary>
+        public int LatestEffectsToDisplay = 2;
 
         #region ServiceDependencies
         [ServiceDependency]
@@ -866,7 +870,7 @@ false
                         if (index >= activeChaosEffects.Count)
                             break;
                         var item = activeChaosEffects[index];
-                        if (item.IsDone)
+                        if (item.IsDone && index < activeChaosEffects.Count-LatestEffectsToDisplay)
                         {
                             activeChaosEffects.Remove(item);
                             index = 0;

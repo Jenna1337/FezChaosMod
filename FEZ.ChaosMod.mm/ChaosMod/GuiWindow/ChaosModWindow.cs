@@ -46,6 +46,9 @@ namespace FezGame.ChaosMod
         private NumericUpDown MaxEffectsToDisplaySpinner;
         private readonly ChaosModEffectListControl GroupedEffectsList;
         private CheckBox ZuSpeakEnglishCheckBox;
+        private GroupBox LatestEffectsToDisplaySpinnerContainer;
+        private Label LatestEffectsCountUnit;
+        private NumericUpDown LatestEffectsToDisplaySpinner;
         private readonly Dictionary<string, Dictionary<string, object>> DefaultSettings;
 
         public bool Initializing { get; private set; }
@@ -92,6 +95,7 @@ namespace FezGame.ChaosMod
             this.EffectsDelaySpinner.Value = (decimal)chaosMod.DelayBetweenEffects;
             this.EffectsDurationMultiplierSpinner.Value = (decimal)chaosMod.EffectsDurationMultiplier;
             this.MaxEffectsToDisplaySpinner.Value = (decimal)chaosMod.MaxActiveEffectsToDisplay;
+            this.LatestEffectsToDisplaySpinner.Value = (decimal)chaosMod.LatestEffectsToDisplay;
 
 
             //TODO add something somewhere that shows the sum of all the effect ratios, and the sum of all the enabled effect ratios
@@ -183,6 +187,9 @@ namespace FezGame.ChaosMod
         {
             this.RandTeleCheckList = new System.Windows.Forms.CheckedListBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.LatestEffectsToDisplaySpinnerContainer = new System.Windows.Forms.GroupBox();
+            this.LatestEffectsCountUnit = new System.Windows.Forms.Label();
+            this.LatestEffectsToDisplaySpinner = new System.Windows.Forms.NumericUpDown();
             this.MaxEffectsToDisplaySpinnerContainer = new System.Windows.Forms.GroupBox();
             this.MaxEffectsCountUnit = new System.Windows.Forms.Label();
             this.MaxEffectsToDisplaySpinner = new System.Windows.Forms.NumericUpDown();
@@ -217,6 +224,8 @@ namespace FezGame.ChaosMod
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.LatestEffectsToDisplaySpinnerContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.LatestEffectsToDisplaySpinner)).BeginInit();
             this.MaxEffectsToDisplaySpinnerContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MaxEffectsToDisplaySpinner)).BeginInit();
             this.EffectsDurationMultiplierSpinnerContainer.SuspendLayout();
@@ -249,6 +258,7 @@ namespace FezGame.ChaosMod
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.LatestEffectsToDisplaySpinnerContainer);
             this.splitContainer1.Panel1.Controls.Add(this.MaxEffectsToDisplaySpinnerContainer);
             this.splitContainer1.Panel1.Controls.Add(this.EffectsDurationMultiplierSpinnerContainer);
             this.splitContainer1.Panel1.Controls.Add(this.EffectsDelaySpinnerContainer);
@@ -263,6 +273,36 @@ namespace FezGame.ChaosMod
             this.splitContainer1.SplitterDistance = 352;
             this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // LatestEffectsToDisplaySpinnerContainer
+            // 
+            this.LatestEffectsToDisplaySpinnerContainer.Controls.Add(this.LatestEffectsCountUnit);
+            this.LatestEffectsToDisplaySpinnerContainer.Controls.Add(this.LatestEffectsToDisplaySpinner);
+            this.LatestEffectsToDisplaySpinnerContainer.Location = new System.Drawing.Point(5, 222);
+            this.LatestEffectsToDisplaySpinnerContainer.Name = "LatestEffectsToDisplaySpinnerContainer";
+            this.LatestEffectsToDisplaySpinnerContainer.Size = new System.Drawing.Size(214, 57);
+            this.LatestEffectsToDisplaySpinnerContainer.TabIndex = 9;
+            this.LatestEffectsToDisplaySpinnerContainer.TabStop = false;
+            this.LatestEffectsToDisplaySpinnerContainer.Text = "Latest Effects to Display";
+            // 
+            // LatestEffectsCountUnit
+            // 
+            this.LatestEffectsCountUnit.AutoSize = true;
+            this.LatestEffectsCountUnit.Location = new System.Drawing.Point(132, 27);
+            this.LatestEffectsCountUnit.Name = "LatestEffectsCountUnit";
+            this.LatestEffectsCountUnit.Size = new System.Drawing.Size(58, 20);
+            this.LatestEffectsCountUnit.TabIndex = 7;
+            this.LatestEffectsCountUnit.Text = "effects";
+            // 
+            // LatestEffectsToDisplaySpinner
+            // 
+            this.LatestEffectsToDisplaySpinner.Location = new System.Drawing.Point(6, 25);
+            this.LatestEffectsToDisplaySpinner.Name = "LatestEffectsToDisplaySpinner";
+            this.LatestEffectsToDisplaySpinner.Size = new System.Drawing.Size(120, 26);
+            this.LatestEffectsToDisplaySpinner.TabIndex = 5;
+            this.LatestEffectsToDisplaySpinner.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.LatestEffectsToDisplaySpinner.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
+            this.LatestEffectsToDisplaySpinner.ValueChanged += new System.EventHandler(this.LatestEffectsToDisplaySpinner_ValueChanged);
             // 
             // MaxEffectsToDisplaySpinnerContainer
             // 
@@ -606,6 +646,9 @@ namespace FezGame.ChaosMod
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.LatestEffectsToDisplaySpinnerContainer.ResumeLayout(false);
+            this.LatestEffectsToDisplaySpinnerContainer.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.LatestEffectsToDisplaySpinner)).EndInit();
             this.MaxEffectsToDisplaySpinnerContainer.ResumeLayout(false);
             this.MaxEffectsToDisplaySpinnerContainer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MaxEffectsToDisplaySpinner)).EndInit();
@@ -692,8 +735,18 @@ namespace FezGame.ChaosMod
 
         private void FirstPersonAnywhereCheckBox_CheckedChanged(object sender, EventArgs e) { chaosMod.AllowFirstPersonAnywhere = FirstPersonAnywhereCheckBox.Checked; }
 
-        private void MaxEffectsToDisplaySpinner_ValueChanged(object sender, EventArgs e) { chaosMod.MaxActiveEffectsToDisplay = Decimal.ToInt32(MaxEffectsToDisplaySpinner.Value); }
+        private void MaxEffectsToDisplaySpinner_ValueChanged(object sender, EventArgs e)
+        {
+            decimal val = MaxEffectsToDisplaySpinner.Value;
+            chaosMod.MaxActiveEffectsToDisplay = Decimal.ToInt32(val);
+            LatestEffectsToDisplaySpinner.Maximum = val;
+        }
 
         private void ZuSpeakEnglishCheckBox_CheckedChanged(object sender, EventArgs e) { chaosMod.ZuSpeakEnglish = ZuSpeakEnglishCheckBox.Checked; }
+
+        private void LatestEffectsToDisplaySpinner_ValueChanged(object sender, EventArgs e)
+        {
+            chaosMod.LatestEffectsToDisplay = Decimal.ToInt32(LatestEffectsToDisplaySpinner.Value);
+        }
     }
 }
