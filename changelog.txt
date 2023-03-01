@@ -158,6 +158,7 @@ HAT Compatible
 re-removed janky randomizer; use https://github.com/admoore0/fez-randomizer if you want a randomizer
 bug fixes
 progress bars different color when paused
+optimizations
 
 
 
