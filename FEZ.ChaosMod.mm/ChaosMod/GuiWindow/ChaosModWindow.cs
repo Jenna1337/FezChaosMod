@@ -697,9 +697,17 @@ namespace FezGame.ChaosMod
 
         private void SaveSettingsToFile(string file)
         {
-            ActiveSaveFile = Path.GetFullPath(file);
-            ChaosModWindow.LogLineDebug("Saving to file: " + file);
-            ChaosModSettingsHelper.Write(this, file);
+            try
+            {
+                ActiveSaveFile = Path.GetFullPath(file);
+                ChaosModWindow.LogLineDebug("Saving to file: " + file);
+                ChaosModSettingsHelper.Write(this, file);
+            }
+            catch (Exception e)
+            {
+                ChaosModWindow.LogLine("Warning: Failed to write to file: " + file);
+                ChaosModWindow.LogLine(e.Message);
+            }
         }
         private void LoadSettingsFromFile(string file)
         {
@@ -709,9 +717,10 @@ namespace FezGame.ChaosMod
                 ChaosModWindow.LogLineDebug("Loading from file: " + file);
                 ChaosModSettingsHelper.Read(this, file);
             }
-            catch
+            catch (Exception e)
             {
-                ChaosModWindow.LogLineDebug("Failed to load from file: " + file);
+                ChaosModWindow.LogLine("Warning: Failed to load from file: " + file);
+                ChaosModWindow.LogLine(e.Message);
             }
         }
         private void AboutFEZChaosModToolStripMenuItem_Click(object sender, EventArgs e) { AboutForm.Show(this); }
