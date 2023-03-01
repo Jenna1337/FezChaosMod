@@ -72,22 +72,14 @@ namespace FezGame.ChaosMod
             }
             return false;
         }
-        /*public static bool IsContainedInViewpoint(this Volume volume, Vector3 vector3, FezEngine.Viewpoint viewpoint, Level level)
+        public static bool IsContainedInViewpoint(this Volume volume, Vector3 vector3, FezEngine.Viewpoint viewpoint, Level level)
         {
             Vector3 mask = viewpoint.VisibleAxis().GetMask();
             Vector3 vector = viewpoint.ForwardVector();
-            *//*if (PlayerManager.Background)
-            {
-                vector *= -1f;
-            }*//*
             Ray ray = default(Ray);
             ray.Position = vector3 * (Vector3.One - mask) - vector * level.Size;
             ray.Direction = vector;
             Ray ray2 = ray;
-            *//*if (PlayerManager.Action == ActionType.PullUpBack || PlayerManager.Action == ActionType.PullUpFront || PlayerManager.Action == ActionType.PullUpCornerLedge)
-            {
-                ray2.Position += new Vector3(0f, 0.5f, 0f);
-            }*//*
             float? num = volume.BoundingBox.Intersects(ray2);
             if (volume.ActorSettings != null && volume.ActorSettings.IsBlackHole)
             {
@@ -102,23 +94,12 @@ namespace FezGame.ChaosMod
             }
             if (num.HasValue)
             {
-                bool flag2 = false;
-                bool isBlackHole = volume.ActorSettings != null && volume.ActorSettings.IsBlackHole;
-                NearestTriles nearestTriles = level.NearestTrile(ray2.Position, *//*PlayerManager.Background ? QueryOptions.Background :*//* QueryOptions.None);//TODO figure out LevelManager.NearestTrile to generalize IsContainedInCurrentViewpoint
-                if (level.Name != "PIVOT_TWO" && nearestTriles.Surface != null)
-                {
-                    flag2 |= TestObstruction(vector, nearestTriles.Surface, num.Value, ray2.Position, isBlackHole);
-                }
-                if (nearestTriles.Deep != null)
-                {
-                    flag2 |= TestObstruction(vector, nearestTriles.Deep, num.Value, ray2.Position, isBlackHole);
-                }
-                if (!flag2 && ((volume.ActorSettings != null && volume.ActorSettings.IsBlackHole) || volume.Orientations.Contains(viewpoint.VisibleOrientation())))
+                if ((volume.ActorSettings != null && volume.ActorSettings.IsBlackHole) || volume.Orientations.Contains(viewpoint.VisibleOrientation()))
                 {
                     return true;
                 }
             }
             return false;
-        }*/
+        }
     }
 }
