@@ -444,7 +444,11 @@ namespace FezGame.GameInfo
                     continue;
                 if (trile2.ActorSettings.Type == ActorType.Door)
                 {
-                    //TODO check some better way; might be able to adapt FezGame.ChaosMod.VolumeExtensions.IsContainedInCurrentViewpoint(this Volume volume, Vector3 vector3) somehow
+                    //if (triggervolume.Orientations.Any(o => triggervolume.IsContainedInViewpoint(trile.Emplacement.AsVector, o.AsViewpoint(), levelData)))
+                    //    return true;
+
+                    //TODO the above should be used as it is more thorough, but is considerably slower than the below
+
                     const float aboutBuffer = 1.5f;
                     if (triggervolume.BoundingBox.Min.X - aboutBuffer <= trile.Emplacement.X && triggervolume.BoundingBox.Max.X + aboutBuffer >= trile.Emplacement.X
                     && triggervolume.BoundingBox.Min.Y - aboutBuffer <= trile.Emplacement.Y && triggervolume.BoundingBox.Max.Y + aboutBuffer >= trile.Emplacement.Y
