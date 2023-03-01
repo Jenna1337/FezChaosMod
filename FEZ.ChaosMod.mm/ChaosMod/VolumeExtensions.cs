@@ -35,35 +35,34 @@ namespace FezGame.ChaosMod
             Ray ray = default(Ray);
             ray.Position = vector3 * (Vector3.One - mask) - vector * LevelManager.Size;
             ray.Direction = vector;
-            Ray ray2 = ray;
             /*if (PlayerManager.Action == ActionType.PullUpBack || PlayerManager.Action == ActionType.PullUpFront || PlayerManager.Action == ActionType.PullUpCornerLedge)
             {
                 ray2.Position += new Vector3(0f, 0.5f, 0f);
             }*/
-            float? num = volume.BoundingBox.Intersects(ray2);
+            float? num = volume.BoundingBox.Intersects(ray);
             if (volume.ActorSettings != null && volume.ActorSettings.IsBlackHole)
             {
                 if (!num.HasValue)
                 {
-                    num = volume.BoundingBox.Intersects(new Ray(ray2.Position + new Vector3(0f, 0.3f, 0f), ray2.Direction));
+                    num = volume.BoundingBox.Intersects(new Ray(ray.Position + new Vector3(0f, 0.3f, 0f), ray.Direction));
                 }
                 if (!num.HasValue)
                 {
-                    num = volume.BoundingBox.Intersects(new Ray(ray2.Position - new Vector3(0f, 0.3f, 0f), ray2.Direction));
+                    num = volume.BoundingBox.Intersects(new Ray(ray.Position - new Vector3(0f, 0.3f, 0f), ray.Direction));
                 }
             }
             if (num.HasValue)
             {
                 bool flag2 = false;
                 bool isBlackHole = volume.ActorSettings != null && volume.ActorSettings.IsBlackHole;
-                NearestTriles nearestTriles = LevelManager.NearestTrile(ray2.Position, /*PlayerManager.Background ? QueryOptions.Background :*/ QueryOptions.None);
+                NearestTriles nearestTriles = LevelManager.NearestTrile(ray.Position, /*PlayerManager.Background ? QueryOptions.Background :*/ QueryOptions.None);
                 if (LevelManager.Name != "PIVOT_TWO" && nearestTriles.Surface != null)
                 {
-                    flag2 |= TestObstruction(vector, nearestTriles.Surface, num.Value, ray2.Position, isBlackHole);
+                    flag2 |= TestObstruction(vector, nearestTriles.Surface, num.Value, ray.Position, isBlackHole);
                 }
                 if (nearestTriles.Deep != null)
                 {
-                    flag2 |= TestObstruction(vector, nearestTriles.Deep, num.Value, ray2.Position, isBlackHole);
+                    flag2 |= TestObstruction(vector, nearestTriles.Deep, num.Value, ray.Position, isBlackHole);
                 }
                 if (!flag2 && ((volume.ActorSettings != null && volume.ActorSettings.IsBlackHole) || volume.Orientations.Contains(CameraManager.VisibleOrientation)))
                 {
@@ -79,17 +78,16 @@ namespace FezGame.ChaosMod
             Ray ray = default(Ray);
             ray.Position = vector3 * (Vector3.One - mask) - vector * level.Size;
             ray.Direction = vector;
-            Ray ray2 = ray;
-            float? num = volume.BoundingBox.Intersects(ray2);
+            float? num = volume.BoundingBox.Intersects(ray);
             if (volume.ActorSettings != null && volume.ActorSettings.IsBlackHole)
             {
                 if (!num.HasValue)
                 {
-                    num = volume.BoundingBox.Intersects(new Ray(ray2.Position + new Vector3(0f, 0.3f, 0f), ray2.Direction));
+                    num = volume.BoundingBox.Intersects(new Ray(ray.Position + new Vector3(0f, 0.3f, 0f), ray.Direction));
                 }
                 if (!num.HasValue)
                 {
-                    num = volume.BoundingBox.Intersects(new Ray(ray2.Position - new Vector3(0f, 0.3f, 0f), ray2.Direction));
+                    num = volume.BoundingBox.Intersects(new Ray(ray.Position - new Vector3(0f, 0.3f, 0f), ray.Direction));
                 }
             }
             if (num.HasValue)
