@@ -284,7 +284,9 @@ namespace FezGame.ChaosMod
         {
             Dictionary<string, Dictionary<string, string>> ctrlvals = ReadIniFile(filepath);
 
+#if !DEBUG
             ChaosModWindow.ClearLog();
+#endif
 
             if (ctrlvals.TryGetValue(MetadataSectionName, out Dictionary<string, string> metavals))
             {
