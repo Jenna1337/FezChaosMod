@@ -32,9 +32,11 @@ namespace FezGame.ChaosMod
             {
                 vector *= -1f;
             }*/
-            Ray ray = default(Ray);
-            ray.Position = vector3 * (Vector3.One - mask) - vector * LevelManager.Size;
-            ray.Direction = vector;
+            Ray ray = new Ray
+            {
+                Position = vector3 * (Vector3.One - mask) - vector * LevelManager.Size,
+                Direction = vector
+            };
             /*if (PlayerManager.Action == ActionType.PullUpBack || PlayerManager.Action == ActionType.PullUpFront || PlayerManager.Action == ActionType.PullUpCornerLedge)
             {
                 ray2.Position += new Vector3(0f, 0.5f, 0f);
@@ -75,9 +77,11 @@ namespace FezGame.ChaosMod
         {
             Vector3 mask = viewpoint.VisibleAxis().GetMask();
             Vector3 vector = viewpoint.ForwardVector();
-            Ray ray = default(Ray);
-            ray.Position = vector3 * (Vector3.One - mask) - vector * level.Size;
-            ray.Direction = vector;
+            Ray ray = new Ray
+            {
+                Position = vector3 * (Vector3.One - mask) - vector * level.Size,
+                Direction = vector
+            };
             float? num = volume.BoundingBox.Intersects(ray);
             if (volume.ActorSettings != null && volume.ActorSettings.IsBlackHole)
             {
