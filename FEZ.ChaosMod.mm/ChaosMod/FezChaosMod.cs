@@ -235,7 +235,7 @@ namespace FezGame.ChaosMod
             ActionType.FreeFalling,//fell too far
             ActionType.Dying,//splatting into the ground
             ActionType.Sinking,//fell into deadly liquid, such as acid/lava
-            ActionType.HurtSwim,
+            ActionType.HurtSwim,//unused
             ActionType.CrushHorizontal,//squashed horizontal
             ActionType.CrushVertical,//squashed vertical
             ActionType.SuckedIn,//black hole
@@ -609,6 +609,7 @@ namespace FezGame.ChaosMod
                     ChaosModWindow.LogLineDebug($"Hubs: {{{String.Join(", ", HubLevelNames)}}}");
 
                     ChaosModWindow.LogLineDebug("{\"ScriptEntityTypeDescriptors\": " + ScriptDescriptor.ListAllScriptEntityTypeDescriptors() + "}");
+                    ChaosModWindow.LogLineDebug("{\"ActionAnimations\": {" + String.Join(", ", Common.Util.GetValues<ActionType>().Where(a => a != 0).Select(a => $"\"{a}\": \"{a.GetAnimationPath()}\""))+ "}}");
                 });
             }
         }
@@ -896,7 +897,6 @@ false
                         index--;
                 }
             }
-
             string debugText = $"FezChaosMod Version: {FezChaosMod.Version}\n" +
                    $"Updates/second: {_ups}\n" +
                    $"Frames/second: {_fps}\n" +
@@ -906,6 +906,7 @@ false
                    $"Water Height: {LevelManager.WaterHeight}\n" +
                    $"Time in Level: {TimeInLevelTimer.Elapsed.TotalSeconds}\n" +
                    $"Gomez Action: {PlayerManager.Action}\n" +
+                   $"Gomez Texture: {(PlayerManager.Action != ActionType.None ? PlayerManager.Action.GetAnimationPath() : null)}\n" +
                    $"Gomez Position: {PlayerManager.Position.ToString().Replace("{", "").Replace("}", "")}\n" +
                    $"Camera Orientation: {CameraManager.VisibleOrientation}\n" +
                    $"Camera Rotation: {CameraManager.Rotation.ToString().Replace("{", "").Replace("}", "")}\n" +
