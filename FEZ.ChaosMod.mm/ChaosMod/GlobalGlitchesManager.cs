@@ -14,10 +14,7 @@ namespace FezGame.ChaosMod
 {
     internal class GlobalGlitchesManager : DrawableGameComponent
     {
-        [ServiceDependency]
-        public IContentManagerProvider CMProvider { private get; set; }
-
-        private readonly object glitches;
+        private readonly DrawableGameComponent glitches;
         private static Type NesGlitchesType;
         private readonly PropertyInfo ActiveGlitchesInfo;
         private readonly PropertyInfo FreezeProbabilityInfo;
@@ -25,10 +22,14 @@ namespace FezGame.ChaosMod
 
         public GlobalGlitchesManager(Game game) : base(game)
         {
-            ServiceHelper.InjectServices(this);
+            System.Diagnostics.Debugger.Break();
+            IContentManagerProvider CMProvider = ServiceHelper.Get<IContentManagerProvider>();
 
             NesGlitchesType = typeof(FezGame.Fez).Assembly.GetType("FezGame.Components.NesGlitches");
-            glitches = NesGlitchesType.GetConstructor(new[] { typeof(Game) }).Invoke(new[] { game });
+            glitches = (DrawableGameComponent)NesGlitchesType.GetConstructor(new[] { typeof(Game) }).Invoke(new[] { game });
+            ServiceHelper.AddComponent(glitches);
+
+            this.DrawOrder = glitches.DrawOrder-1;
 
             (NesGlitchesType.GetField("GlitchMesh", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(glitches) as Mesh)
                 .Texture = CMProvider.Global.Load<Texture2D>("Other Textures/glitches/glitch_atlas");
@@ -42,6 +43,11 @@ namespace FezGame.ChaosMod
             ActiveGlitchesInfo = NesGlitchesType.GetProperty("ActiveGlitches");
             FreezeProbabilityInfo = NesGlitchesType.GetProperty("FreezeProbability");
             DisappearProbabilityInfo = NesGlitchesType.GetProperty("DisappearProbability");
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
         }
 
         public int ActiveGlitches
@@ -63,8 +69,16 @@ namespace FezGame.ChaosMod
 
         protected override void Dispose(bool disposing)
         {
-            base.Dispose();
-            NesGlitchesType.GetMethod("Dispose", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(glitches, new object[] { true });
+            base.Dispose(disposing);
+            ServiceHelper.RemoveComponent(glitches);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
         }
     }
 }
