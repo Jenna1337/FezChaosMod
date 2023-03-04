@@ -155,7 +155,7 @@ namespace FezGame.ChaosMod
         private static string[] BGMusicNames;
 
         //NesGlitches
-        private NesGlitchesWrapper Glitches;
+        private GlobalGlitchesManager Glitches;
 
         /// <summary>
         /// The delay that occurs between the activation of effects, in seconds.
@@ -263,7 +263,7 @@ namespace FezGame.ChaosMod
             {
                 Glitches.ActiveGlitches = 0;
                 Glitches.FreezeProbability = 0f;
-                Glitches.Dispose();
+                ServiceHelper.RemoveComponent(Glitches);
                 Glitches = null;
             }
             base.Dispose();
@@ -273,20 +273,7 @@ namespace FezGame.ChaosMod
         {
             if (Glitches == null)
             {
-                Type NesGlitchesType = typeof(FezGame.Fez).Assembly.GetType("FezGame.Components.NesGlitches");
-                var glitches = NesGlitchesType.GetConstructor(new[] { typeof(Game) }).Invoke(new[] { Game });
-                ServiceHelper.AddComponent((DrawableGameComponent)glitches);
-                Glitches = new NesGlitchesWrapper(glitches, NesGlitchesType);
-
-                (NesGlitchesType.GetField("GlitchMesh", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(glitches) as Mesh)
-                    .Texture = CMProvider.Global.Load<Texture2D>("Other Textures/glitches/glitch_atlas");
-                NesGlitchesType.GetField("sGlitches", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(glitches,
-                    (from x in CMProvider.GetAllIn("Sounds/Intro\\Elders\\Glitches")
-                     select CMProvider.Global.Load<SoundEffect>(x)).ToArray());
-                NesGlitchesType.GetField("sTimestretches", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(glitches,
-                    (from x in CMProvider.GetAllIn("Sounds/Intro\\Elders\\Timestretches")
-                     select CMProvider.Global.Load<SoundEffect>(x)).ToArray());
-
+                ServiceHelper.AddComponent(Glitches = new GlobalGlitchesManager(Game));
             }
         }
         private void ResetGlitches()
