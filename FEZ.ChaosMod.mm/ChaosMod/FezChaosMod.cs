@@ -898,7 +898,8 @@ false
                     drawingTools.DrawShadowedText(unlisted, EffectTextColorActive, pos, scale * .75f);
                 }
 
-                index = MaxActiveEffectsToDisplay - 1;
+                //draw the active effect text
+                index = Math.Min(MaxActiveEffectsToDisplay, activeChaosEffects.Count) - 1;
                 for (int i = 0; i < activeChaosEffects.Count; ++i)
                 {
                     var activeEffect = activeChaosEffects[i];
