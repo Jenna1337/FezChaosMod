@@ -1,6 +1,7 @@
 ﻿using FezEngine.Services;
 using FezEngine.Structure;
 using FezEngine.Tools;
+using FezGame.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,16 +21,20 @@ namespace FezGame.ChaosMod
         private readonly PropertyInfo FreezeProbabilityInfo;
         private readonly PropertyInfo DisappearProbabilityInfo;
 
+        [ServiceDependency]
+        public IContentManagerProvider CMProvider { private get; set; }
+
+        [ServiceDependency]
+        public IGameStateManager GameState { private get; set; }
+
         public GlobalGlitchesManager(Game game) : base(game)
         {
-            System.Diagnostics.Debugger.Break();
-            IContentManagerProvider CMProvider = ServiceHelper.Get<IContentManagerProvider>();
-
             NesGlitchesType = typeof(FezGame.Fez).Assembly.GetType("FezGame.Components.NesGlitches");
             glitches = (DrawableGameComponent)NesGlitchesType.GetConstructor(new[] { typeof(Game) }).Invoke(new[] { game });
             ServiceHelper.AddComponent(glitches);
+            ServiceHelper.InjectServices(this);
 
-            this.DrawOrder = glitches.DrawOrder-1;
+            this.DrawOrder = glitches.DrawOrder+1;
 
             (NesGlitchesType.GetField("GlitchMesh", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(glitches) as Mesh)
                 .Texture = CMProvider.Global.Load<Texture2D>("Other Textures/glitches/glitch_atlas");
@@ -77,8 +82,33 @@ namespace FezGame.ChaosMod
         {
         }
 
+        private Texture2D freezeFrame;
+        private int freezeForFrames = 0;
+
         public override void Draw(GameTime gameTime)
         {
+            if (GameState.Paused || GameState.Loading)
+            {
+                return;
+            }/*
+            if (freezeForFrames > 0)
+            {
+                --freezeForFrames;
+                DrawingTools.Instance.DrawTexture(freezeFrame, new Rectangle(0, 0, GraphicsDevice.DisplayMode.Width, GraphicsDevice.DisplayMode.Height), SamplerState.PointClamp, null, Color.White);
+            }
+            else
+            {
+                if (RandomHelper.Probability(FreezeProbability))
+                {
+                    int w = GraphicsDevice.DisplayMode.Width;
+                    int h = GraphicsDevice.DisplayMode.Height;
+                    int[] backBuffer = new int[w * h];
+                    GraphicsDevice.GetBackBufferData(backBuffer);
+                    freezeFrame = new Texture2D(GraphicsDevice, w, h, false, GraphicsDevice.PresentationParameters.BackBufferFormat);
+                    freezeFrame.SetData(backBuffer);
+                    freezeForFrames = RandomHelper.Random.Next(1, 30);
+                }
+            }*/
         }
     }
 }
