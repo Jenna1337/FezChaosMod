@@ -36,6 +36,7 @@ namespace FezGame.ChaosMod
 
             this.DrawOrder = glitches.DrawOrder+1;
 
+            //Note: If these are not loaded on the Global CMProvider, the game gets very cursed 
             (NesGlitchesType.GetField("GlitchMesh", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(glitches) as Mesh)
                 .Texture = CMProvider.Global.Load<Texture2D>("Other Textures/glitches/glitch_atlas");
             NesGlitchesType.GetField("sGlitches", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(glitches,

@@ -337,6 +337,9 @@ namespace FezGame.ChaosMod
         }
         #endregion
 
+        /// <summary>
+        /// The <see cref="LevelInfo"/> for the currently loaded level.
+        /// </summary>
         private LevelInfo CurrentLevelInfo { get => LevelInfo.GetLevelInfo(LevelManager.Name); }
 
         public static Color EffectTextColorBlink = Color.Yellow;
@@ -613,15 +616,34 @@ namespace FezGame.ChaosMod
                 });
             }
         }
+        /// <summary>
+        /// An instance of an effect whose effect is active or the effect text is visible on the screen.
+        /// </summary>
         public class ActiveChaosEffect // Needs to be a  class because if it's a struct then HasDoneOnDone will never be set to true
         {
+            /// <summary>
+            /// The <see cref="ChaosEffect"/> for this <see cref="ActiveChaosEffect"/>.
+            /// </summary>
             private ChaosEffect Effect { get; }
+            /// <summary>
+            /// The timer that tracks how long the effect has been running. Will be set to <c>null</c> when the effect is done.
+            /// </summary>
             private Stopwatch ActiveTimer { get; set; }
             private Stopwatch BlinkerTimer { get; set; }
             public bool IsDone => ActiveTimer == null || ActiveTimer.Elapsed.TotalSeconds >= Effect.Duration;
             private bool HasDoneOnDone;
+            /// <summary>
+            /// A value from 0 to 1 representing the percentage completion of the effect.
+            /// </summary>
             public double Progress => ActiveTimer != null ? ActiveTimer.Elapsed.TotalSeconds / Effect.Duration : 1;
+            /// <summary>
+            /// Determines whether the effect text should be drawn on screen.
+            /// </summary>
             public bool Hidden;
+            /// <summary>
+            /// Constructs a new <see cref="ActiveChaosEffect"/> from the provided <see cref="ChaosEffect"/>.
+            /// </summary>
+            /// <param name="effect">The <see cref="ChaosEffect"/></param>
             public ActiveChaosEffect(ChaosEffect effect)
             {
                 Effect = effect;
@@ -630,6 +652,10 @@ namespace FezGame.ChaosMod
                 BlinkerTimer = Stopwatch.StartNew();
                 Hidden = false;
             }
+            /// <summary>
+            /// If this ActiveChaosEffect is not <see cref="Hidden">Hidden</see>, draws the effect text to the screen at the specified index, otherwise does nothing. 
+            /// </summary>
+            /// <param name="index">The index to draw the effect text.</param>
             public void Draw(int index)
             {
                 if (!Hidden)
@@ -642,6 +668,11 @@ namespace FezGame.ChaosMod
                     ChaosModEffectTextDrawer.Draw(Effect.Name, Progress, index, Text, color, ActiveTimer!=null && !ActiveTimer.IsRunning);
                 }
             }
+            /// <summary>
+            /// If this <see cref="ActiveChaosEffect"/>'s <see cref="OnDone">OnDone</see> method has not been called, call the underlaying <see cref="ChaosEffect"/>'s <see cref="ChaosEffect.Func">Func</see>"/> method.
+            /// <br/><br/>
+            /// <inheritdoc cref="ChaosEffect.Func"/>
+            /// </summary>
             public void Func()
             {
                 if (!HasDoneOnDone)
@@ -653,8 +684,18 @@ namespace FezGame.ChaosMod
                     Effect.Func();
                 }
             }
+            /// <summary>
+            /// The Category of the underlaying Effect.<br/><br/>
+            /// <inheritdoc cref="ChaosEffect.Category"/>
+            /// </summary>
             public string Category => Effect.Category;
+            /// <summary>
+            /// <inheritdoc cref="ChaosEffect.ShouldPauseTimer"/>
+            /// </summary>
             public bool ShouldPauseTimer => Effect.ShouldPauseTimer;
+            /// <summary>
+            /// If this is the first time calling this function for this ActiveChaosEffect instance, calls the <see cref="ChaosEffect"/>'s <see cref="ChaosEffect.OnDone">OnDone</see>
+            /// </summary>
             public void OnDone()
             {
                 if (!HasDoneOnDone)
@@ -666,7 +707,13 @@ namespace FezGame.ChaosMod
                 }
             }
 
+            /// <summary>
+            /// Pauses the <see cref="ActiveTimer">ActiveTimer</see> if it exists.
+            /// </summary>
             public void Pause() { ActiveTimer?.Stop(); }
+            /// <summary>
+            /// Unpauses the <see cref="ActiveTimer">ActiveTimer</see> if it exists.
+            /// </summary>
             public void Resume() { ActiveTimer?.Start(); }
         }
         private DotHost.BehaviourType LastDotBehave;
