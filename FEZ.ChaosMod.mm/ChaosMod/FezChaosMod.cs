@@ -179,6 +179,7 @@ namespace FezGame.ChaosMod
         /// </summary>
         public readonly List<ChaosEffect> ChaosEffectsList = new List<ChaosEffect>();
         private static bool DidInit = false;
+        private string LoadingText = "";
         private static readonly Stopwatch SongStarterDelayTimer = new Stopwatch();
         private static readonly Stopwatch SkyChangerDelayTimer = new Stopwatch();
         private static readonly Stopwatch TimeInLevelTimer = new Stopwatch();
@@ -379,6 +380,7 @@ namespace FezGame.ChaosMod
             Instance = this;
             this.DrawOrder = int.MaxValue;
 
+            LoadingText = "Loading Content...";
             _ = Waiters.Wait(() => MemoryContentManager.AssetExists("Skies/DEFAULT"), () => { Waiters.Wait(1, Initialize0); });//wait until the assets are loaded
         }
         private void Initialize0()
@@ -387,7 +389,10 @@ namespace FezGame.ChaosMod
             //Game.TargetElapsedTime = TimeSpan.FromTicks(1);
             if (!DidInit)
             {
+                LoadingText = "Loading effects";
                 //DidInit = true;
+
+                Stopwatch initBenchmarkTimer = Stopwatch.StartNew();
 
                 ChaosModNextEffectCountDownProgressBar = new LinearProgressBar();
                 ChaosModEffectTextDrawer = new ChaosModEffectText();
@@ -597,14 +602,17 @@ namespace FezGame.ChaosMod
 
                 #endregion
 
+                LoadingText = "Initializing Chaos Mod settings window...";
                 Thread thread = new Thread(() => (this.ChaosModWindow = new ChaosModWindow(this)).ShowDialog());
                 thread.SetApartmentState(ApartmentState.STA);
                 thread.Start();
 
+                initBenchmarkTimer.Stop();
                 DidInit = true;
                 Timer.Start();
                 _ = Waiters.Wait(() => ChaosModWindow != null && ChaosModWindow.Created && !ChaosModWindow.IsDisposed && ChaosModWindow.Visible, () =>
                 {
+                    LoadingText = null;
                     ChaosModWindow.LogLineDebug(WorldInfo.GetAllLevelDataAsString());
 
                     ChaosModWindow.LogLineDebug($"Skies: {{{String.Join(", ", SkiesNames)}}}");
@@ -613,6 +621,8 @@ namespace FezGame.ChaosMod
 
                     ChaosModWindow.LogLineDebug("{\"ScriptEntityTypeDescriptors\": " + ScriptDescriptor.ListAllScriptEntityTypeDescriptors() + "}");
                     ChaosModWindow.LogLineDebug("{\"ActionAnimations\": {" + String.Join(", ", Common.Util.GetValues<ActionType>().Where(a => a != 0).Select(a => $"\"{a}\": \"{a.GetAnimationPath()}\""))+ "}}");
+
+                    ChaosModWindow.LogLineDebug($"Initialization duration: {initBenchmarkTimer.Elapsed.TotalSeconds}s ({initBenchmarkTimer.Elapsed.TotalMilliseconds}ms)");
                 });
             }
         }
@@ -783,6 +793,11 @@ false
 
         public override void Draw(GameTime gameTime)
         {
+            if(this.disposing)
+            {
+                return;
+            }
+
             float scale = (float)Math.Floor(Game.GraphicsDevice.GetViewScale());
             Viewport viewport = Game.GraphicsDevice.Viewport;
             bool ChaosTimerPaused = this.ChaosTimerPaused;
@@ -859,21 +874,13 @@ false
                     }
                 }
             }
-
             if (!DidInit)
             {
-                var vp = ServiceHelper.Get<IGraphicsDeviceService>().GraphicsDevice.Viewport;
-                drawingTools.DrawShadowedText("Initializing Chaos Mod...", InitializingChaosModSettingsWindowWaitingTextColor, new Vector2(vp.Width * .01f, vp.Height * .9f), scale);
+                LoadingText = "Initializing Chaos Mod...";
             }
 
             if (Enabled && DidInit)
             {
-                if (ChaosModWindow != null && ChaosModWindow.Initializing)
-                {
-                    var vp = ServiceHelper.Get<IGraphicsDeviceService>().GraphicsDevice.Viewport;
-                    drawingTools.DrawShadowedText("Initializing Chaos Mod settings window...", InitializingChaosModSettingsWindowWaitingTextColor, new Vector2(vp.Width * .01f, vp.Height * .9f), scale);
-                }
-
                 //draw the big countdown timer bar thing
                 double timeLeft = DelayBetweenEffects - elapsedtime;
                 if (timeLeft < 0)
@@ -944,6 +951,13 @@ false
                         index--;
                 }
             }
+
+            if (LoadingText != null)
+            {
+                var vp = ServiceHelper.Get<IGraphicsDeviceService>().GraphicsDevice.Viewport;
+                drawingTools.DrawShadowedText(LoadingText, InitializingChaosModSettingsWindowWaitingTextColor, new Vector2(vp.Width * .01f, vp.Height * .9f), scale);
+            }
+
             string debugText = $"FezChaosMod Version: {FezChaosMod.Version}\n" +
                    $"Updates/second: {_ups}\n" +
                    $"Frames/second: {_fps}\n" +
