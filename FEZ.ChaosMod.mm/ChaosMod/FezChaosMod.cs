@@ -25,17 +25,33 @@ namespace FezGame.ChaosMod
     /// </summary>
     public class FezChaosMod : DrawableGameComponent
     {
+        /// <summary>
+        /// A string representing the current version of this class.
+        /// </summary>
         public static readonly string Version = "0.9.4"
 #if DEBUG
         + " (debug)"
 #endif
         ;//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
 
+        /// <summary>
+        /// Determines if this <see cref="FezChaosMod"/> is enabled. 
+        /// </summary>
         public static new bool Enabled = true;
-        public static FezChaosMod Instance;
+        /// <summary>
+        /// The current singleton instance of <see cref="FezChaosMod"/>. 
+        /// </summary>
+        public static FezChaosMod Instance { get; private set; }
+        /// <summary>
+        /// The maximum number of effects that should be displayed on the screen at any point in time. <br/>
+        /// <br/>
+        /// Should be greater than or equal to <see cref="LatestEffectsToDisplay"/>
+        /// </summary>
         public int MaxActiveEffectsToDisplay = 5;
         /// <summary>
-        /// The number of effects that always display the latest effects even if the effects are done
+        /// The number of effects that always display the latest effects even if the effects are done. <br/>
+        /// <br/>
+        /// Should be less than or equal to <see cref="MaxActiveEffectsToDisplay"/>
         /// </summary>
         public int LatestEffectsToDisplay = 2;
 
@@ -89,6 +105,9 @@ namespace FezGame.ChaosMod
             /// The function to test if the effect can be activated.
             /// </summary>
             private readonly Func<bool> Condition = null;
+            /// <summary>
+            /// The name of this effect.
+            /// </summary>
             public string Name { get; }
             /// <summary>
             /// Function to run every time the game is drawn.
@@ -96,16 +115,29 @@ namespace FezGame.ChaosMod
             public Action Func { get; }
             private double _ratio;
             /// <summary>
-            /// The number used for the weighted random.
+            /// The number used for the weighted random. If not <see cref="Enabled">enabled</see>, returns 0.
             /// </summary>
             public double Ratio { get => Enabled ? _ratio : 0; set => _ratio = value; }
             /// <summary>
-            /// Should be true iff the effect is enabled, there isn't another active effect with the same category, and the effect can be activated.
+            /// Should be true iff the effect is enabled, there isn't another active effect with the same <see cref="Category">category</see>, and the effect can be activated.
             /// </summary>
+            /// <remarks>Related:<br/>
+            /// <seealso cref="Enabled"/><br/>
+            /// <seealso cref="Condition"/></remarks>
             public bool CanUse => Enabled && (Category == null || FezChaosMod.Instance.activeChaosEffects.FindIndex(a => !a.IsDone && Category.Equals(a.Category)) < 0) && (Condition == null || Condition());
+            /// <summary>
+            /// Flag to determine if the effect should 
+            /// </summary>
             public bool Enabled = true;
             private double _duration;
+            /// <summary>
+            /// The duration for which this effect should last, in seconds, multiplied by the <see cref="EffectsDurationMultiplier"/>. <br/>
+            /// Note: <see cref="EffectsDurationMultiplier"/> is not used when setting this value.
+            /// </summary>
             public double Duration { get => _duration <= 0 ? 0 : _duration * FezChaosMod.Instance.EffectsDurationMultiplier; set => _duration = value; }
+            /// <summary>
+            /// The action that gets called when the effect is done. 
+            /// </summary>
             public Action OnDone { get; }
             /// <summary>
             /// The category of the effect. 
@@ -114,8 +146,22 @@ namespace FezGame.ChaosMod
             /// </summary>
             public string Category { get; }
             private readonly Func<bool> _pauseTimerTest;
+            /// <summary>
+            /// Determines if the timer for this effect should be paused. 
+            /// </summary>
             public bool ShouldPauseTimer => _pauseTimerTest != null && _pauseTimerTest();
 
+            /// <summary>
+            /// Initializes a new <see cref="ChaosEffect"/> with the given parameters.
+            /// </summary>
+            /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
+            /// <param name="func"><inheritdoc cref="Func" path="/summary"/></param>
+            /// <param name="ratio"><inheritdoc cref="Ratio" path="/summary"/></param>
+            /// <param name="test"><inheritdoc cref="Condition" path="/summary"/></param>
+            /// <param name="duration"><inheritdoc cref="Duration" path="/summary"/></param>
+            /// <param name="onDone"><inheritdoc cref="OnDone" path="/summary"/></param>
+            /// <param name="category"><inheritdoc cref="Category" path="/summary"/></param>
+            /// <param name="pauseTimerTest"><inheritdoc cref="ShouldPauseTimer" path="/summary"/></param>
             public ChaosEffect(string name, Action func, double ratio, Func<bool> test = null, double duration = 0d, Action onDone = null, string category = null, Func<bool> pauseTimerTest = null)
             {
                 Name = name;
@@ -659,8 +705,17 @@ namespace FezGame.ChaosMod
             /// The timer that tracks how long the effect has been running. Will be set to <c>null</c> when the effect is done.
             /// </summary>
             private Stopwatch ActiveTimer { get; set; }
+            /// <summary>
+            /// The timer used to make the text blink when the effect is first displayed. 
+            /// </summary>
             private Stopwatch BlinkerTimer { get; set; }
+            /// <summary>
+            /// Returns <c>true</c> if the effect has been active for longer than its duration. 
+            /// </summary>
             public bool IsDone => ActiveTimer == null || ActiveTimer.Elapsed.TotalSeconds >= Effect.Duration;
+            /// <summary>
+            /// Tracks whether or not <see cref="OnDone"/> for this <see cref="ActiveChaosEffect"/> has been called.
+            /// </summary>
             private bool HasDoneOnDone;
             /// <summary>
             /// A value from 0 to 1 representing the percentage completion of the effect.
@@ -691,15 +746,16 @@ namespace FezGame.ChaosMod
                 if (!Hidden)
                 {
                     double blinkTime = BlinkerTimer.Elapsed.TotalSeconds;
+                    //Blink the text for .5 seconds every .5 seconds for the first 3 seconds
                     bool ShouldBlink = blinkTime < 3 && blinkTime % 1 < .5;
                     double timeLeft = Effect.Duration - (ActiveTimer != null ? ActiveTimer.Elapsed.TotalSeconds : 0);
-                    string Text = timeLeft < 60 ? Math.Ceiling(timeLeft).ToString() : null;
+                    string Text = timeLeft < 60 ? Math.Ceiling(timeLeft).ToString() : null;//Only show the time if it has less than 60 seconds remaining
                     Color color = Hidden ? Color.Transparent : (ShouldBlink ? EffectTextColorBlink : (Progress >= 1 ? EffectTextColorDone : EffectTextColorActive));
                     ChaosModEffectTextDrawer.Draw(Effect.Name, Progress, index, Text, color, ActiveTimer!=null && !ActiveTimer.IsRunning);
                 }
             }
             /// <summary>
-            /// If this <see cref="ActiveChaosEffect"/>'s <see cref="OnDone">OnDone</see> method has not been called, call the underlaying <see cref="ChaosEffect"/>'s <see cref="ChaosEffect.Func">Func</see>"/> method.
+            /// If this <see cref="ActiveChaosEffect"/>'s <see cref="OnDone">OnDone</see> method has not been called, call the underlaying <see cref="ChaosEffect.Func"/> method.
             /// <br/><br/>
             /// <inheritdoc cref="ChaosEffect.Func"/>
             /// </summary>
@@ -1004,7 +1060,8 @@ false
         private string GetCurrentButtonInputsAsString()
         {
             string s = "";
-            s += InputManager.Up != 0 ? "u " : "  ";
+            //Note: ExactUp is used for doors and whatnot
+            s += InputManager.Up != 0 || InputManager.ExactUp != 0 ? "u " : "  ";
             s += InputManager.Down != 0 ? "d " : "  ";
             s += InputManager.Left != 0 ? "l " : "  ";
             s += InputManager.Right != 0 ? "r " : "  ";
@@ -1024,8 +1081,6 @@ false
             s += InputManager.Start != 0 ? "s " : "  ";
             s += InputManager.ClampLook != 0 ? "rs " : "   ";
             s += InputManager.FpsToggle != 0 ? "ls " : "   ";
-
-            //s += InputManager.ExactUp       != 0 ? "u "  : "  ";
 
             return s;
         }
