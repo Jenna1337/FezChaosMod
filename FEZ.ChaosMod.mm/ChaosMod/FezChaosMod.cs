@@ -132,14 +132,28 @@ namespace FezGame.ChaosMod
                 return Name;
             }
         }
+        /// <summary>
+        /// A subscribable event for when a new <see cref="ChaosEffect"/> is added to this instance of <see cref="FezChaosMod"/>
+        /// </summary>
+        public event Action<ChaosEffect> ChaosEffectAdded;
         private class ChaosEffectsListClass : List<ChaosEffect>
         {
+            private readonly FezChaosMod myChaosMod;
+            internal ChaosEffectsListClass(FezChaosMod chaosMod)
+            {
+                myChaosMod = chaosMod;
+            }
+
+            /// <summary>
+            /// Add the supplied effect if there is n
+            /// </summary>
+            /// <param name="effect"></param>
             public new void Add(ChaosEffect effect)
             {
                 if (!this.Exists(a => a.Name.Equals(effect.Name)))
                 {
                     base.Add(effect);
-                    //TODO add effects that were added after ChaosModWindow was made to ChaosModWindow's ChaosModEffectListComponent; probably should suspend the layout or whatever
+                    myChaosMod.ChaosEffectAdded(effect);
                 }
                 else
                 {
@@ -182,7 +196,7 @@ namespace FezGame.ChaosMod
         /// <summary>
         /// The list of all the chaos mod effects.
         /// </summary>
-        public readonly List<ChaosEffect> ChaosEffectsList = new ChaosEffectsListClass();
+        public readonly List<ChaosEffect> ChaosEffectsList;
         private static bool DidInit = false;
         private string LoadingText = "";
         private static readonly Stopwatch SongStarterDelayTimer = new Stopwatch();
@@ -249,12 +263,13 @@ namespace FezGame.ChaosMod
         };
         private bool LastHurtValue = false;
         private bool IsHurting => HurtingActions.Contains(PlayerManager.Action);
-        private Action OnHurt = () => { };
+        public event Action OnHurt;
         public ulong HurtCount = 0;
 
         public FezChaosMod(Game game)
             : base(game)
         {
+            ChaosEffectsList = new ChaosEffectsListClass(this);
         }
 
         private bool disposing = false;

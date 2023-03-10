@@ -76,7 +76,7 @@
     <Compile Include="ChaosMod\GuiWindow\ChaosModAboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChaosMod\GuiWindow\ChaosModEffectListComponent.cs">
+    <Compile Include="ChaosMod\GuiWindow\ChaosModEffectListControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ChaosMod\GuiInGame\ChaosModEffectText.cs" />

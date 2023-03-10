@@ -34,6 +34,8 @@ namespace FezGame.ChaosMod
 
             ResizeLabelsSoEverythingLooksNice();
 
+            chaosMod.ChaosEffectAdded += AddEffect;
+
             //TODO make it load faster when switching tabs in ChaosModWindow?
             //TODO add a thing to each group to indicate how many are enabled
             //TODO indicate if/when an effect can start?; maybe change the color of the text or something; could maybe change if the "activate effect" button is enabled
@@ -41,7 +43,7 @@ namespace FezGame.ChaosMod
             //TODO add a thing to enable/disable all the effects in a category; maybe a checkbox to the left of the collapse button? dunno if that'd be too confusing for users
         }
         private static readonly Regex subcatregex = new Regex(@"(?<=\D)\.(?=\D)");
-        internal void AddEffect(ChaosEffect effect)
+        private void AddEffect(ChaosEffect effect)
         {
             //CheckBox, NumericUpDown, NumericUpDown
             CheckBox enabledCheckBox = new CheckBox
