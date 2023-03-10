@@ -49,7 +49,7 @@ namespace FezGame.GameInfo
 
         public static string GetAllLevelDataAsString()
         {
-            return $"{typeof(WorldInfo).GetFormattedName()}(LevelInfos: {levelInfos.GetType().GetFormattedName()}(Count = {levelInfos.Count}, Values = {{{String.Join(", ", levelInfos)}}}))";
+            return $"{{\"Type\": \"{typeof(WorldInfo).GetFormattedName()}\", \"LevelInfos\": {{\"Type\": \"{levelInfos.GetType().GetFormattedName()}\", \"Count\": {levelInfos.Count}, \"Values\": [{String.Join(", ", levelInfos)}]}}}}";
         }
 
         //Note: this method is only ever meant to be called once.

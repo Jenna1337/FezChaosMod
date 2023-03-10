@@ -47,20 +47,20 @@ namespace FezGame.GameInfo
 
             public override string ToString()
             {
-                var str = $"{this.GetType().GetFormattedName()}(LevelName: \"{LevelName}\", VolumeId: {VolumeId}";
+                var str = $"{{\"Type\": \"{this.GetType().GetFormattedName()}\", \"LevelName\": \"{LevelName}\", \"VolumeId\": {(VolumeId.HasValue ? VolumeId.Value.ToString() : "null")}";
                 if(IsShortcut)
-                    str += $", IsShortcut: {IsShortcut}";
+                    str += $", \"IsShortcut\": {(IsShortcut ? "true" : "false")}";
                 if (IsPipe)
-                    str += $", IsPipe: {IsPipe}";
+                    str += $", \"IsPipe\": {(IsPipe ? "true" : "false")}";
                 if (IsWarpGate)
-                    str += $", IsWarpGate: {IsWarpGate}";
+                    str += $", \"IsWarpGate\": {(IsWarpGate ? "true" : "false")}";
                 if (NeedsAllOwls)
-                    str += $", NeedsAllOwls: {NeedsAllOwls}";
+                    str += $", \"NeedsAllOwls\": {(NeedsAllOwls ? "true" : "false")}";
                 if (NeedsKey)
-                    str += $", NeedsKey: {NeedsKey}";
+                    str += $", \"NeedsKey\": {(NeedsKey ? "true" : "false")}";
                 if (RequiredCubes>0)
-                    str += $", RequiredCubes: {RequiredCubes}";
-                str += $", FromOrientation: {FromOrientation}, Exit: {Exit})";
+                    str += $", \"RequiredCubes\": {RequiredCubes}";
+                str += $", \"FromOrientation\": \"{FromOrientation}\", \"Exit\": {Exit}}}";
 
                 return str;
             }
@@ -93,10 +93,10 @@ namespace FezGame.GameInfo
             }
             public override string ToString()
             {
-                var str = $"{this.GetType().GetFormattedName()}(TargetLevelName: \"{TargetLevelName}\"";
+                var str = $"{{\"Type\": \"{this.GetType().GetFormattedName()}\", \"TargetLevelName\": \"{TargetLevelName}\"";
                 if(TargetVolumeId.HasValue)
-                    str += $", TargetVolumeId: {TargetVolumeId}";
-                str += $")";
+                    str += $", \"TargetVolumeId\": {TargetVolumeId}";
+                str += $"}}";
                 return str;
             }
             public override bool Equals(object obj)
@@ -556,50 +556,50 @@ namespace FezGame.GameInfo
 
         public override string ToString()
         {
-            string str = $"{this.GetType().GetFormattedName()}(Name: \"{Name}\"";
-            str += $", Size: {Size}";
-            str += $", LevelTypes: {{{String.Join(", ", LevelNames.GetLevelTypes(Name))}}}";
-            str += $", Quantum: {(Quantum ? "true" : "false")}";
-            str += $", Rainy: {(Rainy ? "true" : "false")}";
-            str += $", Flat: {(Flat ? "true" : "false")}";
-            str += $", HasSinkBlocks: {(HasSinkBlocks ? "true" : "false")}";
-            str += $", TrileCountByActorType: {{{String.Join(", ", TrileCountByActorType)}}}";
+            string str = $"{{\"Type\": \"{this.GetType().GetFormattedName()}\", \"Name\": \"{Name}\"";
+            str += $", \"Size\": {Size.ToJsonString()}";
+            str += $", \"LevelTypes\": [{String.Join(", ", LevelNames.GetLevelTypes(Name).Select(a=>$"\"{a}\""))}]";
+            str += $", \"Quantum\": {(Quantum ? "true" : "false")}";
+            str += $", \"Rainy\": {(Rainy ? "true" : "false")}";
+            str += $", \"Flat\": {(Flat ? "true" : "false")}";
+            str += $", \"HasSinkBlocks\": {(HasSinkBlocks ? "true" : "false")}";
+            str += $", \"TrileCountByActorType\": {TrileCountByActorType.ToJsonString()}";
             if (Entrances.Count > 0)
-                str += $", Entrances: {Entrances.GetType().GetFormattedName()}(Count = {Entrances.Count}, Values = {{{String.Join(", ", Entrances)}}})";
+                str += $", \"Entrances\": {{\"Type\": \"{Entrances.GetType().GetFormattedName()}\", \"Count\": {Entrances.Count}, \"Values\": [{String.Join(", ", Entrances)}]}}";
             if (LowestLiquidHeight.HasValue)
-                str += $", LowestLiquidHeight: {LowestLiquidHeight}";
+                str += $", \"LowestLiquidHeight\": {LowestLiquidHeight}";
             //if (HasLoot())
             {
                 if (Keys.Count > 0)
-                    str += $", Keys: {Keys}";
+                    str += $", \"Keys\": {Keys}";
                 if (GoldCubes.Count > 0)
-                    str += $", GoldCubes: {GoldCubes}";
+                    str += $", \"GoldCubes\": {GoldCubes}";
                 if (AntiCubes.Count > 0)
-                    str += $", AntiCubes: {AntiCubes}";
+                    str += $", \"AntiCubes\": {AntiCubes}";
                 if (CubeBits.Count > 0)
-                    str += $", CubeBits: {CubeBits}";
+                    str += $", \"CubeBits\": {CubeBits}";
                 if (PieceOfHeart.Count > 0)
-                    str += $", PieceOfHeart: {PieceOfHeart}";
+                    str += $", \"PieceOfHeart\": {PieceOfHeart}";
                 if (Artifacts.Count > 0)
-                    str += $", Artifacts: {Artifacts}";
+                    str += $", \"Artifacts\": {Artifacts}";
                 if (Maps.Count > 0)
-                    str += $", Maps: {Maps}";
+                    str += $", \"Maps\": {Maps}";
                 if (Owls.Count > 0)
-                    str += $", Owls: {Owls}";
+                    str += $", \"Owls\": {Owls}";
             }
             if(PixelsPerTrixel != 0)
-                str += $", PixelsPerTrixel: {PixelsPerTrixel}";
+                str += $", \"PixelsPerTrixel\": {PixelsPerTrixel}";
             if (Sky != null)
-                str += $", Sky: \"{Sky.Name}\"";
+                str += $", \"Sky\": \"{Sky.Name}\"";
             if (TrileSet != null)
-                str += $", TrileSet: \"{TrileSet.Name}\"";
+                str += $", \"TrileSet\": \"{TrileSet.Name}\"";
             if (Song != null)
-                str += $", Song: \"{Song.Name}\"";
+                str += $", \"Song\": \"{Song.Name}\"";
             if (NonPlayerCharacters.Any())
-                str += $", NonPlayerCharacters: {{{String.Join(", ", NonPlayerCharacters.Select(npc => $"\"{npc.Name}\""))}}}";
+                str += $", \"NonPlayerCharacters\": {{{String.Join(", ", NonPlayerCharacters.Select(npc => $"\"{npc.Id}\": {{\"Name\": \"{npc.Name}\", \"Position\": {npc.Position.ToJsonString()}, \"WalkSpeed\": {npc.WalkSpeed}, \"AvoidsGomez\": {(npc.AvoidsGomez ? "true" : "false")}}}"))}}}";
             if (BlackHoles.Any())
-                str += $", BlackHoles: {BlackHoles.GetType().GetFormattedName()}(Count = {BlackHoles.Count}, Values = {{{String.Join(", ", BlackHoles.Select(bh => $"{{From:{bh.From}, To: {bh.To}}}"))}}})";
-            str += ")";
+                str += $", \"BlackHoles\": {{\"Type\": \"{BlackHoles.GetType().GetFormattedName()}\", \"Count\": {BlackHoles.Count}, \"Values\": {{{String.Join(", ", BlackHoles.Select(bh => $"\"{bh.Id}\": {{\"From\": {bh.From.ToJsonString()}, \"To\": {bh.To.ToJsonString()}}}"))}}}}}";
+            str += "}";
             return str;
         }
 

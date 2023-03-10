@@ -40,21 +40,21 @@ namespace FezGame.GameInfo
         }
         public override string ToString()
         {
-            var str = $"{this.GetType().GetFormattedName()}(ActorType: {ActorType}";
-                str += $", Location: {Location}";
-                str += $", SpawnNameType: \"{SpawnNameType}\"";
-                str += $", LevelName: \"{LevelName}\"";
+            var str = $"{{\"Type\": \"{this.GetType().GetFormattedName()}\", \"ActorType\": \"{ActorType}\"";
+                str += $", \"Location\": {Location.ToJsonString()}";
+                str += $", \"SpawnNameType\": \"{SpawnNameType}\"";
+                str += $", \"LevelName\": \"{LevelName}\"";
             if (Container != null)
-                str += $", ContainerActorType: {Container.ArtObject.ActorType}";
+                str += $", \"ContainerActorType\": \"{Container.ArtObject.ActorType}\"";
             if (CodePattern != null && CodePattern.Length > 0)
-                str += $", CodePattern: {{{String.Join(", ", CodePattern)}}}";
+                str += $", \"CodePattern\": [{String.Join(", ", CodePattern.Select(a => $"\"{a}\""))}]";
             if (ContainingTrile != null)
-                str += $", ContainingTrileName: \"{LevelInfo.GetTrile(LevelName, ContainingTrile).Name}\"";
+                str += $", \"ContainingTrileName\": \"{LevelInfo.GetTrile(LevelName, ContainingTrile).Name}\"";
             if (MapName != null)
-                str += $", MapName: \"{MapName}\"";
+                str += $", \"MapName\": \"{MapName}\"";
             if (Conditions != null && Conditions.Count > 0)
-                str += $", Conditions: {{{String.Join(", ", Conditions.Select(c => $"\"{c}\""))}}}";
-            str += ")";
+                str += $", \"Conditions\": [{String.Join(", ", Conditions.Select(c => $"\"{c}\""))}]";
+            str += "}";
             return str;
         }
     }
@@ -116,7 +116,7 @@ namespace FezGame.GameInfo
         }
         public override string ToString()
         {
-            return $"{this.GetType().GetFormattedName()}(Count = {Count}, Values = {{{String.Join(", ", this)}}})";
+            return $"{{\"Type\": \"{this.GetType().GetFormattedName()}\", \"Count\": {Count}, \"Values\": [{String.Join(", ", this)}]}}";
         }
     }
 }

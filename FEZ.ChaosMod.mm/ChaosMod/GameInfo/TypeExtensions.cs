@@ -24,5 +24,13 @@ namespace FezGame.GameInfo
             }
             return type.Name;
         }
+        public static bool IsNumericPrimative(this Type t)
+        {
+            return t.IsAssignableFrom(typeof(byte)) || t.IsAssignableFrom(typeof(sbyte))
+                || t.IsAssignableFrom(typeof(short)) || t.IsAssignableFrom(typeof(ushort))
+                || t.IsAssignableFrom(typeof(int)) || t.IsAssignableFrom(typeof(uint))
+                || t.IsAssignableFrom(typeof(long)) || t.IsAssignableFrom(typeof(ulong))
+                || t.IsAssignableFrom(typeof(float)) || t.IsAssignableFrom(typeof(double)) || t.IsAssignableFrom(typeof(decimal));
+        }
     }
 }
