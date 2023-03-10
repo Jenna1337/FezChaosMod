@@ -116,7 +116,7 @@ namespace FezGame.ChaosMod
             private readonly Func<bool> _pauseTimerTest;
             public bool ShouldPauseTimer => _pauseTimerTest != null && _pauseTimerTest();
 
-            public ChaosEffect(string name, Action func, double ratio, Func<bool> test, double duration, Action onDone, string category, Func<bool> pauseTimerTest)
+            public ChaosEffect(string name, Action func, double ratio, Func<bool> test = null, double duration = 0d, Action onDone = null, string category = null, Func<bool> pauseTimerTest = null)
             {
                 Name = name;
                 Func = func;
@@ -132,17 +132,22 @@ namespace FezGame.ChaosMod
                 return Name;
             }
         }
-        private void AddEffect(string name, Action func, double ratio, Func<bool> test = null, double duration = 0d, Action onDone = null, string category = null, Func<bool> pauseTimerTest = null)
+        private class ChaosEffectsListClass : List<ChaosEffect>
         {
-            if (!ChaosEffectsList.Exists(a => a.Name.Equals(name)))
+            public new void Add(ChaosEffect effect)
             {
-                ChaosEffectsList.Add(new ChaosEffect(name, func, ratio, test, duration, onDone, category, pauseTimerTest));
+                if (!this.Exists(a => a.Name.Equals(effect.Name)))
+                {
+                    base.Add(effect);
+                    //TODO add effects that were added after ChaosModWindow was made to ChaosModWindow's ChaosModEffectListComponent; probably should suspend the layout or whatever
+                }
+                else
+                {
+                    ChaosModWindow.LogLineDebug($"Effect with the name {effect.Name} already exists!");
+                    System.Diagnostics.Debugger.Break();
+                }
             }
-            else
-            {
-                ChaosModWindow.LogLineDebug($"Effect with the name {name} already exists!");
-                System.Diagnostics.Debugger.Break();
-            }
+
         }
 
         #region Constants and variables
@@ -177,7 +182,7 @@ namespace FezGame.ChaosMod
         /// <summary>
         /// The list of all the chaos mod effects.
         /// </summary>
-        public readonly List<ChaosEffect> ChaosEffectsList = new List<ChaosEffect>();
+        public readonly List<ChaosEffect> ChaosEffectsList = new ChaosEffectsListClass();
         private static bool DidInit = false;
         private string LoadingText = "";
         private static readonly Stopwatch SongStarterDelayTimer = new Stopwatch();
@@ -417,108 +422,108 @@ namespace FezGame.ChaosMod
 
                 #region AddEffect calls
 
-                AddEffect("BlackHolesEnable", () => SetBlackHoles(true), 1, duration: 10d, onDone: () => SetBlackHoles(null), category: "BlackHoles", pauseTimerTest: () => PlayerInBlackHole);
-                AddEffect("BlackHolesDisable", () => SetBlackHoles(false), 1, duration: 10d, onDone: () => SetBlackHoles(null), category: "BlackHoles", pauseTimerTest: () => PlayerInBlackHole);
-                //AddEffect("BlackHolesNormal", () => SetBlackHoles(null), 1, duration: 10d, category: "BlackHoles");
+                ChaosEffectsList.Add(new ChaosEffect("BlackHolesEnable", () => SetBlackHoles(true), 1, duration: 10d, onDone: () => SetBlackHoles(null), category: "BlackHoles", pauseTimerTest: () => PlayerInBlackHole));
+                ChaosEffectsList.Add(new ChaosEffect("BlackHolesDisable", () => SetBlackHoles(false), 1, duration: 10d, onDone: () => SetBlackHoles(null), category: "BlackHoles", pauseTimerTest: () => PlayerInBlackHole));
+                //ChaosEffectsList.Add(new ChaosEffect("BlackHolesNormal", () => SetBlackHoles(null), 1, duration: 10d, category: "BlackHoles"));
 
-                AddEffect("SetZoom1", () => { CameraManager.PixelsPerTrixel = 1f; }, 1f, () => { return NormalLevelZoom != 1f; }, 10d, ResetZoom, category: "Zoom");
-                AddEffect("SetZoom2", () => { CameraManager.PixelsPerTrixel = 2f; }, 1f, () => { return NormalLevelZoom != 2f; }, 10d, ResetZoom, category: "Zoom");
-                AddEffect("SetZoom3", () => { CameraManager.PixelsPerTrixel = 3f; }, 1f, () => { return NormalLevelZoom != 3f; }, 10d, ResetZoom, category: "Zoom");
-                AddEffect("SetZoom4", () => { CameraManager.PixelsPerTrixel = 4f; }, 1f, () => { return NormalLevelZoom != 4f; }, 10d, ResetZoom, category: "Zoom");
+                ChaosEffectsList.Add(new ChaosEffect("SetZoom1", () => { CameraManager.PixelsPerTrixel = 1f; }, 1f, () => { return NormalLevelZoom != 1f; }, 10d, ResetZoom, category: "Zoom"));
+                ChaosEffectsList.Add(new ChaosEffect("SetZoom2", () => { CameraManager.PixelsPerTrixel = 2f; }, 1f, () => { return NormalLevelZoom != 2f; }, 10d, ResetZoom, category: "Zoom"));
+                ChaosEffectsList.Add(new ChaosEffect("SetZoom3", () => { CameraManager.PixelsPerTrixel = 3f; }, 1f, () => { return NormalLevelZoom != 3f; }, 10d, ResetZoom, category: "Zoom"));
+                ChaosEffectsList.Add(new ChaosEffect("SetZoom4", () => { CameraManager.PixelsPerTrixel = 4f; }, 1f, () => { return NormalLevelZoom != 4f; }, 10d, ResetZoom, category: "Zoom"));
 
-                AddEffect("CubeAddGold", () =>
+                ChaosEffectsList.Add(new ChaosEffect("CubeAddGold", () =>
                 {
                     GameState.SaveData.CubeShards++;
                     GameState.SaveData.ScoreDirty = true;
                     GameState.OnHudElementChanged();
                     ServiceHelper.Get<IGomezService>().OnCollectedShard();
-                }, 1f, category: "Inventory.GoldCube");
-                AddEffect("CubeSubGold", () =>
+                }, 1f, category: "Inventory.GoldCube"));
+                ChaosEffectsList.Add(new ChaosEffect("CubeSubGold", () =>
                 {
                     GameState.SaveData.CubeShards--;
                     GameState.SaveData.ScoreDirty = true;
                     GameState.OnHudElementChanged();
-                }, 1f, category: "Inventory.GoldCube");
-                AddEffect("CubeAddAnti", () =>
+                }, 1f, category: "Inventory.GoldCube"));
+                ChaosEffectsList.Add(new ChaosEffect("CubeAddAnti", () =>
                 {
                     GameState.SaveData.SecretCubes++;
                     GameState.SaveData.ScoreDirty = true;
                     GameState.OnHudElementChanged();
                     ServiceHelper.Get<IGomezService>().OnCollectedAnti();
-                }, 1f, category: "Inventory.AntiCube");
-                AddEffect("CubeSubAnti", () =>
+                }, 1f, category: "Inventory.AntiCube"));
+                ChaosEffectsList.Add(new ChaosEffect("CubeSubAnti", () =>
                 {
                     GameState.SaveData.SecretCubes--;
                     GameState.SaveData.ScoreDirty = true;
                     GameState.OnHudElementChanged();
-                }, 1f, category: "Inventory.AntiCube");
-                AddEffect("AddKey", () =>
+                }, 1f, category: "Inventory.AntiCube"));
+                ChaosEffectsList.Add(new ChaosEffect("AddKey", () =>
                 {
                     GameState.SaveData.Keys++;
                     GameState.OnHudElementChanged();
-                }, 1f, category: "Inventory.Key");
-                AddEffect("SubKey", () =>
+                }, 1f, category: "Inventory.Key"));
+                ChaosEffectsList.Add(new ChaosEffect("SubKey", () =>
                 {
                     GameState.SaveData.Keys--;
                     GameState.OnHudElementChanged();
-                }, 1f, category: "Inventory.Key");
+                }, 1f, category: "Inventory.Key"));
 
-                //AddEffect("Jetpack", () => { GameState.JetpackMode = true; }, 1f);
-                //AddEffect("DebugModeEnable", () => { GameState.DebugMode = true; }, 1f);
-                //AddEffect("DebugModeDisable", () => { GameState.DebugMode = false; }, 1f);
+                //ChaosEffectsList.Add(new ChaosEffect("Jetpack", () => { GameState.JetpackMode = true; }, 1f));
+                //ChaosEffectsList.Add(new ChaosEffect("DebugModeEnable", () => { GameState.DebugMode = true; }, 1f));
+                //ChaosEffectsList.Add(new ChaosEffect("DebugModeDisable", () => { GameState.DebugMode = false; }, 1f));
 
-                AddEffect("SetGravityInverted", () => {
+                ChaosEffectsList.Add(new ChaosEffect("SetGravityInverted", () => {
                     if(!CurrentLevelInfo.HasSinkBlocks)
                         CollisionManager.GravityFactor = PlayerManager.Action.IsEnteringDoor() ? 1f : -1.0f;//tertiary operator so the door puts Gomez on the top trile surface instead of the bottom
-                }, 1f, ()=> !CurrentLevelInfo.HasSinkBlocks, duration: 3d, onDone: ResetGravity, category: "Gravity", pauseTimerTest: () => CurrentLevelInfo.HasSinkBlocks);
-                //AddEffect("SetGravity1.0", () => { CollisionManager.GravityFactor = 1.0f; }, 1f, duration: 10d, category: "Gravity");
-                AddEffect("SetGravityMoon", () => { CollisionManager.GravityFactor = 0.165f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity");//The gravity of Earth's moon, assuming 1f is equivalent to Earth's gravity
-                AddEffect("SetGravityFezMoon", () => { CollisionManager.GravityFactor = 0.25f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity");//The gravity of the game's moon level, "PYRAMID"
-                AddEffect("SetGravity0.5", () => { CollisionManager.GravityFactor = 0.5f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity");
-                AddEffect("SetGravity1.5", () => { CollisionManager.GravityFactor = 1.5f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity");
-                AddEffect("SetGravity1.7", () => { CollisionManager.GravityFactor = 1.7f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity");
-                AddEffect("SetGravity1.9", () => { CollisionManager.GravityFactor = 1.9f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity");
+                }, 1f, ()=> !CurrentLevelInfo.HasSinkBlocks, duration: 3d, onDone: ResetGravity, category: "Gravity", pauseTimerTest: () => CurrentLevelInfo.HasSinkBlocks));
+                //ChaosEffectsList.Add(new ChaosEffect("SetGravity1.0", () => { CollisionManager.GravityFactor = 1.0f; }, 1f, duration: 10d, category: "Gravity"));
+                ChaosEffectsList.Add(new ChaosEffect("SetGravityMoon", () => { CollisionManager.GravityFactor = 0.165f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity"));//The gravity of Earth's moon, assuming 1f is equivalent to Earth's gravity
+                ChaosEffectsList.Add(new ChaosEffect("SetGravityFezMoon", () => { CollisionManager.GravityFactor = 0.25f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity"));//The gravity of the game's moon level, "PYRAMID"
+                ChaosEffectsList.Add(new ChaosEffect("SetGravity0.5", () => { CollisionManager.GravityFactor = 0.5f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity"));
+                ChaosEffectsList.Add(new ChaosEffect("SetGravity1.5", () => { CollisionManager.GravityFactor = 1.5f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity"));
+                ChaosEffectsList.Add(new ChaosEffect("SetGravity1.7", () => { CollisionManager.GravityFactor = 1.7f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity"));
+                ChaosEffectsList.Add(new ChaosEffect("SetGravity1.9", () => { CollisionManager.GravityFactor = 1.9f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity"));
                 //Note: setting the gravity to 2 or greater causes weird things to occur
 
-                //AddEffect("SoundEffect_ResolvePuzzle", () => { LevelService.ResolvePuzzleSoundOnly(); }, 1f);
+                //ChaosEffectsList.Add(new ChaosEffect("SoundEffect_ResolvePuzzle", () => { LevelService.ResolvePuzzleSoundOnly(); }, 1f));
 
-                AddEffect("SetSkyRandom", () =>
+                ChaosEffectsList.Add(new ChaosEffect("SetSkyRandom", () =>
                 {
                     Sky sky = Skies[random.Next(0, Skies.Length)];
                     ChaosModWindow.LogLine("Changed Sky: " + sky.Name);//TODO Changing from certain skies to certain other skies can cause the foreground to go black for some reason
                     LevelManager.ChangeSky(sky);
                     SkyChangerDelayTimer.Restart();
-                }, 3f, () => SkyChangerDelayTimer.Elapsed.TotalSeconds > 2f, category: "Sky");
+                }, 3f, () => SkyChangerDelayTimer.Elapsed.TotalSeconds > 2f, category: "Sky"));
                 SkyChangerDelayTimer.Start();
-                /*AddEffect("Blind", () =>
+                /*ChaosEffectsList.Add(new ChaosEffect("Blind", () =>
                 {
                     Sky sky = BlackSky;
                     LevelManager.ChangeSky(sky);//Only seems to work when changing from certain skies
-                }, 1f, ()=>CurrentLevelInfo.Sky.Name!="BLACK", duration: 5, onDone: ()=>LevelManager.ChangeSky(CurrentLevelInfo.Sky), category: "Sky");*/
-                AddEffect("Starfield", () =>
+                }, 1f, ()=>CurrentLevelInfo.Sky.Name!="BLACK", duration: 5, onDone: ()=>LevelManager.ChangeSky(CurrentLevelInfo.Sky), category: "Sky"));*/
+                ChaosEffectsList.Add(new ChaosEffect("Starfield", () =>
                 {
                     Starfield.Opacity = 1;
                     Starfield.Draw();
-                }, 5f, duration: 60, onDone: () => { Starfield.Opacity = 0; Starfield.Draw(); }, category: "Starfield");
-                AddEffect("PlayRandomMusic", () =>
+                }, 5f, duration: 60, onDone: () => { Starfield.Opacity = 0; Starfield.Draw(); }, category: "Starfield"));
+                ChaosEffectsList.Add(new ChaosEffect("PlayRandomMusic", () =>
                 {
                     string songname = BGMusicNames[random.Next(0, BGMusicNames.Length)];
                     ChaosModWindow.LogLine("Changed Music: " + songname);
                     //TODO don't stop playing song beacause of level transitions; might have to forgo SoundManager
                     SM.PlayNewSong(songname);
                     SongStarterDelayTimer.Restart();
-                }, 3f, () => SongStarterDelayTimer.Elapsed.TotalSeconds > 2f, category: "Music");
+                }, 3f, () => SongStarterDelayTimer.Elapsed.TotalSeconds > 2f, category: "Music"));
                 SongStarterDelayTimer.Start();
 
-                //AddEffect("GoToIntro", () => { LevelManager.ChangeLevel("GOMEZ_HOUSE_2D"); }, 0.1f);
-                /*AddEffect("ReloadLevel", ()=>
+                //ChaosEffectsList.Add(new ChaosEffect("GoToIntro", () => { LevelManager.ChangeLevel("GOMEZ_HOUSE_2D"); }, 0.1f));
+                /*ChaosEffectsList.Add(new ChaosEffect("ReloadLevel", ()=>
                 {
                     if(LevelManager.LastDestinationVolumeId.HasValue)
                         LevelService.ChangeLevelToVolume(LevelManager.Name, (int)LevelManager.LastDestinationVolumeId, false, false, false);//can crash the game
                     else
                         LevelManager.ChangeLevel(LevelManager.Name);
-                }, 1f, () => !(InCutsceneLevel) && TimeInLevelTimer.Elapsed.TotalSeconds > 5f, category: "Teleport");*/
-                AddEffect("GoToRandomLevel", () =>
+                }, 1f, () => !(InCutsceneLevel) && TimeInLevelTimer.Elapsed.TotalSeconds > 5f, category: "Teleport"));*/
+                ChaosEffectsList.Add(new ChaosEffect("GoToRandomLevel", () =>
                 {
                     if (LevelNamesForRandTele.Count <= 0)
                     {
@@ -528,60 +533,60 @@ namespace FezGame.ChaosMod
                     string levelname = LevelNamesForRandTele[random.Next(0, LevelNamesForRandTele.Count)];
                     LevelManager.ChangeLevel(levelname);
                     //GC.Collect();
-                }, 0.01f, () => !(InCutsceneLevel) && TimeInLevelTimer.Elapsed.TotalSeconds > 5f, category: "Teleport");
-                AddEffect("GoToRandomHubLevel", () =>
+                }, 0.01f, () => !(InCutsceneLevel) && TimeInLevelTimer.Elapsed.TotalSeconds > 5f, category: "Teleport"));
+                ChaosEffectsList.Add(new ChaosEffect("GoToRandomHubLevel", () =>
                 {
                     string levelname = HubLevelNames[random.Next(0, HubLevelNames.Length)];
                     LevelManager.ChangeLevel(levelname);
-                }, 0.1f, () => !(InCutsceneLevel) && TimeInLevelTimer.Elapsed.TotalSeconds > 5f, category: "Teleport");
+                }, 0.1f, () => !(InCutsceneLevel) && TimeInLevelTimer.Elapsed.TotalSeconds > 5f, category: "Teleport"));
                 LevelManager.LevelChanged += TimeInLevelTimer.Restart;
                 TimeInLevelTimer.Start();
 
 
-                AddEffect("Glitches5", () =>
+                ChaosEffectsList.Add(new ChaosEffect("Glitches5", () =>
                 {
                     EnsureGlitches();
                     Glitches.ActiveGlitches = 5;
-                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches");
-                AddEffect("Glitches25", () =>
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches"));
+                ChaosEffectsList.Add(new ChaosEffect("Glitches25", () =>
                 {
                     EnsureGlitches();
                     Glitches.ActiveGlitches = 25;
-                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches");
-                AddEffect("Glitches50", () =>
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches"));
+                ChaosEffectsList.Add(new ChaosEffect("Glitches50", () =>
                 {
                     EnsureGlitches();
                     Glitches.ActiveGlitches = 50;
-                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches");
-                AddEffect("Glitches500", () =>
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches"));
+                ChaosEffectsList.Add(new ChaosEffect("Glitches500", () =>
                 {
                     EnsureGlitches();
                     Glitches.ActiveGlitches = 500;
-                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches");
-                AddEffect("FreezeChance0.1", () =>
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches"));
+                ChaosEffectsList.Add(new ChaosEffect("FreezeChance0.1", () =>
                 {
                     EnsureGlitches();
                     Glitches.FreezeProbability = 0.1f;
-                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.FreezeProbability");
-                AddEffect("FreezeChance0.2", () =>
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.FreezeProbability"));
+                ChaosEffectsList.Add(new ChaosEffect("FreezeChance0.2", () =>
                 {
                     EnsureGlitches();
                     Glitches.FreezeProbability = 0.2f;
-                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.FreezeProbability");
-                AddEffect("FreezeChance0.5", () =>
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.FreezeProbability"));
+                ChaosEffectsList.Add(new ChaosEffect("FreezeChance0.5", () =>
                 {
                     EnsureGlitches();
                     Glitches.FreezeProbability = 0.5f;
-                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.FreezeProbability");
-                AddEffect("FreezeChance1.0", () =>
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.FreezeProbability"));
+                ChaosEffectsList.Add(new ChaosEffect("FreezeChance1.0", () =>
                 {
                     EnsureGlitches();
                     Glitches.FreezeProbability = 1f;
-                }, 1f, duration: 3, onDone: ResetGlitches, category: "Glitches.FreezeProbability");
+                }, 1f, duration: 3, onDone: ResetGlitches, category: "Glitches.FreezeProbability"));
 
 
                 //TODO add effects that spawn things
-                /*AddEffect("SpawnVase", () =>
+                /*ChaosEffectsList.Add(new ChaosEffect("SpawnVase", () =>
                 {
                     var trile = new TrileInstance(PlayerManager.Ground.First.Position, LevelManager.ActorTriles(ActorType.Vase).FirstOrDefault().Id);
                     if (trile.PhysicsState == null)
@@ -594,7 +599,7 @@ namespace FezGame.ChaosMod
                     {
                         DontCullIn = true
                     });
-                }, 5f, () => PlayerManager.Ground.First != null);*/
+                }, 5f, () => PlayerManager.Ground.First != null));*/
 
 
                 //TODO add effects that mess with the controls
