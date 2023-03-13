@@ -652,10 +652,20 @@ namespace FezGame.ChaosMod
                     EnsureGlitches();
                     Glitches.ActiveGlitches = 50;
                 }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches"));
+                ChaosEffectsList.Add(new ChaosEffect("Glitches250", () =>
+                {
+                    EnsureGlitches();
+                    Glitches.ActiveGlitches = 250;
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches"));
                 ChaosEffectsList.Add(new ChaosEffect("Glitches500", () =>
                 {
                     EnsureGlitches();
                     Glitches.ActiveGlitches = 500;
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches"));
+                ChaosEffectsList.Add(new ChaosEffect("Glitches1000", () =>
+                {
+                    EnsureGlitches();
+                    Glitches.ActiveGlitches = 1000;
                 }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.ActiveGlitches"));
                 ChaosEffectsList.Add(new ChaosEffect("FreezeChance0.1", () =>
                 {
@@ -671,6 +681,11 @@ namespace FezGame.ChaosMod
                 {
                     EnsureGlitches();
                     Glitches.FreezeProbability = 0.5f;
+                }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.FreezeProbability"));
+                ChaosEffectsList.Add(new ChaosEffect("FreezeChance0.7", () =>
+                {
+                    EnsureGlitches();
+                    Glitches.FreezeProbability = 0.7f;
                 }, 1f, duration: 10, onDone: ResetGlitches, category: "Glitches.FreezeProbability"));
                 ChaosEffectsList.Add(new ChaosEffect("FreezeChance1.0", () =>
                 {
