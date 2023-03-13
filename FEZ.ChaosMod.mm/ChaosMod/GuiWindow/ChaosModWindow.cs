@@ -11,10 +11,8 @@ namespace FezGame.ChaosMod
     {
         private readonly FezChaosMod chaosMod;
         private SplitContainer splitContainer1;
-        private GroupBox RandTeleCheckListContainer;
         private GroupBox EffectsCheckListContainer;
         private TextBox EffectLogger;
-        private CheckedListBox RandTeleCheckList;
         private CheckBox ChaosModeCheckBox;
         private GroupBox EffectsDelaySpinnerContainer;
         private Label EffectsUnit;
@@ -28,7 +26,7 @@ namespace FezGame.ChaosMod
         private OpenFileDialog openFileDialog1;
         private ToolStripMenuItem HelpToolStripMenuItem;
         private ToolStripMenuItem AboutFEZChaosModToolStripMenuItem;
-        private static ChaosModWindow instance;
+        public static ChaosModWindow Instance { get; private set; }
         private string ActiveSaveFile = null;
         private TabControl tabControl1;
         private TabPage tabPageChaosMod;
@@ -55,9 +53,9 @@ namespace FezGame.ChaosMod
 
         public ChaosModWindow(FezChaosMod chaosMod)
         {
-            if (ChaosModWindow.instance != null)
-                ChaosModWindow.instance.Dispose();
-            ChaosModWindow.instance = this;
+            if (ChaosModWindow.Instance != null)
+                ChaosModWindow.Instance.Dispose();
+            ChaosModWindow.Instance = this;
 
             Initializing = true;
             this.Shown += (Object sender, EventArgs e) =>
@@ -72,13 +70,6 @@ namespace FezGame.ChaosMod
 
             DebugInfoCheckBox.Checked = chaosMod.ShowDebugInfo;
             AllowRotateAnywhereCheckBox.Checked = chaosMod.AllowRotateAnywhere;
-
-            //TODO move RandTeleCheckList to a new "additional effect settings" window via a "..." button next to the activation buttons in ChaosModEffectListControl
-
-            this.RandTeleCheckList.Items.AddRange(LevelNames.All.ToArray());
-            for (int i = 0; i < RandTeleCheckList.Items.Count; i++)
-                RandTeleCheckList.SetItemChecked(i, chaosMod.LevelNamesForRandTele.Contains(RandTeleCheckList.Items[i].ToString()));
-            RandTeleCheckList.ItemCheck += RandTeleCheckList_ItemCheck;
 
             this.GroupedEffectsList = new ChaosModEffectListControl(chaosMod)
             {
@@ -133,7 +124,7 @@ namespace FezGame.ChaosMod
             updateDataTimer.Tick += (object sender, EventArgs e) =>
             {
                 var GameState = FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>();
-                instance.StereoModeCheckBox.Checked = GameState.StereoMode;
+                Instance.StereoModeCheckBox.Checked = GameState.StereoMode;
             };
             updateDataTimer.Start();
 
@@ -141,53 +132,43 @@ namespace FezGame.ChaosMod
 
         }
 
-        private void RandTeleCheckList_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            string levelName = RandTeleCheckList.Items[e.Index].ToString();
-            if (e.NewValue == CheckState.Checked && !chaosMod.LevelNamesForRandTele.Contains(levelName))
-                chaosMod.LevelNamesForRandTele.Add(levelName);
-            else
-                chaosMod.LevelNamesForRandTele.Remove(levelName);
-        }
-
         private static readonly int MaxLines = 1000;
         public static void LogLine(string text)
         {
             Common.Logger.Log("ChaosMod", text);
             System.Diagnostics.Debug.WriteLine(text);
-            if (instance == null || !instance.Created || instance.IsDisposed || !instance.Visible)
+            if (Instance == null || !Instance.Created || Instance.IsDisposed || !Instance.Visible)
                 return;
-            _ = instance.Invoke(new MethodInvoker(delegate
+            _ = Instance.Invoke(new MethodInvoker(delegate
             {
-                if (instance.EffectLogger.Lines.Length > MaxLines)
+                if (Instance.EffectLogger.Lines.Length > MaxLines)
                 {
                     string[] newLines = new string[MaxLines];
-                    Array.Copy(instance.EffectLogger.Lines, 1, newLines, 0, newLines.Length);
-                    instance.EffectLogger.Lines = newLines;
-                    instance.EffectLogger.AppendText(text + Environment.NewLine);
+                    Array.Copy(Instance.EffectLogger.Lines, 1, newLines, 0, newLines.Length);
+                    Instance.EffectLogger.Lines = newLines;
+                    Instance.EffectLogger.AppendText(text + Environment.NewLine);
                 }
                 else
-                    instance.EffectLogger.AppendText(text + Environment.NewLine);
+                    Instance.EffectLogger.AppendText(text + Environment.NewLine);
             }));
         }
         public static void LogLineDebug(string text)
         {
-            if (instance == null || !instance.Created || instance.IsDisposed || !instance.Visible)
+            if (Instance == null || !Instance.Created || Instance.IsDisposed || !Instance.Visible)
             {
                 Common.Logger.Log("ChaosMod", text);
                 return;
             }
-            if (instance.chaosMod.ShowDebugInfo)
+            if (Instance.chaosMod.ShowDebugInfo)
                 LogLine("Debug: " + text);
         }
         public static void ClearLog()
         {
-            instance.Invoke(new MethodInvoker(delegate { instance.EffectLogger.Clear(); }));
+            Instance.Invoke(new MethodInvoker(delegate { Instance.EffectLogger.Clear(); }));
         }
 
         private void InitializeComponent()
         {
-            this.RandTeleCheckList = new System.Windows.Forms.CheckedListBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.LatestEffectsToDisplaySpinnerContainer = new System.Windows.Forms.GroupBox();
             this.LatestEffectsCountUnit = new System.Windows.Forms.Label();
@@ -202,7 +183,6 @@ namespace FezGame.ChaosMod
             this.EffectsDelaySpinner = new System.Windows.Forms.NumericUpDown();
             this.ChaosModeCheckBox = new System.Windows.Forms.CheckBox();
             this.EffectsCheckListContainer = new System.Windows.Forms.GroupBox();
-            this.RandTeleCheckListContainer = new System.Windows.Forms.GroupBox();
             this.EffectLogger = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -234,22 +214,11 @@ namespace FezGame.ChaosMod
             ((System.ComponentModel.ISupportInitialize)(this.EffectsDurationMultiplierSpinner)).BeginInit();
             this.EffectsDelaySpinnerContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EffectsDelaySpinner)).BeginInit();
-            this.RandTeleCheckListContainer.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPageChaosMod.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // RandTeleCheckList
-            // 
-            this.RandTeleCheckList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.RandTeleCheckList.FormattingEnabled = true;
-            this.RandTeleCheckList.IntegralHeight = false;
-            this.RandTeleCheckList.Location = new System.Drawing.Point(3, 22);
-            this.RandTeleCheckList.Name = "RandTeleCheckList";
-            this.RandTeleCheckList.Size = new System.Drawing.Size(295, 318);
-            this.RandTeleCheckList.TabIndex = 0;
             // 
             // splitContainer1
             // 
@@ -266,12 +235,11 @@ namespace FezGame.ChaosMod
             this.splitContainer1.Panel1.Controls.Add(this.EffectsDelaySpinnerContainer);
             this.splitContainer1.Panel1.Controls.Add(this.ChaosModeCheckBox);
             this.splitContainer1.Panel1.Controls.Add(this.EffectsCheckListContainer);
-            this.splitContainer1.Panel1.Controls.Add(this.RandTeleCheckListContainer);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.EffectLogger);
-            this.splitContainer1.Size = new System.Drawing.Size(1236, 706);
+            this.splitContainer1.Size = new System.Drawing.Size(911, 706);
             this.splitContainer1.SplitterDistance = 352;
             this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 1;
@@ -418,22 +386,10 @@ namespace FezGame.ChaosMod
             | System.Windows.Forms.AnchorStyles.Right)));
             this.EffectsCheckListContainer.Location = new System.Drawing.Point(224, 3);
             this.EffectsCheckListContainer.Name = "EffectsCheckListContainer";
-            this.EffectsCheckListContainer.Size = new System.Drawing.Size(688, 346);
+            this.EffectsCheckListContainer.Size = new System.Drawing.Size(684, 346);
             this.EffectsCheckListContainer.TabIndex = 2;
             this.EffectsCheckListContainer.TabStop = false;
             this.EffectsCheckListContainer.Text = "Effects";
-            // 
-            // RandTeleCheckListContainer
-            // 
-            this.RandTeleCheckListContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.RandTeleCheckListContainer.Controls.Add(this.RandTeleCheckList);
-            this.RandTeleCheckListContainer.Location = new System.Drawing.Point(929, 3);
-            this.RandTeleCheckListContainer.Name = "RandTeleCheckListContainer";
-            this.RandTeleCheckListContainer.Size = new System.Drawing.Size(301, 343);
-            this.RandTeleCheckListContainer.TabIndex = 1;
-            this.RandTeleCheckListContainer.TabStop = false;
-            this.RandTeleCheckListContainer.Text = "Random Teleport Level List";
             // 
             // EffectLogger
             // 
@@ -443,7 +399,7 @@ namespace FezGame.ChaosMod
             this.EffectLogger.Name = "EffectLogger";
             this.EffectLogger.ReadOnly = true;
             this.EffectLogger.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.EffectLogger.Size = new System.Drawing.Size(1236, 344);
+            this.EffectLogger.Size = new System.Drawing.Size(911, 344);
             this.EffectLogger.TabIndex = 0;
             // 
             // menuStrip1
@@ -454,7 +410,7 @@ namespace FezGame.ChaosMod
             this.HelpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1250, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(925, 33);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -545,7 +501,7 @@ namespace FezGame.ChaosMod
             this.tabControl1.Location = new System.Drawing.Point(0, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1250, 745);
+            this.tabControl1.Size = new System.Drawing.Size(925, 745);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPageChaosMod
@@ -554,7 +510,7 @@ namespace FezGame.ChaosMod
             this.tabPageChaosMod.Location = new System.Drawing.Point(4, 29);
             this.tabPageChaosMod.Name = "tabPageChaosMod";
             this.tabPageChaosMod.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageChaosMod.Size = new System.Drawing.Size(1242, 712);
+            this.tabPageChaosMod.Size = new System.Drawing.Size(917, 712);
             this.tabPageChaosMod.TabIndex = 0;
             this.tabPageChaosMod.Text = "Chaos Mod";
             this.tabPageChaosMod.UseVisualStyleBackColor = true;
@@ -569,7 +525,7 @@ namespace FezGame.ChaosMod
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1084, 712);
+            this.tabPage1.Size = new System.Drawing.Size(936, 712);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Miscellaneous";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -633,7 +589,7 @@ namespace FezGame.ChaosMod
             // 
             // ChaosModWindow
             // 
-            this.ClientSize = new System.Drawing.Size(1250, 781);
+            this.ClientSize = new System.Drawing.Size(925, 781);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.tabControl1);
             this.HelpButton = true;
@@ -658,7 +614,6 @@ namespace FezGame.ChaosMod
             this.EffectsDelaySpinnerContainer.ResumeLayout(false);
             this.EffectsDelaySpinnerContainer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EffectsDelaySpinner)).EndInit();
-            this.RandTeleCheckListContainer.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -682,17 +637,17 @@ namespace FezGame.ChaosMod
 
         private void EffectsDelaySpinner_ValueChanged(object sender, EventArgs e) { chaosMod.DelayBetweenEffects = Decimal.ToDouble(EffectsDelaySpinner.Value); }
 
-        private void OpenToolStripMenuItem_Click(object sender, EventArgs e) { _ = openFileDialog1.ShowDialog(instance); }
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e) { _ = openFileDialog1.ShowDialog(Instance); }
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (File.Exists(ActiveSaveFile))
                 SaveSettingsToFile(ActiveSaveFile);
             else
-                saveFileDialog1.ShowDialog(instance);
+                saveFileDialog1.ShowDialog(Instance);
         }
 
-        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e) { _ = saveFileDialog1.ShowDialog(instance); }
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e) { _ = saveFileDialog1.ShowDialog(Instance); }
         private void SaveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e) { SaveSettingsToFile(saveFileDialog1.FileName); }
         private void OpenFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e) { LoadSettingsFromFile(openFileDialog1.FileName); }
 

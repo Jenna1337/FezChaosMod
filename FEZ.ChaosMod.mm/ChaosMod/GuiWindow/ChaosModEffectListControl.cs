@@ -17,6 +17,8 @@ namespace FezGame.ChaosMod
 
         private readonly ToolTip tooltip;
         private static readonly string NameSeperator = CollapsableGroupControl.NameSeperator;
+        internal AdditionalChaosEffectSettingsWindow AdditionalSettingsWindow = null;
+
         public ChaosModEffectListControl(FezChaosMod chaosMod)
         {
             tooltip = new ToolTip
@@ -153,11 +155,10 @@ namespace FezGame.ChaosMod
                     Height = RowHeight,
                 };
                 additionalSettingsButton.Font = new Font(additionalSettingsButton.Font.Name, additionalSettingsButton.Font.Size * 1.3f);
-                tooltip.SetToolTip(additionalSettingsButton, "Additional Settings (to be implemented)");
+                tooltip.SetToolTip(additionalSettingsButton, "Additional Settings");
 
-                //TODO add an optional new "additional effect settings" window via additionalSettingsButton; see FezChaosMod.ChaosEffect.AdditionalSettings
-                //TODO figure out how to make the settings in the "additional effect settings" window save via ChaosModSettingsHelper
-
+                AdditionalSettingsWindow = new AdditionalChaosEffectSettingsWindow(effect.AdditionalSettings);
+                additionalSettingsButton.Click += new EventHandler((object sender, EventArgs e) => { _ = AdditionalSettingsWindow.ShowDialog(); });
             }
 
             string category = effect.Category != null && effect.Category.Length > 0 ? effect.Category : "Uncategorized";

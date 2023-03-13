@@ -163,5 +163,6 @@ Added a thing to always show the latest effects even if those effects have done 
 Miscellaneous improvements
 Active effects now start displaying from the bottom up
 Added start/end buttons for each effect to the UI
+Moved additional effect settings (e.g., "random teleport checklist") to an "Additional Settings" button to the right of the "end effect" button
 
 
