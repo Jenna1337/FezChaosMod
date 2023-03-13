@@ -115,11 +115,14 @@ namespace FezGame.ChaosMod
             {
                 Text = "Start"
             };
+            tooltip.SetToolTip(activateEffectButton, "Forcibly activates the effect\nWarning: might break the game!");
+
             Button terminateEffectButton = new Button
             {
                 Text = "End",
                 Enabled = false
             };
+            tooltip.SetToolTip(activateEffectButton, "Forcibly terminates and removes all instances of this effect.");
 
             activateEffectButton.Click += new EventHandler((object sender, EventArgs e) =>
             {
