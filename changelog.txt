@@ -162,4 +162,6 @@ optimizations
 Added a thing to always show the latest effects even if those effects have done being active
 Miscellaneous improvements
 Active effects now start displaying from the bottom up
+Added start/end buttons for each effect to the UI
+
 

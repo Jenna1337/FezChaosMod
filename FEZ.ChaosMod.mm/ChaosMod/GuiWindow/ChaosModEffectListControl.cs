@@ -12,6 +12,8 @@ namespace FezGame.ChaosMod
     {
         private static readonly bool ignoresubcategories = true;
 
+        private static readonly Size spinnerSize = new Size(120, 26);
+
         private readonly ToolTip tooltip;
         private static readonly string NameSeperator = CollapsableGroupControl.NameSeperator;
         public ChaosModEffectListControl(FezChaosMod chaosMod)
@@ -39,7 +41,6 @@ namespace FezGame.ChaosMod
             //TODO make it load faster when switching tabs in ChaosModWindow?
             //TODO add a thing to each group to indicate how many are enabled
             //TODO indicate if/when an effect can start?; maybe change the color of the text or something; could maybe change if the "activate effect" button is enabled
-            //TODO add a button to manually and immediately start an effect
             //TODO add a thing to enable/disable all the effects in a category; maybe a checkbox to the left of the collapse button? dunno if that'd be too confusing for users
         }
         private static readonly Regex subcatregex = new Regex(@"(?<=\D)\.(?=\D)");
@@ -58,7 +59,7 @@ namespace FezGame.ChaosMod
                 Text = effect.Name,
                 UseVisualStyleBackColor = true
             };
-            enabledCheckBox.CheckedChanged += new System.EventHandler((object sender, EventArgs e) => { effect.Enabled = enabledCheckBox.Checked; });
+            enabledCheckBox.CheckedChanged += new EventHandler((object sender, EventArgs e) => { effect.Enabled = enabledCheckBox.Checked; });
 
             NumericUpDown ratioSpinner = new NumericUpDown
             {
@@ -70,16 +71,16 @@ namespace FezGame.ChaosMod
                 0,
                 0}),
                 Name = effect.Name + NameSeperator + "RatioSpinner",
-                Size = new System.Drawing.Size(120, 26),
+                Size = spinnerSize,
                 //TabIndex = 5;
                 TextAlign = System.Windows.Forms.HorizontalAlignment.Right,
                 UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left,
                 Value = (decimal)effect.Ratio
             };
-            ratioSpinner.ValueChanged += new System.EventHandler((object sender, EventArgs e) => { effect.Ratio = Decimal.ToDouble(ratioSpinner.Value); });
+            ratioSpinner.ValueChanged += new EventHandler((object sender, EventArgs e) => { effect.Ratio = Decimal.ToDouble(ratioSpinner.Value); });
             tooltip.SetToolTip(ratioSpinner, "Ratio");
 
-            NumericUpDown durationSpinner = null;
+            Control durationSpinner = null;
             if (effect.Duration > 0)
             {
                 durationSpinner = new NumericUpDown
@@ -92,22 +93,54 @@ namespace FezGame.ChaosMod
                     0,
                     0}),
                     Name = effect.Name + NameSeperator + "DurationSpinner",
-                    Size = new System.Drawing.Size(120, 26),
+                    Size = spinnerSize,
                     //TabIndex = 5;
                     TextAlign = System.Windows.Forms.HorizontalAlignment.Right,
                     UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left,
                     Value = (decimal)effect.Duration
                 };
-                durationSpinner.ValueChanged += new System.EventHandler((object sender, EventArgs e) => { effect.Duration = Decimal.ToDouble(durationSpinner.Value); });
+                ((NumericUpDown)durationSpinner).ValueChanged += new EventHandler((object sender, EventArgs e) => { effect.Duration = decimal.ToDouble(((NumericUpDown)durationSpinner).Value); });
                 tooltip.SetToolTip(durationSpinner, "Duration");
             }
+            else
+            {
+                durationSpinner = new Label
+                {
+                    Size = spinnerSize,
+                    AutoSize = false,
+                };
+            }
+
+            Button activateEffectButton = new Button
+            {
+                Text = "Start"
+            };
+            Button terminateEffectButton = new Button
+            {
+                Text = "End",
+                Enabled = false
+            };
+
+            activateEffectButton.Click += new EventHandler((object sender, EventArgs e) =>
+            {
+                effect.Activate();
+            });
+            FezChaosMod.Instance.ChaosEffectActivated += (eff) => { if (eff.Name == effect.Name) { activateEffectButton.Enabled = eff.IsDone; } };
+            FezChaosMod.Instance.ChaosEffectEnded += (eff) => { if (eff.Name == effect.Name) { activateEffectButton.Enabled = eff.IsDone; } };
+
+            terminateEffectButton.Click += new EventHandler((object sender, EventArgs e) =>
+            {
+                effect.Terminate();
+            });
+            FezChaosMod.Instance.ChaosEffectActivated += (eff) => { if (eff.Name == effect.Name) { terminateEffectButton.Enabled = !eff.IsDone; } };
+            FezChaosMod.Instance.ChaosEffectEnded += (eff) => { if (eff.Name == effect.Name) { terminateEffectButton.Enabled = !eff.IsDone; } };
 
             string category = effect.Category != null && effect.Category.Length > 0 ? effect.Category : "Uncategorized";
             string[] categories = subcatregex.Split(category);
 
             if (ignoresubcategories || categories.Length == 1)
             {
-                this.Add(category, enabledCheckBox, ratioSpinner, durationSpinner);
+                this.Add(category, enabledCheckBox, ratioSpinner, durationSpinner, activateEffectButton, terminateEffectButton);
             }
             else
             {

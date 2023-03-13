@@ -177,11 +177,44 @@ namespace FezGame.ChaosMod
             {
                 return Name;
             }
+            /// <summary>
+            /// Activates a new instance of this effect even if there is already an active instance. 
+            /// </summary>
+            public void Activate()
+            {
+                ActiveChaosEffect activeChaosEffect = new ActiveChaosEffect(this);
+                FezChaosMod.Instance.activeChaosEffects.Add(activeChaosEffect);
+                ChaosModWindow.LogLine(this.Name);
+                FezChaosMod.Instance.ChaosEffectActivated(activeChaosEffect);
+                this.Func();
+                FezChaosMod.Instance.Timer.Restart();
+            }
+            /// <summary>
+            /// Forcibly ends all active instances of this effect.
+            /// </summary>
+            public void Terminate()
+            {
+                int index;
+                while ((index = FezChaosMod.Instance.activeChaosEffects.FindIndex(eff => eff.Name == this.Name)) != -1)
+                {
+                    ActiveChaosEffect activeEffect = FezChaosMod.Instance.activeChaosEffects[index];
+                    activeEffect.OnDone();
+                    FezChaosMod.Instance.activeChaosEffects.RemoveAt(index);
+                }
+            }
         }
         /// <summary>
         /// A subscribable event for when a new <see cref="ChaosEffect"/> is added to this instance of <see cref="FezChaosMod"/>
         /// </summary>
         public event Action<ChaosEffect> ChaosEffectAdded;
+        /// <summary>
+        /// A subscribable event for when a new <see cref="ActiveChaosEffect"/> is activated in this instance of <see cref="FezChaosMod"/>
+        /// </summary>
+        public event Action<ActiveChaosEffect> ChaosEffectActivated;
+        /// <summary>
+        /// A subscribable event for when an <see cref="ActiveChaosEffect"/> is done executing in this instance of <see cref="FezChaosMod"/>
+        /// </summary>
+        public event Action<ActiveChaosEffect> ChaosEffectEnded;
         private class ChaosEffectsListClass : List<ChaosEffect>
         {
             private readonly FezChaosMod myChaosMod;
@@ -594,12 +627,12 @@ namespace FezGame.ChaosMod
                     string levelname = LevelNamesForRandTele[random.Next(0, LevelNamesForRandTele.Count)];
                     LevelManager.ChangeLevel(levelname);
                     //GC.Collect();
-                }, 0.01f, () => !(InCutsceneLevel) && TimeInLevelTimer.Elapsed.TotalSeconds > 5f, category: "Teleport"));
+                }, 0.01f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport"));
                 ChaosEffectsList.Add(new ChaosEffect("GoToRandomHubLevel", () =>
                 {
                     string levelname = HubLevelNames[random.Next(0, HubLevelNames.Length)];
                     LevelManager.ChangeLevel(levelname);
-                }, 0.1f, () => !(InCutsceneLevel) && TimeInLevelTimer.Elapsed.TotalSeconds > 5f, category: "Teleport"));
+                }, 0.1f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity>0, category: "Teleport"));
                 LevelManager.LevelChanged += TimeInLevelTimer.Restart;
                 TimeInLevelTimer.Start();
 
@@ -726,6 +759,10 @@ namespace FezGame.ChaosMod
             /// </summary>
             public bool Hidden;
             /// <summary>
+            /// The <see cref="ChaosEffect.Name"/> of the unterlaying <see cref="ChaosEffect"/>.
+            /// </summary>
+            public string Name => Effect.Name;
+            /// <summary>
             /// Constructs a new <see cref="ActiveChaosEffect"/> from the provided <see cref="ChaosEffect"/>.
             /// </summary>
             /// <param name="effect">The <see cref="ChaosEffect"/></param>
@@ -790,6 +827,7 @@ namespace FezGame.ChaosMod
                     Effect.OnDone?.Invoke();
                     ActiveTimer = null;
                     //ActiveTimer.Stop();
+                    FezChaosMod.Instance.ChaosEffectEnded(this);
                 }
             }
 
@@ -942,10 +980,7 @@ false
                             continue;
 
                         //activate the effect
-                        activeChaosEffects.Add(new ActiveChaosEffect(effect));
-                        ChaosModWindow.LogLine(effect.Name);
-                        effect.Func();
-                        Timer.Restart();
+                        effect.Activate();
                         break;
                     }
                 }

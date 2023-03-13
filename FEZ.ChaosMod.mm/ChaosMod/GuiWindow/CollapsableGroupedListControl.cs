@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 namespace FezGame.ChaosMod
 {
+    //TODO probably should be a ContainerControl
     public class CollapsableGroupedListControl : FlowLayoutPanel, IInputGroup<CollapsableGroupControl>
     {
         private readonly Dictionary<string, CollapsableGroupControl> groups = new Dictionary<string, CollapsableGroupControl>();
