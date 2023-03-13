@@ -12,7 +12,8 @@ namespace FezGame.ChaosMod
     {
         private static readonly bool ignoresubcategories = true;
 
-        private static readonly Size spinnerSize = new Size(120, 26);
+        private static readonly int RowHeight = 26;
+        private static readonly Size spinnerSize = new Size(120, RowHeight);
 
         private readonly ToolTip tooltip;
         private static readonly string NameSeperator = CollapsableGroupControl.NameSeperator;
@@ -38,7 +39,7 @@ namespace FezGame.ChaosMod
 
             chaosMod.ChaosEffectAdded += AddEffect;
 
-            //TODO make it load faster when switching tabs in ChaosModWindow?
+            //TODO optimize CollapsableGroupedListControl and make it load faster when switching tabs in ChaosModWindow?
             //TODO add a thing to each group to indicate how many are enabled
             //TODO indicate if/when an effect can start?; maybe change the color of the text or something; could maybe change if the "activate effect" button is enabled
             //TODO add a thing to enable/disable all the effects in a category; maybe a checkbox to the left of the collapse button? dunno if that'd be too confusing for users
@@ -113,16 +114,20 @@ namespace FezGame.ChaosMod
 
             Button activateEffectButton = new Button
             {
-                Text = "Start"
+                Text = "Start",
+                Width = 57,
+                Height = RowHeight,
             };
             tooltip.SetToolTip(activateEffectButton, "Forcibly activates the effect\nWarning: might break the game!");
 
             Button terminateEffectButton = new Button
             {
                 Text = "End",
-                Enabled = false
+                Enabled = false,
+                Width = 57,
+                Height = RowHeight,
             };
-            tooltip.SetToolTip(activateEffectButton, "Forcibly terminates and removes all instances of this effect.");
+            tooltip.SetToolTip(terminateEffectButton, "Forcibly terminates and removes all instances of this effect.");
 
             activateEffectButton.Click += new EventHandler((object sender, EventArgs e) =>
             {
@@ -138,12 +143,29 @@ namespace FezGame.ChaosMod
             FezChaosMod.Instance.ChaosEffectActivated += (eff) => { if (eff.Name == effect.Name) { terminateEffectButton.Enabled = !eff.IsDone; } };
             FezChaosMod.Instance.ChaosEffectEnded += (eff) => { if (eff.Name == effect.Name) { terminateEffectButton.Enabled = !eff.IsDone; } };
 
+            Button additionalSettingsButton = null;
+            if (effect.AdditionalSettings != null)
+            {
+                additionalSettingsButton = new Button
+                {
+                    Text = "...",
+                    Width = 35,
+                    Height = RowHeight,
+                };
+                additionalSettingsButton.Font = new Font(additionalSettingsButton.Font.Name, additionalSettingsButton.Font.Size * 1.3f);
+                tooltip.SetToolTip(additionalSettingsButton, "Additional Settings (to be implemented)");
+
+                //TODO add an optional new "additional effect settings" window via additionalSettingsButton; see FezChaosMod.ChaosEffect.AdditionalSettings
+                //TODO figure out how to make the settings in the "additional effect settings" window save via ChaosModSettingsHelper
+
+            }
+
             string category = effect.Category != null && effect.Category.Length > 0 ? effect.Category : "Uncategorized";
             string[] categories = subcatregex.Split(category);
 
             if (ignoresubcategories || categories.Length == 1)
             {
-                this.Add(category, enabledCheckBox, ratioSpinner, durationSpinner, activateEffectButton, terminateEffectButton);
+                this.Add(category, enabledCheckBox, ratioSpinner, durationSpinner, activateEffectButton, terminateEffectButton, additionalSettingsButton);
             }
             else
             {
@@ -161,7 +183,7 @@ namespace FezGame.ChaosMod
                     var subcat = container[subcatname];
                     subcat.GroupContainer.Dock = DockStyle.Fill;
                     var controls = subcat.GroupContainer.Controls;
-                    if(controls.Count <= 0)
+                    if (controls.Count <= 0)
                     {
                         var newlist = new CollapsableGroupedListControl();
                         controls.Add(newlist);
@@ -195,7 +217,7 @@ namespace FezGame.ChaosMod
                 var lineControl = control.Controls[0].Controls[2];
                 var labelControl = control.Controls[0].Controls[1];
                 var groupAreaControls = control.Controls[1].Controls;
-                foreach(Control effcon in groupAreaControls)
+                foreach (Control effcon in groupAreaControls)
                 {
                     var effCheckboxControl = effcon.Controls[0];
                     effCheckboxControl.AutoSize = false;
@@ -204,7 +226,7 @@ namespace FezGame.ChaosMod
                 //ChaosModWindow.LogLineDebug(control.ClientSize.Width);//should write the same number every time
                 int availwidth = control.ClientSize.Width;
                 Control c = lineControl;
-                while (c!=this)
+                while (c != this)
                 {//get usable available width (i.e., the maximum width that can be used without resizing the parent Control)
                     availwidth -= (c.Margin.Left + c.Margin.Right);//Note: does not account for padding.
                     c.Padding = Padding.Empty;//removes padding so we don't have to account for that.

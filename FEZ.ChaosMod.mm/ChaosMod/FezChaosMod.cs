@@ -150,6 +150,10 @@ namespace FezGame.ChaosMod
             /// Determines if the timer for this effect should be paused. 
             /// </summary>
             public bool ShouldPauseTimer => _pauseTimerTest != null && _pauseTimerTest();
+            /// <summary>
+            /// A list for the checklist of togglable settings for this effect
+            /// </summary>
+            public IEnumerable<object> AdditionalSettings;
 
             /// <summary>
             /// Initializes a new <see cref="ChaosEffect"/> with the given parameters.
@@ -162,7 +166,8 @@ namespace FezGame.ChaosMod
             /// <param name="onDone"><inheritdoc cref="OnDone" path="/summary"/></param>
             /// <param name="category"><inheritdoc cref="Category" path="/summary"/></param>
             /// <param name="pauseTimerTest"><inheritdoc cref="ShouldPauseTimer" path="/summary"/></param>
-            public ChaosEffect(string name, Action func, double ratio, Func<bool> test = null, double duration = 0d, Action onDone = null, string category = null, Func<bool> pauseTimerTest = null)
+            /// <param name="additionalSettings"><inheritdoc cref="AdditionalSettings" path="/summary"/></param>
+            public ChaosEffect(string name, Action func, double ratio, Func<bool> test = null, double duration = 0d, Action onDone = null, string category = null, Func<bool> pauseTimerTest = null, IEnumerable<object> additionalSettings = null, string additionalSettingsName = null)
             {
                 Name = name;
                 Func = func;
@@ -172,6 +177,7 @@ namespace FezGame.ChaosMod
                 OnDone = onDone;
                 Category = category;
                 _pauseTimerTest = pauseTimerTest;
+                AdditionalSettings = additionalSettings;
             }
             public override string ToString()
             {
@@ -627,7 +633,7 @@ namespace FezGame.ChaosMod
                     string levelname = LevelNamesForRandTele[random.Next(0, LevelNamesForRandTele.Count)];
                     LevelManager.ChangeLevel(levelname);
                     //GC.Collect();
-                }, 0.01f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport"));
+                }, 0.01f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport", additionalSettings: LevelNamesForRandTele, additionalSettingsName: "RandTeleCheckList"));
                 ChaosEffectsList.Add(new ChaosEffect("GoToRandomHubLevel", () =>
                 {
                     string levelname = HubLevelNames[random.Next(0, HubLevelNames.Length)];

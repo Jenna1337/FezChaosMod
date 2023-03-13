@@ -73,6 +73,8 @@ namespace FezGame.ChaosMod
             DebugInfoCheckBox.Checked = chaosMod.ShowDebugInfo;
             AllowRotateAnywhereCheckBox.Checked = chaosMod.AllowRotateAnywhere;
 
+            //TODO move RandTeleCheckList to a new "additional effect settings" window via a "..." button next to the activation buttons in ChaosModEffectListControl
+
             this.RandTeleCheckList.Items.AddRange(LevelNames.All.ToArray());
             for (int i = 0; i < RandTeleCheckList.Items.Count; i++)
                 RandTeleCheckList.SetItemChecked(i, chaosMod.LevelNamesForRandTele.Contains(RandTeleCheckList.Items[i].ToString()));
@@ -269,7 +271,7 @@ namespace FezGame.ChaosMod
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.EffectLogger);
-            this.splitContainer1.Size = new System.Drawing.Size(1078, 706);
+            this.splitContainer1.Size = new System.Drawing.Size(1236, 706);
             this.splitContainer1.SplitterDistance = 352;
             this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 1;
@@ -416,7 +418,7 @@ namespace FezGame.ChaosMod
             | System.Windows.Forms.AnchorStyles.Right)));
             this.EffectsCheckListContainer.Location = new System.Drawing.Point(224, 3);
             this.EffectsCheckListContainer.Name = "EffectsCheckListContainer";
-            this.EffectsCheckListContainer.Size = new System.Drawing.Size(530, 346);
+            this.EffectsCheckListContainer.Size = new System.Drawing.Size(688, 346);
             this.EffectsCheckListContainer.TabIndex = 2;
             this.EffectsCheckListContainer.TabStop = false;
             this.EffectsCheckListContainer.Text = "Effects";
@@ -426,7 +428,7 @@ namespace FezGame.ChaosMod
             this.RandTeleCheckListContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.RandTeleCheckListContainer.Controls.Add(this.RandTeleCheckList);
-            this.RandTeleCheckListContainer.Location = new System.Drawing.Point(771, 3);
+            this.RandTeleCheckListContainer.Location = new System.Drawing.Point(929, 3);
             this.RandTeleCheckListContainer.Name = "RandTeleCheckListContainer";
             this.RandTeleCheckListContainer.Size = new System.Drawing.Size(301, 343);
             this.RandTeleCheckListContainer.TabIndex = 1;
@@ -441,19 +443,18 @@ namespace FezGame.ChaosMod
             this.EffectLogger.Name = "EffectLogger";
             this.EffectLogger.ReadOnly = true;
             this.EffectLogger.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.EffectLogger.Size = new System.Drawing.Size(1078, 344);
+            this.EffectLogger.Size = new System.Drawing.Size(1236, 344);
             this.EffectLogger.TabIndex = 0;
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileToolStripMenuItem,
             this.HelpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1092, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(1250, 33);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -544,7 +545,7 @@ namespace FezGame.ChaosMod
             this.tabControl1.Location = new System.Drawing.Point(0, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1092, 745);
+            this.tabControl1.Size = new System.Drawing.Size(1250, 745);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPageChaosMod
@@ -553,7 +554,7 @@ namespace FezGame.ChaosMod
             this.tabPageChaosMod.Location = new System.Drawing.Point(4, 29);
             this.tabPageChaosMod.Name = "tabPageChaosMod";
             this.tabPageChaosMod.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageChaosMod.Size = new System.Drawing.Size(1084, 712);
+            this.tabPageChaosMod.Size = new System.Drawing.Size(1242, 712);
             this.tabPageChaosMod.TabIndex = 0;
             this.tabPageChaosMod.Text = "Chaos Mod";
             this.tabPageChaosMod.UseVisualStyleBackColor = true;
@@ -632,7 +633,7 @@ namespace FezGame.ChaosMod
             // 
             // ChaosModWindow
             // 
-            this.ClientSize = new System.Drawing.Size(1092, 781);
+            this.ClientSize = new System.Drawing.Size(1250, 781);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.tabControl1);
             this.HelpButton = true;
