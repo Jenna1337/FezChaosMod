@@ -28,7 +28,7 @@ namespace FezGame.ChaosMod
         /// <summary>
         /// A string representing the current version of this class.
         /// </summary>
-        public static readonly string Version = "0.9.4"
+        public static readonly string Version = "0.9.5"
 #if DEBUG
         + " (debug)"
 #endif
