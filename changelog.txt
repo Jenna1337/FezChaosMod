@@ -166,5 +166,7 @@ Added start/end buttons for each effect to the UI
 Moved additional effect settings (e.g., "random teleport checklist") to an "Additional Settings" button to the right of the "end effect" button
 
 0.9.5
+Bug fixes
+Miscellaneous improvements
 
 

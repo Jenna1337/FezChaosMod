@@ -53,7 +53,7 @@ namespace FezGame
             CheckList.ItemCheck += HandleCheck;
             groupBox1.Controls.Add(CheckList);
 
-
+            groupBox1.Text = settings.AdditionalSettingsName;
 
             buttonOk.Focus();
         }

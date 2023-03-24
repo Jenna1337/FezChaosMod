@@ -40,9 +40,11 @@ namespace FezGame.ChaosMod
     public class CollapsableGroupControl : FlowLayoutPanel
     {
         private readonly FlowLayoutPanel groupContainer;
+        private readonly FlowLayoutPanel labelArea;
         private readonly CheckBox showHideButton;
         public string GroupName { get; }
         public FlowLayoutPanel GroupContainer => groupContainer;
+        public FlowLayoutPanel LabelArea => labelArea;
 
         private static readonly ImageList ArrowImageList = new ImageList();
 
@@ -64,7 +66,7 @@ namespace FezGame.ChaosMod
             this.FlowDirection = FlowDirection.TopDown;
             //BorderStyle = BorderStyle.FixedSingle;
 
-            var labelArea = new FlowLayoutPanel
+            labelArea = new FlowLayoutPanel
             {
                 Name = Name + NameSeperator + "LabelArea",
                 AutoSize = true,
