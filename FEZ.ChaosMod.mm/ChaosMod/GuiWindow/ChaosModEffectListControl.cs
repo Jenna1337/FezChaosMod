@@ -38,9 +38,8 @@ namespace FezGame.ChaosMod
             }
             this.ResumeLayout();
             ResizeLabelsSoEverythingLooksNice();
-            this.SuspendLayout();
 
-            chaosMod.ChaosEffectAdded += (effect) => { AddEffect(effect); ResizeLabelsSoEverythingLooksNice(); this.SuspendLayout(); };
+            chaosMod.ChaosEffectAdded += (effect) => { AddEffect(effect); ResizeLabelsSoEverythingLooksNice(); };
 
             //TODO add a thing to each group to indicate how many are enabled
             //TODO indicate if/when an effect can start?; maybe change the color of the text or something; could maybe change if the "activate effect" button is enabled

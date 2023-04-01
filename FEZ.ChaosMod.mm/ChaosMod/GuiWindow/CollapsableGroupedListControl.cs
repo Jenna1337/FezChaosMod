@@ -127,6 +127,9 @@ namespace FezGame.ChaosMod
             base.Controls.Add(groupContainer);
 
             ShowHideButton_CheckedChanged(null, null);//to set the button visuals properly
+
+            Form f = this.FindForm();
+            _ = FezEngine.Components.Waiters.Wait(() => (f = this.FindForm()) != null, () => { f.PerformLayout(); this.SuspendLayout(); });
         }
 
         private void ShowHideButton_CheckedChanged(object sender, EventArgs e)
@@ -141,6 +144,13 @@ namespace FezGame.ChaosMod
             {
                 showHideButton.ImageIndex = 0;
                 showHideButton.Text = "\u2795";//"+"
+            }
+            this.ResumeLayout();
+            var f = this.FindForm();
+            if (f != null)
+            {
+                f.PerformLayout();
+                this.SuspendLayout();
             }
         }
 
