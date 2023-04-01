@@ -115,6 +115,8 @@ namespace FezGame.ChaosMod
 
             base.Controls.Add(labelArea);
 
+            //TODO add a vertical line thing or at least an indent to the left of the GroupContainer to better illustrate that the items in the group are a group
+
             groupContainer = new FlowLayoutPanel
             {
                 Name = Name + NameSeperator + "GroupContainer",
@@ -135,6 +137,7 @@ namespace FezGame.ChaosMod
         private void ShowHideButton_CheckedChanged(object sender, EventArgs e)
         {
             groupContainer.Visible = showHideButton.Checked;
+            //TODO maybe change the "+" and "-" to arrows? 
             if (showHideButton.Checked)
             {
                 showHideButton.ImageIndex = 1;
