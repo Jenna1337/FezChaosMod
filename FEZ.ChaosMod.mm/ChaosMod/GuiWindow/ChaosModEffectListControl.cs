@@ -172,13 +172,13 @@ namespace FezGame.ChaosMod
 
             string category = effect.Category != null && effect.Category.Length > 0 ? effect.Category : "Uncategorized";
             string[] categories = subcatregex.Split(category);
+            int lastcatindex = categories.Length - 1;
+            string lastcat = categories[lastcatindex];
 
             CollapsableGroupedListControl container = this;
             if (!ignoresubcategories && categories.Length != 1)
             {
                 //adds subcategories for groups that match subcatregex
-                int lastcatindex = categories.Length - 1;
-                string lastcat = categories[lastcatindex];
 
                 string firstcat = categories[0];
 
@@ -199,7 +199,7 @@ namespace FezGame.ChaosMod
                     ChaosModWindow.LogLineDebug(String.Join(", ", controls));
                 }
             }
-            container.Add(category, enabledCheckBox, ratioSpinner, durationSpinner, activateEffectButton, terminateEffectButton, additionalSettingsButton);
+            container.Add(lastcat, enabledCheckBox, ratioSpinner, durationSpinner, activateEffectButton, terminateEffectButton, additionalSettingsButton);
             this.PerformLayout();
         }
         private void ResizeLabelsSoEverythingLooksNice()

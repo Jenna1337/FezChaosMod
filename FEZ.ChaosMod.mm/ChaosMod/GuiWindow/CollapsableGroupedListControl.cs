@@ -123,7 +123,7 @@ namespace FezGame.ChaosMod
 
             base.Controls.Add(labelArea);
 
-            //TODO add a vertical line thing or at least an indent to the left of the GroupContainer to better illustrate that the items in the group are a group
+            //TODO maybe add a vertical line thing to better illustrate that the items in the group are a group; dunno the best way to do that
 
             groupContainer = new FlowLayoutPanel
             {
@@ -133,8 +133,16 @@ namespace FezGame.ChaosMod
                 Anchor = AnchorStyles.Right | AnchorStyles.Left,
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
-                BorderStyle = BorderStyle.FixedSingle,
             };
+
+            //adds a left indent to the left of GroupContainer
+            var p = groupContainer.Margin;
+            System.Drawing.Graphics g = this.CreateGraphics();
+            const float indentemmulti = 1.5f;//the number of em units to indent
+            p.Left += (int)(groupContainer.Font.SizeInPoints * indentemmulti / 72 * g.DpiX);//arbitrary indent number; 
+            g.Dispose();
+            groupContainer.Margin = p;
+
             base.Controls.Add(groupContainer);
 
             ShowHideButton_CheckedChanged(null, null);//to set the button visuals properly
