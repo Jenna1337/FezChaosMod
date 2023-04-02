@@ -7,12 +7,16 @@ namespace FezGame.ChaosMod
     //TODO probably should be a ContainerControl
     public class CollapsableGroupedListControl : FlowLayoutPanel, IInputGroup<CollapsableGroupControl>
     {
+        protected static readonly List<CollapsableGroupedListControl> Instances = new List<CollapsableGroupedListControl>();
         private readonly Dictionary<string, CollapsableGroupControl> groups = new Dictionary<string, CollapsableGroupControl>();
 
         public Dictionary<string, CollapsableGroupControl> Groups => groups;
 
         public CollapsableGroupedListControl()
         {
+            Instances.Add(this);
+            this.AutoSize = true;
+            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             this.FlowDirection = FlowDirection.TopDown;
             this.AutoScroll = true;
             this.WrapContents = false;
@@ -39,6 +43,8 @@ namespace FezGame.ChaosMod
     }
     public class CollapsableGroupControl : FlowLayoutPanel
     {
+        protected static readonly List<CollapsableGroupControl> Instances = new List<CollapsableGroupControl>();
+
         private readonly FlowLayoutPanel groupContainer;
         private readonly FlowLayoutPanel labelArea;
         private readonly CheckBox showHideButton;
@@ -56,6 +62,7 @@ namespace FezGame.ChaosMod
         public static readonly string NameSeperator = ".";
         public CollapsableGroupControl(string groupName, string parentName)
         {
+            Instances.Add(this);
             GroupName = groupName;
             this.Name = ((parentName != null && parentName.Length > 0) ? parentName + NameSeperator : "") + GroupName + NameSeperator + "CollapsableGroup";
             this.AutoSize = true;
@@ -64,6 +71,7 @@ namespace FezGame.ChaosMod
             this.Dock = DockStyle.Top;
             this.WrapContents = false;
             this.FlowDirection = FlowDirection.TopDown;
+
             //BorderStyle = BorderStyle.FixedSingle;
 
             labelArea = new FlowLayoutPanel
@@ -125,13 +133,11 @@ namespace FezGame.ChaosMod
                 Anchor = AnchorStyles.Right | AnchorStyles.Left,
                 FlowDirection = FlowDirection.TopDown,
                 WrapContents = false,
+                BorderStyle = BorderStyle.FixedSingle,
             };
             base.Controls.Add(groupContainer);
 
             ShowHideButton_CheckedChanged(null, null);//to set the button visuals properly
-
-            Form f = this.FindForm();
-            _ = FezEngine.Components.Waiters.Wait(() => (f = this.FindForm()) != null, () => { f.PerformLayout(); this.SuspendLayout(); });
         }
 
         private void ShowHideButton_CheckedChanged(object sender, EventArgs e)
@@ -148,13 +154,6 @@ namespace FezGame.ChaosMod
                 showHideButton.ImageIndex = 0;
                 showHideButton.Text = "\u2795";//"+"
             }
-            this.ResumeLayout();
-            var f = this.FindForm();
-            if (f != null)
-            {
-                f.PerformLayout();
-                this.SuspendLayout();
-            }
         }
 
         internal void AddRange(Control[] controls)
@@ -168,8 +167,10 @@ namespace FezGame.ChaosMod
                 Anchor = AnchorStyles.Right | AnchorStyles.Left
             };
             foreach (Control control in controls)
-                if (control != null)
+                if (control != null) {
                     newentry.Controls.Add(control);
+                    ChaosModWindow.LogLineDebug(control.Name);
+                }
             groupContainer.Controls.Add(newentry);
         }
     }

@@ -10,7 +10,7 @@ namespace FezGame.ChaosMod
 {
     class ChaosModEffectListControl : CollapsableGroupedListControl
     {
-        private static readonly bool ignoresubcategories = true;
+        private static readonly bool ignoresubcategories = false;
 
         private static readonly int RowHeight = 26;
         private static readonly Size spinnerSize = new Size(120, RowHeight);
@@ -19,7 +19,7 @@ namespace FezGame.ChaosMod
         private static readonly string NameSeperator = CollapsableGroupControl.NameSeperator;
         internal AdditionalChaosEffectSettingsWindow AdditionalSettingsWindow = null;
 
-        public ChaosModEffectListControl(FezChaosMod chaosMod)
+        public ChaosModEffectListControl(FezChaosMod chaosMod) : base()
         {
             tooltip = new ToolTip
             {
@@ -41,6 +41,7 @@ namespace FezGame.ChaosMod
 
             chaosMod.ChaosEffectAdded += (effect) => { AddEffect(effect); ResizeLabelsSoEverythingLooksNice(); };
 
+            //TODO optimize CollapsableGroupedListControl and make it load faster when switching tabs in ChaosModWindow?
             //TODO add a thing to each group to indicate how many are enabled
             //TODO indicate if/when an effect can start?; maybe change the color of the text or something; could maybe change if the "activate effect" button is enabled
             //TODO add a thing to enable/disable all the effects in a category; maybe a checkbox to the right of the collapse button? dunno if that'd be too confusing for users
@@ -172,19 +173,15 @@ namespace FezGame.ChaosMod
             string category = effect.Category != null && effect.Category.Length > 0 ? effect.Category : "Uncategorized";
             string[] categories = subcatregex.Split(category);
 
-            if (ignoresubcategories || categories.Length == 1)
+            CollapsableGroupedListControl container = this;
+            if (!ignoresubcategories && categories.Length != 1)
             {
-                this.Add(category, enabledCheckBox, ratioSpinner, durationSpinner, activateEffectButton, terminateEffectButton, additionalSettingsButton);
-            }
-            else
-            {
-                //TODO add subcategories for groups that match subcatregex
+                //adds subcategories for groups that match subcatregex
                 int lastcatindex = categories.Length - 1;
                 string lastcat = categories[lastcatindex];
 
                 string firstcat = categories[0];
 
-                CollapsableGroupedListControl container = this;
                 for (int i = 0; i < lastcatindex; ++i)
                 {
                     string subcatname = categories[i];
@@ -195,39 +192,46 @@ namespace FezGame.ChaosMod
                     if (controls.Count <= 0)
                     {
                         var newlist = new CollapsableGroupedListControl();
+                        newlist.AutoScroll = false;
                         controls.Add(newlist);
                     }
                     container = (CollapsableGroupedListControl)controls[0];
                     ChaosModWindow.LogLineDebug(String.Join(", ", controls));
-                    //.Controls.Add()
-                    ;
                 }
-                container.Add(lastcat, enabledCheckBox, ratioSpinner, durationSpinner);
-                this.PerformLayout();
             }
+            container.Add(category, enabledCheckBox, ratioSpinner, durationSpinner, activateEffectButton, terminateEffectButton, additionalSettingsButton);
+            this.PerformLayout();
         }
         private void ResizeLabelsSoEverythingLooksNice()
         {
             this.PerformLayout();
             int longestEffectNameWidth = 0;
-            foreach (CollapsableGroupControl control in Groups.Values)
+            foreach (CollapsableGroupControl control in Instances.SelectMany(g => g.Groups.Values))
             {
                 var labelControl = control.LabelArea.Controls[1];
                 var groupAreaControls = control.GroupContainer.Controls;
                 foreach (Control effcon in groupAreaControls)
                 {
+                    if (typeof(CollapsableGroupedListControl).IsAssignableFrom(effcon.GetType()))
+                    {
+                        continue;
+                    }
                     var effCheckboxControl = effcon.Controls[0];
                     if (effCheckboxControl.Width > longestEffectNameWidth)
                         longestEffectNameWidth = effCheckboxControl.Width;
                 }
             }
-            foreach (CollapsableGroupControl control in Groups.Values)
+            foreach (CollapsableGroupControl control in Instances.SelectMany(g => g.Groups.Values))
             {
                 var lineControl = control.LabelArea.Controls[2];
                 var labelControl = control.LabelArea.Controls[1];
                 var groupAreaControls = control.GroupContainer.Controls;
                 foreach (Control effcon in groupAreaControls)
                 {
+                    if (typeof(CollapsableGroupedListControl).IsAssignableFrom(effcon.GetType()))
+                    {
+                        continue;
+                    }
                     var effCheckboxControl = effcon.Controls[0];
                     effCheckboxControl.AutoSize = false;
                     effCheckboxControl.Width = longestEffectNameWidth;

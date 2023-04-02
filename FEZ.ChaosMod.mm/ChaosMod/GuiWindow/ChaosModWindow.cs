@@ -239,7 +239,7 @@ namespace FezGame.ChaosMod
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.EffectLogger);
-            this.splitContainer1.Size = new System.Drawing.Size(911, 706);
+            this.splitContainer1.Size = new System.Drawing.Size(940, 706);
             this.splitContainer1.SplitterDistance = 352;
             this.splitContainer1.SplitterWidth = 10;
             this.splitContainer1.TabIndex = 1;
@@ -386,7 +386,7 @@ namespace FezGame.ChaosMod
             | System.Windows.Forms.AnchorStyles.Right)));
             this.EffectsCheckListContainer.Location = new System.Drawing.Point(224, 3);
             this.EffectsCheckListContainer.Name = "EffectsCheckListContainer";
-            this.EffectsCheckListContainer.Size = new System.Drawing.Size(684, 346);
+            this.EffectsCheckListContainer.Size = new System.Drawing.Size(713, 346);
             this.EffectsCheckListContainer.TabIndex = 2;
             this.EffectsCheckListContainer.TabStop = false;
             this.EffectsCheckListContainer.Text = "Effects";
@@ -399,7 +399,7 @@ namespace FezGame.ChaosMod
             this.EffectLogger.Name = "EffectLogger";
             this.EffectLogger.ReadOnly = true;
             this.EffectLogger.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.EffectLogger.Size = new System.Drawing.Size(911, 344);
+            this.EffectLogger.Size = new System.Drawing.Size(940, 344);
             this.EffectLogger.TabIndex = 0;
             // 
             // menuStrip1
@@ -410,7 +410,7 @@ namespace FezGame.ChaosMod
             this.HelpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(925, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(954, 33);
             this.menuStrip1.TabIndex = 8;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -501,7 +501,7 @@ namespace FezGame.ChaosMod
             this.tabControl1.Location = new System.Drawing.Point(0, 36);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(925, 745);
+            this.tabControl1.Size = new System.Drawing.Size(954, 745);
             this.tabControl1.TabIndex = 2;
             // 
             // tabPageChaosMod
@@ -510,7 +510,7 @@ namespace FezGame.ChaosMod
             this.tabPageChaosMod.Location = new System.Drawing.Point(4, 29);
             this.tabPageChaosMod.Name = "tabPageChaosMod";
             this.tabPageChaosMod.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageChaosMod.Size = new System.Drawing.Size(917, 712);
+            this.tabPageChaosMod.Size = new System.Drawing.Size(946, 712);
             this.tabPageChaosMod.TabIndex = 0;
             this.tabPageChaosMod.Text = "Chaos Mod";
             this.tabPageChaosMod.UseVisualStyleBackColor = true;
@@ -525,7 +525,7 @@ namespace FezGame.ChaosMod
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(936, 712);
+            this.tabPage1.Size = new System.Drawing.Size(917, 712);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Miscellaneous";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -589,7 +589,7 @@ namespace FezGame.ChaosMod
             // 
             // ChaosModWindow
             // 
-            this.ClientSize = new System.Drawing.Size(925, 781);
+            this.ClientSize = new System.Drawing.Size(954, 781);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.tabControl1);
             this.HelpButton = true;
