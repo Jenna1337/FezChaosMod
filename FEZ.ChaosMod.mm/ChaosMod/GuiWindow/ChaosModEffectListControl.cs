@@ -41,7 +41,6 @@ namespace FezGame.ChaosMod
 
             chaosMod.ChaosEffectAdded += (effect) => { AddEffect(effect); ResizeLabelsSoEverythingLooksNice(); };
 
-            //TODO optimize CollapsableGroupedListControl and make it load faster when switching tabs in ChaosModWindow?
             //TODO add a thing to each group to indicate how many are enabled
             //TODO indicate if/when an effect can start?; maybe change the color of the text or something; could maybe change if the "activate effect" button is enabled
             //TODO add a thing to enable/disable all the effects in a category; maybe a checkbox to the right of the collapse button? dunno if that'd be too confusing for users
@@ -89,7 +88,6 @@ namespace FezGame.ChaosMod
                 durationSpinner = new NumericUpDown
                 {
                     DecimalPlaces = 4,
-                    //Location = new System.Drawing.Point(6, 25);
                     Maximum = new decimal(new int[] {
                     1000,
                     0,
@@ -97,7 +95,6 @@ namespace FezGame.ChaosMod
                     0}),
                     Name = effect.Name + NameSeperator + "DurationSpinner",
                     Size = spinnerSize,
-                    //TabIndex = 5;
                     TextAlign = System.Windows.Forms.HorizontalAlignment.Right,
                     UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left,
                     Value = (decimal)effect.Duration
@@ -191,7 +188,7 @@ namespace FezGame.ChaosMod
                     var controls = subcat.GroupContainer.Controls;
                     if (controls.Count <= 0)
                     {
-                        var newlist = new CollapsableGroupedListControl();
+                        var newlist = new CollapsableGroupedListControl(container);
                         newlist.AutoScroll = false;
                         controls.Add(newlist);
                     }
@@ -236,7 +233,6 @@ namespace FezGame.ChaosMod
                     effCheckboxControl.AutoSize = false;
                     effCheckboxControl.Width = longestEffectNameWidth;
                 }
-                //ChaosModWindow.LogLineDebug(control.ClientSize.Width);//should write the same number every time
                 int availwidth = control.ClientSize.Width;
                 Control c = lineControl;
                 while (c != this)
@@ -247,7 +243,7 @@ namespace FezGame.ChaosMod
                 }
                 lineControl.Width = availwidth - (control.LabelArea.Padding.Right + labelControl.Bounds.X + labelControl.Bounds.Width + labelControl.Margin.Right);
             }
-            this.PerformLayout();
+            this.RefreshLayout();
         }
     }
 }

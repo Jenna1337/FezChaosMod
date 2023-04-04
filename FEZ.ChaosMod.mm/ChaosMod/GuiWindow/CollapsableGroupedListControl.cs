@@ -11,6 +11,19 @@ namespace FezGame.ChaosMod
         private readonly Dictionary<string, CollapsableGroupControl> groups = new Dictionary<string, CollapsableGroupControl>();
 
         public Dictionary<string, CollapsableGroupControl> Groups => groups;
+        public readonly CollapsableGroupedListControl ParentList = null;
+        public CollapsableGroupedListControl GetTopParentList()
+        {
+            var p = ParentList;
+            if (p != null)
+            {
+                while (p.ParentList != null)
+                {
+                    p = p.ParentList;
+                }
+            }
+            return ParentList;
+        }
 
         public CollapsableGroupedListControl()
         {
@@ -20,6 +33,10 @@ namespace FezGame.ChaosMod
             this.FlowDirection = FlowDirection.TopDown;
             this.AutoScroll = true;
             this.WrapContents = false;
+        }
+        public CollapsableGroupedListControl(CollapsableGroupedListControl parentList) : this()
+        {
+            this.ParentList = parentList;
         }
         public void Add(string groupName, params Control[] controls)
         {
@@ -38,6 +55,24 @@ namespace FezGame.ChaosMod
                 this.Controls.Add(g);
                 groups[key] = g;
                 return g;
+            }
+        }
+
+        public void RefreshLayout()
+        {
+            System.Diagnostics.Debugger.Break();
+            var tp = GetTopParentList();
+            if (tp != null)
+            {
+                tp.RefreshLayout();
+                return;
+            }
+            else
+            {
+                this.ResumeLayout(false);
+                this.PerformLayout();
+                this.SuspendLayout();
+                return;
             }
         }
     }
@@ -161,6 +196,10 @@ namespace FezGame.ChaosMod
             {
                 showHideButton.ImageIndex = 0;
                 showHideButton.Text = "\u2795";//"+"
+            }
+            if (Parent is CollapsableGroupedListControl cglc)
+            {
+                cglc.RefreshLayout();
             }
         }
 
