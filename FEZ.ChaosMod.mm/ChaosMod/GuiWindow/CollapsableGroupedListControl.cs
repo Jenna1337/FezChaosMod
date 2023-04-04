@@ -146,6 +146,7 @@ namespace FezGame.ChaosMod
             };
             labelArea.Controls.Add(label);
 
+            //TODO add a PaintEventHandler to this.Paint to draw the lines instead
             var line = new Label
             {
                 BorderStyle = BorderStyle.Fixed3D,
@@ -158,7 +159,7 @@ namespace FezGame.ChaosMod
 
             base.Controls.Add(labelArea);
 
-            //TODO maybe add a vertical line thing to better illustrate that the items in the group are a group; dunno the best way to do that
+            //TODO maybe add a vertical line thing to better illustrate that the items in the group are a group; see PaintEventHandler and this.Paint
 
             groupContainer = new FlowLayoutPanel
             {
