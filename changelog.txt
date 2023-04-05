@@ -168,5 +168,7 @@ Moved additional effect settings (e.g., "random teleport checklist") to an "Addi
 0.9.5
 Bug fixes
 Miscellaneous improvements
+Nested effect categories in the GUI window
+Overhauled Chaos Mod Settings window UI
 
 
