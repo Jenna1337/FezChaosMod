@@ -37,6 +37,7 @@ namespace FezGame.ChaosMod
             var T = typeof(IInputGroup<>);
             return control.GetType().GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == T);
         }
+        [Obsolete("This method is not recommended. Check the Count of control.GetAllInputs() instead.", false)]//TODO clean up
         public static bool HasMultipleInputValues(this Control control)
         {
             return control.GetAllInputs().Count() > 1;
@@ -65,6 +66,7 @@ namespace FezGame.ChaosMod
             }
             return false;
         }
+        [Obsolete]//TODO clean up
         public static TabPage GetParentTabPage(this Control control)
         {
             return control == null ? null : (control is TabPage ? control as TabPage : GetParentTabPage(control.Parent));
