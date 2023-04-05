@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace FezGame.ChaosMod
 {
-    //TODO probably should be a ContainerControl
+    //TODO probably should be a ContainerControl, but then would have to figure out how to layout all the stuff myself
     public class CollapsableGroupedListControl : FlowLayoutPanel, IInputGroup<CollapsableGroupControl>
     {
         protected static readonly List<CollapsableGroupedListControl> Instances = new List<CollapsableGroupedListControl>();
@@ -152,8 +152,6 @@ namespace FezGame.ChaosMod
 
             base.Controls.Add(labelArea);
 
-            //TODO maybe add a vertical line thing to better illustrate that the items in the group are a group; see PaintEventHandler and this.Paint
-
             groupContainer = new FlowLayoutPanel
             {
                 Name = Name + NameSeperator + "GroupContainer",
@@ -168,7 +166,7 @@ namespace FezGame.ChaosMod
             var p = groupContainer.Margin;
             System.Drawing.Graphics g = this.CreateGraphics();
             const float indentemmulti = 1.5f;//the number of em units to indent
-            p.Left += (int)(groupContainer.Font.SizeInPoints * indentemmulti / 72 * g.DpiX);//arbitrary indent number; 
+            p.Left += (int)(groupContainer.Font.SizeInPoints * indentemmulti / 72 * g.DpiX);//indents by indentemmulti em units
             g.Dispose();
             groupContainer.Margin = p;
 
@@ -181,10 +179,10 @@ namespace FezGame.ChaosMod
         private void CollapsableGroupControl_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            const float thickness = 2;
+            const float thickness = 2;//the thickness of the group lines
 
             //Horizontal line
-            //TODO this is supposed to go all the way to the right of the TopParentList CollapsableGroupedListControl; see CollapsableGroupedListControl.GetTopParentList()
+            //TODO this is supposed to go all the way to the right of the TopParentList CollapsableGroupedListControl
             float hx = Label.Location.X + Label.Width;
             float hy = showHideButton.Location.Y + showHideButton.Height / 2f - thickness / 2f;
             g.FillRectangle(linePen, hx, hy, this.Width - hx, thickness);

@@ -111,6 +111,7 @@ namespace FezGame.ChaosMod
                 };
             }
 
+            //TODO Note: clicking activateEffectButton on certain effects before starting or continuing a save can cause crashes; should probably disable these buttons until the game actually starts
             Button activateEffectButton = new Button
             {
                 Text = "Start",

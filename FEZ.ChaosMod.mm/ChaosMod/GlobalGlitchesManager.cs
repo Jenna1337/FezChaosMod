@@ -63,7 +63,7 @@ namespace FezGame.ChaosMod
         }
         public float FreezeProbability
         {
-            //TODO implement my own version of NesGlitches's screen freezing effect
+            //TODO implement my own version of NesGlitches's screen freezing effect that also works for flipping the screen and whatnot
             get => (float)FreezeProbabilityInfo.GetValue(glitches, null);
             set => FreezeProbabilityInfo.SetValue(glitches, value, null);
         }
