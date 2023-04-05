@@ -169,6 +169,7 @@ namespace FezGame.ChaosMod
             }
 
             string category = effect.Category != null && effect.Category.Length > 0 ? effect.Category : "Uncategorized";
+            string displayname = category;
             string[] categories = subcatregex.Split(category);
 
             CollapsableGroupedListControl container = this;
@@ -177,12 +178,14 @@ namespace FezGame.ChaosMod
                 //adds subcategories for groups that match subcatregex
 
                 int lastcatindex = categories.Length - 1;
+                displayname = categories[lastcatindex];
                 string firstcat = categories[0];
 
                 for (int i = 0; i < lastcatindex; ++i)
                 {
-                    string subcatname = categories[i];
-                    var subcat = container[subcatname];
+                    string subcatname = String.Join(NameSeperator, categories.Take(i+1));
+                    CollapsableGroupControl subcat = container[subcatname];
+                    subcat.Label.Text = categories[i];
                     subcat.GroupContainer.Dock = DockStyle.Fill;
                     var controls = subcat.GroupContainer.Controls;
                     if (controls.Count <= 0)
@@ -195,6 +198,7 @@ namespace FezGame.ChaosMod
                 }
             }
             container.Add(category, enabledCheckBox, ratioSpinner, durationSpinner, activateEffectButton, terminateEffectButton, additionalSettingsButton);
+            container[category].Label.Text = displayname;
             this.PerformLayout();
         }
         private void ResizeLabelsSoEverythingLooksNice()
