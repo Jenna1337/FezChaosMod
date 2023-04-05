@@ -90,6 +90,7 @@ namespace FezGame.ChaosMod
 
             if (control.IsInputGroup())
             {
+                //TODO VERY IMPORTANT get this to work with nested IInputGroups
                 var vallist = control.GetAllInputsValues(true);
                 foreach(var giv in vallist)
                 {
