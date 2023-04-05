@@ -22,7 +22,7 @@ namespace FezGame.ChaosMod
         public static readonly string InputGroupInputGroupSeperator = "---";
         public static bool? AsNullableBool(this CheckState checkState)
         {
-            switch(checkState)
+            switch (checkState)
             {
             case CheckState.Checked:
                 return true;
@@ -43,7 +43,7 @@ namespace FezGame.ChaosMod
         }
         public static bool IsInput(this Control control)
         {
-            if(control.Name!="")
+            if (control.Name != "")
             {
                 if (
                 control.IsInputGroup() ||
@@ -79,7 +79,7 @@ namespace FezGame.ChaosMod
                 inputs = inputs.Where(c => !(c.IsInputGroup()));
             }
 
-            inputs = inputs.SelectMany(ctrl => ctrl.GetAllInputs())
+            inputs = inputs.SelectMany(ctrl => ctrl.GetAllInputs(IgnoreInInputGroup))
                 .Concat(controls.Where(c => c.IsInput()));
 
             return inputs;
@@ -90,9 +90,8 @@ namespace FezGame.ChaosMod
 
             if (control.IsInputGroup())
             {
-                //TODO VERY IMPORTANT get this to work with nested IInputGroups
-                var vallist = control.GetAllInputsValues(true);
-                foreach(var giv in vallist)
+                var vallist = control.GetAllInputsValues(true, false);
+                foreach (var giv in vallist)
                 {
                     foreach (var kv in giv.Value)
                     {
@@ -158,7 +157,7 @@ namespace FezGame.ChaosMod
                 break;
             }
 
-            if(prependControlNameIfMultivalued && values.Count > 1)
+            if (prependControlNameIfMultivalued && values.Count > 1)
             {
                 var newvalues = new Dictionary<string, object>();
                 foreach (var kv in values)
@@ -174,7 +173,7 @@ namespace FezGame.ChaosMod
         {
             if (control.IsInputGroup())
             {
-                var cglinputs = control.GetAllInputs();
+                var cglinputs = control.GetAllInputs(false);
                 foreach (var gi in cglinputs)
                 {
                     if (vals.TryGetValue(gi.Name, out string val))
@@ -224,7 +223,7 @@ namespace FezGame.ChaosMod
                 break;
             case CheckedListBox C:
                 for (int i = 0; i < C.Items.Count; i++)
-                    if (vals.TryGetValue(C.Items[i].ToString(), out string val)) 
+                    if (vals.TryGetValue(C.Items[i].ToString(), out string val))
                         C.SetItemChecked(i, bool.Parse(val));
                 break;
             case ListBox C:
@@ -255,9 +254,9 @@ namespace FezGame.ChaosMod
                 break;
             }
         }
-        public static Dictionary<string, Dictionary<string, object>> GetAllInputsValues(this Control control, bool prependControlNameIfMultivalued = false)
+        public static Dictionary<string, Dictionary<string, object>> GetAllInputsValues(this Control control, bool prependControlNameIfMultivalued = false, bool IgnoreInInputGroup = true)
         {
-            var i = control.GetAllInputs();
+            var i = control.GetAllInputs(IgnoreInInputGroup);
             return i.ToDictionary(c => c.Name, c => c.GetValues(prependControlNameIfMultivalued));
         }
         public static void SetAllInputsValues(this Control root, Dictionary<string, Dictionary<string, object>> ctrlvals)
@@ -331,7 +330,7 @@ namespace FezGame.ChaosMod
             foreach (var line in lines)
             {
                 var trimmed = line.TrimStart();
-                if (trimmed.StartsWith(";") || trimmed.Length<=0)
+                if (trimmed.StartsWith(";") || trimmed.Length <= 0)
                     continue;
                 if (trimmed.StartsWith("["))
                 {
@@ -358,7 +357,7 @@ namespace FezGame.ChaosMod
                 $"{FezChaosModVersionName}{IniKeyValDelimiter}{FezChaosMod.Version}",
                 ""
             };
-            foreach(var dd in dict.OrderBy(dd=>dd.Key))
+            foreach (var dd in dict.OrderBy(dd => dd.Key))
             {
                 lines.Add($"[{dd.Key}]");
                 foreach (var d in dd.Value)//.OrderBy(d=>d.Key))

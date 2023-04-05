@@ -177,7 +177,6 @@ namespace FezGame.ChaosMod
                 //adds subcategories for groups that match subcatregex
 
                 int lastcatindex = categories.Length - 1;
-                category = categories[lastcatindex];
                 string firstcat = categories[0];
 
                 for (int i = 0; i < lastcatindex; ++i)
