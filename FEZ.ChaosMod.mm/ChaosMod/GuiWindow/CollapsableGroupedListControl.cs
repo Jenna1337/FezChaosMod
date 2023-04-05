@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace FezGame.ChaosMod
@@ -83,6 +84,7 @@ namespace FezGame.ChaosMod
         private readonly FlowLayoutPanel groupContainer;
         private readonly FlowLayoutPanel labelArea;
         private readonly CheckBox showHideButton;
+        public readonly Label Label;
         public string GroupName { get; }
         public FlowLayoutPanel GroupContainer => groupContainer;
         public FlowLayoutPanel LabelArea => labelArea;
@@ -136,7 +138,7 @@ namespace FezGame.ChaosMod
             showHideButton.CheckedChanged += ShowHideButton_CheckedChanged;
             labelArea.Controls.Add(showHideButton);
 
-            var label = new Label
+            Label = new Label
             {
                 Name = Name + NameSeperator + "GroupLabel",
                 Text = GroupName,
@@ -144,18 +146,9 @@ namespace FezGame.ChaosMod
                 TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             };
-            labelArea.Controls.Add(label);
+            labelArea.Controls.Add(Label);
 
-            //TODO add a PaintEventHandler to this.Paint to draw the lines instead
-            var line = new Label
-            {
-                BorderStyle = BorderStyle.Fixed3D,
-                //Dock = DockStyle.Fill,
-                Height = 4,
-                //Width = 100,//this is supposed to go all the way to the right of the containing CollapsableGroupedListControl, but FlowLayoutPanel can't do that, and I don't want to figure out how to work around that. 
-                Anchor = AnchorStyles.Right | AnchorStyles.Left,
-            };
-            labelArea.Controls.Add(line);
+            this.Paint += CollapsableGroupControl_Paint;
 
             base.Controls.Add(labelArea);
 
@@ -182,6 +175,24 @@ namespace FezGame.ChaosMod
             base.Controls.Add(groupContainer);
 
             ShowHideButton_CheckedChanged(null, null);//to set the button visuals properly
+        }
+
+        private static Brush linePen = new Pen(Color.DarkGray).Brush;
+        private void CollapsableGroupControl_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            const float thickness = 2;
+
+            //Horizontal line
+            //TODO this is supposed to go all the way to the right of the TopParentList CollapsableGroupedListControl; see CollapsableGroupedListControl.GetTopParentList()
+            float hx = Label.Location.X + Label.Width;
+            float hy = showHideButton.Location.Y + showHideButton.Height / 2f - thickness / 2f;
+            g.FillRectangle(linePen, hx, hy, this.Width - hx, thickness);
+
+            //Vertical line
+            float vx = showHideButton.Location.X + showHideButton.Width / 2f - thickness / 2f;
+            float vy = showHideButton.Location.Y + showHideButton.Height;
+            g.FillRectangle(linePen, vx, vy, thickness, this.Width - vy);
         }
 
         private void ShowHideButton_CheckedChanged(object sender, EventArgs e)

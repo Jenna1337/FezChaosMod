@@ -205,7 +205,7 @@ namespace FezGame.ChaosMod
             int longestEffectNameWidth = 0;
             foreach (CollapsableGroupControl control in Instances.SelectMany(g => g.Groups.Values))
             {
-                var labelControl = control.LabelArea.Controls[1];
+                Label labelControl = control.Label;
                 var groupAreaControls = control.GroupContainer.Controls;
                 foreach (Control effcon in groupAreaControls)
                 {
@@ -220,8 +220,7 @@ namespace FezGame.ChaosMod
             }
             foreach (CollapsableGroupControl control in Instances.SelectMany(g => g.Groups.Values))
             {
-                var lineControl = control.LabelArea.Controls[2];
-                var labelControl = control.LabelArea.Controls[1];
+                Label labelControl = control.Label;
                 var groupAreaControls = control.GroupContainer.Controls;
                 foreach (Control effcon in groupAreaControls)
                 {
@@ -233,15 +232,6 @@ namespace FezGame.ChaosMod
                     effCheckboxControl.AutoSize = false;
                     effCheckboxControl.Width = longestEffectNameWidth;
                 }
-                int availwidth = control.ClientSize.Width;
-                Control c = lineControl;
-                while (c != this)
-                {//get usable available width (i.e., the maximum width that can be used without resizing the parent Control)
-                    availwidth -= (c.Margin.Left + c.Margin.Right);//Note: does not account for padding.
-                    c.Padding = Padding.Empty;//removes padding so we don't have to account for that.
-                    c = c.Parent;
-                }
-                lineControl.Width = availwidth - (control.LabelArea.Padding.Right + labelControl.Bounds.X + labelControl.Bounds.Width + labelControl.Margin.Right);
             }
             this.RefreshLayout();
         }
