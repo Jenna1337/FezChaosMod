@@ -183,7 +183,6 @@ namespace FezGame.ChaosMod
                 for (int i = 0; i < lastcatindex; ++i)
                 {
                     string subcatname = categories[i];
-                    ChaosModWindow.LogLineDebug(subcatname);
                     var subcat = container[subcatname];
                     subcat.GroupContainer.Dock = DockStyle.Fill;
                     var controls = subcat.GroupContainer.Controls;
@@ -194,7 +193,6 @@ namespace FezGame.ChaosMod
                         controls.Add(newlist);
                     }
                     container = (CollapsableGroupedListControl)controls[0];
-                    ChaosModWindow.LogLineDebug(String.Join(", ", controls));
                 }
             }
             container.Add(category, enabledCheckBox, ratioSpinner, durationSpinner, activateEffectButton, terminateEffectButton, additionalSettingsButton);
