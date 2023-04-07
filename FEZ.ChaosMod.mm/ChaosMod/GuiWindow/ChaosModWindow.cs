@@ -637,7 +637,14 @@ namespace FezGame.ChaosMod
 
         private void EffectsDelaySpinner_ValueChanged(object sender, EventArgs e) { chaosMod.DelayBetweenEffects = Decimal.ToDouble(EffectsDelaySpinner.Value); }
 
-        private void OpenToolStripMenuItem_Click(object sender, EventArgs e) { _ = openFileDialog1.ShowDialog(Instance); }
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(ActiveSaveFile))
+            {
+                openFileDialog1.FileName = ActiveSaveFile;
+            }
+            _ = openFileDialog1.ShowDialog(Instance);
+        }
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -647,7 +654,14 @@ namespace FezGame.ChaosMod
                 saveFileDialog1.ShowDialog(Instance);
         }
 
-        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e) { _ = saveFileDialog1.ShowDialog(Instance); }
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(ActiveSaveFile))
+            {
+                saveFileDialog1.FileName = ActiveSaveFile;
+            }
+            _ = saveFileDialog1.ShowDialog(Instance);
+        }
         private void SaveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e) { SaveSettingsToFile(saveFileDialog1.FileName); }
         private void OpenFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e) { LoadSettingsFromFile(openFileDialog1.FileName); }
 
