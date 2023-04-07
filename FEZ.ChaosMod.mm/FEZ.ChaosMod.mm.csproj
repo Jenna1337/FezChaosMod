@@ -98,6 +98,7 @@
     <Compile Include="ChaosMod\GameInfo\LevelInfo.cs" />
     <Compile Include="ChaosMod\GameInfo\LevelNames.cs" />
     <Compile Include="ChaosMod\GuiInGame\LinearProgressBar.cs" />
+    <Compile Include="ChaosMod\GuiWindow\ControlExtensions.cs" />
     <Compile Include="ChaosMod\ListExtensions.cs" />
     <Compile Include="ChaosMod\GameInfo\Loot.cs" />
     <Compile Include="ChaosMod\GameInfo\LootMetadata.cs" />

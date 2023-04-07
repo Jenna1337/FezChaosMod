@@ -45,7 +45,7 @@ namespace FezGame.ChaosMod
             //TODO indicate if/when an effect can start?; maybe change the color of the text or something; could maybe change if the "activate effect" button is enabled
             //TODO add a thing to enable/disable all the effects in a category; maybe a checkbox to the right of the collapse button? dunno if that'd be too confusing for users
         }
-        private static readonly Regex subcatregex = new Regex(@"(?<=\D)\.(?=\D)");
+        private static readonly Regex subcatregex = new Regex(@"(?<=\D)\.(?=\D)");//TODO review this regex
         private void AddEffect(ChaosEffect effect)
         {
             //CheckBox, NumericUpDown, NumericUpDown

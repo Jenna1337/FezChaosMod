@@ -152,8 +152,8 @@ namespace FezGame.GameInfo
         public List<Volume> BlackHoles => levelData?.Volumes?.Values?.Where(v => v != null && v.ActorSettings != null && v.ActorSettings.IsBlackHole).ToList();
 
         private readonly Dictionary<ActorType, int> TrileCountByActorType = new Dictionary<ActorType, int>();
-        private bool hasSinkBlocks = false;
-        public bool HasSinkBlocks { get => hasSinkBlocks; }
+
+        public bool HasSinkBlocks { get; private set; } = false;
 
         public bool Quantum => levelData.Quantum;
         public bool Rainy => levelData.Rainy;
@@ -484,7 +484,7 @@ namespace FezGame.GameInfo
                         PieceOfHeart.AddTrile(trile.Emplacement, trile2.ActorSettings.Type, Name, ContainingTrile);
                         break;
                     case ActorType.SinkPickup:
-                        hasSinkBlocks = true;
+                        HasSinkBlocks = true;
                         break;
                     }
                 }

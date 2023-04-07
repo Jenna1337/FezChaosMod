@@ -9,9 +9,8 @@ namespace FezGame.ChaosMod
     public class CollapsableGroupedListControl : FlowLayoutPanel, IInputGroup<CollapsableGroupControl>
     {
         protected static readonly List<CollapsableGroupedListControl> Instances = new List<CollapsableGroupedListControl>();
-        private readonly Dictionary<string, CollapsableGroupControl> groups = new Dictionary<string, CollapsableGroupControl>();
 
-        public Dictionary<string, CollapsableGroupControl> Groups => groups;
+        public Dictionary<string, CollapsableGroupControl> Groups { get; } = new Dictionary<string, CollapsableGroupControl>();
         public readonly CollapsableGroupedListControl ParentList = null;
         public CollapsableGroupedListControl GetTopParentList()
         {
@@ -49,12 +48,12 @@ namespace FezGame.ChaosMod
             get
             {
                 CollapsableGroupControl g;
-                if (groups.ContainsKey(key) && (g = groups[key]) != null)
+                if (Groups.ContainsKey(key) && (g = Groups[key]) != null)
                     return g;
 
                 g = new CollapsableGroupControl(key, this.Name);
                 this.Controls.Add(g);
-                groups[key] = g;
+                Groups[key] = g;
                 return g;
             }
         }
@@ -79,15 +78,11 @@ namespace FezGame.ChaosMod
     }
     public class CollapsableGroupControl : FlowLayoutPanel
     {
-        protected static readonly List<CollapsableGroupControl> Instances = new List<CollapsableGroupControl>();
-
-        private readonly FlowLayoutPanel groupContainer;
-        private readonly FlowLayoutPanel labelArea;
-        private readonly CheckBox showHideButton;
-        public readonly Label Label;
         public string GroupName { get; }
-        public FlowLayoutPanel GroupContainer => groupContainer;
-        public FlowLayoutPanel LabelArea => labelArea;
+        public FlowLayoutPanel GroupContainer { get; }
+        public FlowLayoutPanel LabelArea { get; }
+        public CheckBox ShowHideButton { get; }
+        public Label Label { get; }
 
         private static readonly ImageList ArrowImageList = new ImageList();
 
@@ -99,7 +94,6 @@ namespace FezGame.ChaosMod
         public static readonly string NameSeperator = ".";
         public CollapsableGroupControl(string groupName, string parentName)
         {
-            Instances.Add(this);
             GroupName = groupName;
             this.Name = ((parentName != null && parentName.Length > 0) ? parentName + NameSeperator : "") + GroupName + NameSeperator + "CollapsableGroup";
             this.AutoSize = true;
@@ -111,7 +105,7 @@ namespace FezGame.ChaosMod
 
             //BorderStyle = BorderStyle.FixedSingle;
 
-            labelArea = new FlowLayoutPanel
+            LabelArea = new FlowLayoutPanel
             {
                 Name = Name + NameSeperator + "LabelArea",
                 AutoSize = true,
@@ -121,9 +115,9 @@ namespace FezGame.ChaosMod
                 WrapContents = false,
                 //BorderStyle = BorderStyle.FixedSingle
             };
-            labelArea.Dock = DockStyle.Left;
+            LabelArea.Dock = DockStyle.Left;
 
-            showHideButton = new System.Windows.Forms.CheckBox
+            ShowHideButton = new System.Windows.Forms.CheckBox
             {
                 Name = Name + NameSeperator + "ShowHideButton",
                 Appearance = System.Windows.Forms.Appearance.Button,
@@ -134,9 +128,9 @@ namespace FezGame.ChaosMod
                 AutoSize = true,
             };
             //showHideButton.Height = showHideButton.Width = LabelRowHeight;
-            showHideButton.GotFocus += (object sender, EventArgs e) => this.FindForm().ActiveControl = null;
-            showHideButton.CheckedChanged += ShowHideButton_CheckedChanged;
-            labelArea.Controls.Add(showHideButton);
+            ShowHideButton.GotFocus += (object sender, EventArgs e) => this.FindForm().ActiveControl = null;
+            ShowHideButton.CheckedChanged += ShowHideButton_CheckedChanged;
+            LabelArea.Controls.Add(ShowHideButton);
 
             Label = new Label
             {
@@ -146,13 +140,13 @@ namespace FezGame.ChaosMod
                 TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom
             };
-            labelArea.Controls.Add(Label);
+            LabelArea.Controls.Add(Label);
 
             this.Paint += CollapsableGroupControl_Paint;
 
-            base.Controls.Add(labelArea);
+            base.Controls.Add(LabelArea);
 
-            groupContainer = new FlowLayoutPanel
+            GroupContainer = new FlowLayoutPanel
             {
                 Name = Name + NameSeperator + "GroupContainer",
                 AutoSize = true,
@@ -163,14 +157,14 @@ namespace FezGame.ChaosMod
             };
 
             //adds a left indent to the left of GroupContainer
-            var p = groupContainer.Margin;
+            var p = GroupContainer.Margin;
             System.Drawing.Graphics g = this.CreateGraphics();
             const float indentemmulti = 1.5f;//the number of em units to indent
-            p.Left += (int)(groupContainer.Font.SizeInPoints * indentemmulti / 72 * g.DpiX);//indents by indentemmulti em units
+            p.Left += (int)(GroupContainer.Font.SizeInPoints * indentemmulti / 72 * g.DpiX);//indents by indentemmulti em units
             g.Dispose();
-            groupContainer.Margin = p;
+            GroupContainer.Margin = p;
 
-            base.Controls.Add(groupContainer);
+            base.Controls.Add(GroupContainer);
 
             ShowHideButton_CheckedChanged(null, null);//to set the button visuals properly
         }
@@ -182,30 +176,30 @@ namespace FezGame.ChaosMod
             const float thickness = 2;//the thickness of the group lines
 
             //Horizontal line
-            //TODO this is supposed to go all the way to the right of the TopParentList CollapsableGroupedListControl
+            //TODO this is supposed to go all the way to the right of the TopParentList CollapsableGroupedListControl; seems FlowLayoutPanel does not allow for that.
             float hx = Label.Location.X + Label.Width;
-            float hy = showHideButton.Location.Y + showHideButton.Height / 2f - thickness / 2f;
+            float hy = ShowHideButton.Location.Y + ShowHideButton.Height / 2f - thickness / 2f;
             g.FillRectangle(linePen, hx, hy, this.Width - hx, thickness);
 
             //Vertical line
-            float vx = showHideButton.Location.X + showHideButton.Width / 2f - thickness / 2f;
-            float vy = showHideButton.Location.Y + showHideButton.Height;
+            float vx = ShowHideButton.Location.X + ShowHideButton.Width / 2f - thickness / 2f;
+            float vy = ShowHideButton.Location.Y + ShowHideButton.Height;
             g.FillRectangle(linePen, vx, vy, thickness, this.Width - vy);
         }
 
         private void ShowHideButton_CheckedChanged(object sender, EventArgs e)
         {
-            groupContainer.Visible = showHideButton.Checked;
+            GroupContainer.Visible = ShowHideButton.Checked;
             //TODO maybe change the "+" and "-" to arrows? 
-            if (showHideButton.Checked)
+            if (ShowHideButton.Checked)
             {
-                showHideButton.ImageIndex = 1;
-                showHideButton.Text = "\u2796";//"-"
+                ShowHideButton.ImageIndex = 1;
+                ShowHideButton.Text = "\u2796";//"-"
             }
             else
             {
-                showHideButton.ImageIndex = 0;
-                showHideButton.Text = "\u2795";//"+"
+                ShowHideButton.ImageIndex = 0;
+                ShowHideButton.Text = "\u2795";//"+"
             }
             if (Parent is CollapsableGroupedListControl cglc)
             {
@@ -228,7 +222,7 @@ namespace FezGame.ChaosMod
                     newentry.Controls.Add(control);
                     ChaosModWindow.LogLineDebug(control.Name);
                 }
-            groupContainer.Controls.Add(newentry);
+            GroupContainer.Controls.Add(newentry);
         }
     }
 }
