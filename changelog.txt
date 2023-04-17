@@ -170,5 +170,6 @@ Bug fixes
 Miscellaneous improvements
 Nested effect categories in the GUI window
 Overhauled Chaos Mod Settings window UI
+Fixed name of additional settings windows
 
 

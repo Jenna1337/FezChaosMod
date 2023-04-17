@@ -92,7 +92,7 @@ namespace FezGame
             this.Controls.Add(this.buttonOk);
             this.Name = "AdditionalChaosEffectSettingsWindow";
             this.ShowIcon = false;
-            this.Text = "About FEZ Chaos Mod";
+            this.Text = "Additional Chaos Effect Settings";
             this.ResumeLayout(false);
 
         }

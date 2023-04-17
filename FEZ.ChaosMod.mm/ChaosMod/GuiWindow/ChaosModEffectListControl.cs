@@ -156,6 +156,7 @@ namespace FezGame.ChaosMod
                 tooltip.SetToolTip(additionalSettingsButton, "Additional Settings");
 
                 AdditionalSettingsWindow = new AdditionalChaosEffectSettingsWindow(effect.AdditionalSettings);
+                AdditionalSettingsWindow.Text = effect.Name + " Additional Settings";
                 additionalSettingsButton.Click += new EventHandler((object sender, EventArgs e) => { _ = AdditionalSettingsWindow.ShowDialog(); });
             }
             else
