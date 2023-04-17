@@ -525,7 +525,7 @@ namespace FezGame.ChaosMod
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(917, 712);
+            this.tabPage1.Size = new System.Drawing.Size(946, 712);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Miscellaneous";
             this.tabPage1.UseVisualStyleBackColor = true;
