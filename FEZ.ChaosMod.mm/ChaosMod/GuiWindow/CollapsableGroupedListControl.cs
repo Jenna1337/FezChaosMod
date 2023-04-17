@@ -170,7 +170,7 @@ namespace FezGame.ChaosMod
             ShowHideButton_CheckedChanged(null, null);//to set the button visuals properly
         }
 
-        private static Brush linePen = new Pen(Color.DarkGray).Brush;
+        private static readonly Brush linePen = new Pen(Color.DarkGray).Brush;
         private void CollapsableGroupControl_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;

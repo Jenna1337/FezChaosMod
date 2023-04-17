@@ -155,8 +155,10 @@ namespace FezGame.ChaosMod
                 additionalSettingsButton.Font = new Font(additionalSettingsButton.Font.Name, additionalSettingsButton.Font.Size * 1.3f);
                 tooltip.SetToolTip(additionalSettingsButton, "Additional Settings");
 
-                AdditionalSettingsWindow = new AdditionalChaosEffectSettingsWindow(effect.AdditionalSettings);
-                AdditionalSettingsWindow.Text = effect.Name + " Additional Settings";
+                AdditionalSettingsWindow = new AdditionalChaosEffectSettingsWindow(effect.AdditionalSettings)
+                {
+                    Text = effect.Name + " Additional Settings"
+                };
                 additionalSettingsButton.Click += new EventHandler((object sender, EventArgs e) => { _ = AdditionalSettingsWindow.ShowDialog(); });
             }
             else
@@ -191,8 +193,10 @@ namespace FezGame.ChaosMod
                     var controls = subcat.GroupContainer.Controls;
                     if (controls.Count <= 0)
                     {
-                        var newlist = new CollapsableGroupedListControl(container);
-                        newlist.AutoScroll = false;
+                        var newlist = new CollapsableGroupedListControl(container)
+                        {
+                            AutoScroll = false
+                        };
                         controls.Add(newlist);
                     }
                     container = (CollapsableGroupedListControl)controls[0];

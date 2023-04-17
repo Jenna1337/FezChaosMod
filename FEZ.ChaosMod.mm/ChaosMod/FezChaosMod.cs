@@ -30,7 +30,7 @@ namespace FezGame.ChaosMod
         /// </summary>
         public static readonly string Version = "0.9.5"
 #if DEBUG
-        + $" (debug {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()})"
+        + $" (debug build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version})"
 #endif
         ;//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
 
