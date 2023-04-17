@@ -76,6 +76,7 @@ namespace FezGame.ChaosMod
             }
         }
     }
+    //TODO probably should be a ContainerControl, but then would have to figure out how to layout all the stuff myself
     public class CollapsableGroupControl : FlowLayoutPanel
     {
         public string GroupName { get; }
