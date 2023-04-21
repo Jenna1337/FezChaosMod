@@ -14,10 +14,10 @@ namespace FezGame.GameInfo
         {
             public Entrance FromLevel { get; }
             public Entrance ToLevel { get; }
-            public bool NeedsKey { get => FromLevel.NeedsKey || ToLevel.NeedsKey; }
-            public bool IsPipe { get => FromLevel.IsPipe || ToLevel.IsPipe; }
-            public bool IsShortcut { get => FromLevel.IsShortcut || ToLevel.IsShortcut; }
-            public int RequiredCubes { get => FromLevel.RequiredCubes + ToLevel.RequiredCubes; }
+            public bool NeedsKey => FromLevel.NeedsKey || ToLevel.NeedsKey;
+            public bool IsPipe => FromLevel.IsPipe || ToLevel.IsPipe;
+            public bool IsShortcut => FromLevel.IsShortcut || ToLevel.IsShortcut;
+            public int RequiredCubes => FromLevel.RequiredCubes + ToLevel.RequiredCubes;
 
             public LevelConnection(Entrance fromLevel, Entrance toLevel)
             {

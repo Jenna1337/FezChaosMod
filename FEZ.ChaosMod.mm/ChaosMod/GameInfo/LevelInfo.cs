@@ -26,12 +26,12 @@ namespace FezGame.GameInfo
             public string LevelName { get; }
             public int? VolumeId { get; }
             private int Requirement { get; }
-            public bool IsShortcut { get { return Requirement == -2; } } // GameLevelManager.WentThroughSecretPassage
-            public bool IsPipe { get { return Requirement == -3; } }
-            public bool NeedsAllOwls { get { return Requirement == -4; } }
-            public bool NeedsKey { get { return Requirement == -1; } }
-            public bool IsWarpGate { get { return Requirement == -5; } }
-            public int RequiredCubes { get { return Requirement > 0 ? Requirement : 0; } }
+            public bool IsShortcut => Requirement == -2;  // GameLevelManager.WentThroughSecretPassage
+            public bool IsPipe => Requirement == -3;
+            public bool NeedsAllOwls => Requirement == -4;
+            public bool NeedsKey => Requirement == -1;
+            public bool IsWarpGate => Requirement == -5;
+            public int RequiredCubes => Requirement > 0 ? Requirement : 0;
             public FaceOrientation? FromOrientation { get; }
             public LevelTarget Exit { get; }
             public Entrance(string LevelName, int? myVolume, FaceOrientation? fromOrientation, int requirement, LevelTarget target)

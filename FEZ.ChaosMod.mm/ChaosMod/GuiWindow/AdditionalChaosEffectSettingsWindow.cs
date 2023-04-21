@@ -7,8 +7,8 @@ namespace FezGame
 {
     class AdditionalChaosEffectSettingsWindow : Form
     {
-        private GroupBox groupBox1;
-        private Button buttonOk;
+        private GroupBox GroupBox1;
+        private Button ButtonOk;
 
         private CheckedListBox CheckList { get; }
         private CheckedListBox ShadowCheckList { get; }
@@ -51,45 +51,45 @@ namespace FezGame
 
             ShadowCheckList.ItemCheck += HandleCheck;
             CheckList.ItemCheck += HandleCheck;
-            groupBox1.Controls.Add(CheckList);
+            GroupBox1.Controls.Add(CheckList);
 
-            groupBox1.Text = settings.AdditionalSettingsName;
+            GroupBox1.Text = settings.AdditionalSettingsName;
 
-            buttonOk.Focus();
+            ButtonOk.Focus();
         }
 
         private void InitializeComponent()
         {
-            this.buttonOk = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ButtonOk = new System.Windows.Forms.Button();
+            this.GroupBox1 = new System.Windows.Forms.GroupBox();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
-            this.buttonOk.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonOk.Location = new System.Drawing.Point(0, 276);
-            this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size(379, 37);
-            this.buttonOk.TabIndex = 2;
-            this.buttonOk.Text = "OK";
-            this.buttonOk.UseVisualStyleBackColor = true;
-            this.buttonOk.Click += new System.EventHandler(this.button1_Click);
+            this.ButtonOk.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.ButtonOk.Location = new System.Drawing.Point(0, 276);
+            this.ButtonOk.Name = "ButtonOk";
+            this.ButtonOk.Size = new System.Drawing.Size(379, 37);
+            this.ButtonOk.TabIndex = 2;
+            this.ButtonOk.Text = "OK";
+            this.ButtonOk.UseVisualStyleBackColor = true;
+            this.ButtonOk.Click += new System.EventHandler(this.Button1_Click);
             // 
             // groupBox1
             // 
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(379, 276);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
+            this.GroupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GroupBox1.Location = new System.Drawing.Point(0, 0);
+            this.GroupBox1.Name = "GroupBox1";
+            this.GroupBox1.Size = new System.Drawing.Size(379, 276);
+            this.GroupBox1.TabIndex = 3;
+            this.GroupBox1.TabStop = false;
+            this.GroupBox1.Text = "GroupBox1";
             // 
             // AdditionalChaosEffectSettingsWindow
             // 
             this.ClientSize = new System.Drawing.Size(379, 313);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.buttonOk);
+            this.Controls.Add(this.GroupBox1);
+            this.Controls.Add(this.ButtonOk);
             this.Name = "AdditionalChaosEffectSettingsWindow";
             this.ShowIcon = false;
             this.Text = "Additional Chaos Effect Settings";
@@ -97,7 +97,7 @@ namespace FezGame
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             this.Hide();
         }

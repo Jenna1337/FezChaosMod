@@ -463,7 +463,7 @@ namespace FezGame.ChaosMod
         /// <summary>
         /// The <see cref="LevelInfo"/> for the currently loaded level.
         /// </summary>
-        private LevelInfo CurrentLevelInfo { get => LevelInfo.GetLevelInfo(LevelManager.Name); }
+        private LevelInfo CurrentLevelInfo => LevelInfo.GetLevelInfo(LevelManager.Name);
 
         public static Color EffectTextColorBlink = Color.Yellow;
         public static Color EffectTextColorDone = Color.Gray;

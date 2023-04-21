@@ -15,9 +15,9 @@ namespace FezGame.GameInfo
 		public LootMetadataList Maps = new LootMetadataList();
 		public LootMetadataList Artifacts = new LootMetadataList();
 
-		public float TotalCubes { get => GoldCubes.Count + AntiCubes.Count + CubeBits.Count / 8f; }
+        public float TotalCubes => GoldCubes.Count + AntiCubes.Count + CubeBits.Count / 8f;
 
-		public LootMetadataList All => new LootMetadataList(){
+        public LootMetadataList All => new LootMetadataList(){
 			Keys,
 			GoldCubes,
 			AntiCubes,

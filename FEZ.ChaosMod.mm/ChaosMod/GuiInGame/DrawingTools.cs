@@ -17,7 +17,7 @@ namespace FezGame.ChaosMod
         public IFontManager FontManager { private get; set; }
 
         private static DrawingTools instance = null;
-        public static DrawingTools Instance { get => instance ?? (instance = new DrawingTools()); }
+        public static DrawingTools Instance => instance ?? (instance = new DrawingTools());
 
         private DrawingTools()
         {
