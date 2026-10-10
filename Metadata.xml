@@ -6,5 +6,6 @@
    <LibraryName>FEZ.ChaosMod.mm.dll</LibraryName>
    <Dependencies>
       <DependencyInfo Name="HAT" MinimumVersion="3.0"/>
+      <DependencyInfo Name="IMGUI" MinimumVersion="1.0"/>
    </Dependencies>
 </Metadata>
