@@ -3,3 +3,5 @@
 libs/*.exe
 libs/*.dll
 .vs/*
+PackedRelease/
+*/publish/*
