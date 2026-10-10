@@ -31,14 +31,14 @@ cd /d %projectpath%
 @IF NOT EXIST %packedpath% @mkdir %packedpath%
 
 @rem bin\x86\Debug\net10.0
-@echo Packing the files that are in %projectsubpath%\publish into %packedpath%\FezMultiplayerMod.zip ...
-@powershell -command "Compress-Archive -Path '%projectsubpath%\publish\*' -DestinationPath '%packedpath%\FezMultiplayerMod.zip' -Force"
+@echo Packing the files that are in %projectsubpath%\publish into %packedpath%\%projectname%.zip ...
+@powershell -command "Compress-Archive -Path '%projectsubpath%\publish\*' -DestinationPath '%packedpath%\%projectname%.zip' -Force"
 
 @echo Finished packing projects. zip files are in %cd%\%packedpath%
 
 :PRINTBUILDTIME
 @rem Get the filemtime
-@set filePath=%projectsubpath%\publish\FezMultiplayerMod.dll
+@set filePath=%projectsubpath%\publish\%projectsubpath%.dll
 @for /f "delims=" %%G in ('powershell -command "(Get-Item '%projectpath%\%filePath%').LastWriteTimeUtc.ToString('yyyy-MM-ddTHH:mm:ssZ')"') do @set "utcTime=%%G"
 
 @REM this timestamp is what goes in changelog.txt
