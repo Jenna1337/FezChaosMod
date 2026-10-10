@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- todo: change to normal net10.0 once winforms gets removed -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FEZ.ChaosMod.mm</RootNamespace>
+    <AssemblyName>FEZ.ChaosMod.mm</AssemblyName>
+    
+    <!-- todo: remove these -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    
+    <!-- Retaining original FEZ constant and common settings -->
+    <DefineConstants>FEZCLIENT</DefineConstants>
+    <Platforms>x86</Platforms>
+    
+    <!-- Your Assembly Information -->
+    <Product>FezMultiplayerMod</Product>
+    <Description>A multiplayer mod for FEZ.</Description>
+    <Copyright>Copyright © Jenna Sloan</Copyright>
+    <Company>FEZ Modding</Company>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    
+    <!-- Don't include dependencies -->
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    
+    <!-- Disables the generation of the .deps.json file completely -->
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+  </PropertyGroup>
+
+<!-- todo: delete this -->
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="AssemblyInfo.cs" />
+    <Compile Remove="MonoModRules.cs" />
+  </ItemGroup>
+
+
+  <!-- External Assembly References from your libs folder -->
+  <ItemGroup>
+    <Reference Include="MonoMod.RuntimeDetour">
+      <HintPath>..\libs\MonoMod.RuntimeDetour.dll</HintPath>
+    </Reference>
+    <Reference Include="FNA">
+      <HintPath>..\libs\FNA.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ContentSerialization">
+      <HintPath>..\libs\ContentSerialization.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="XnaWordWrapCore">
+      <HintPath>..\libs\XnaWordWrapCore.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FEZ">
+      <HintPath>..\libs\FEZ.exe</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FezEngine">
+      <HintPath>..\libs\FezEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="EasyStorage">
+      <HintPath>..\libs\EasyStorage.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Common">
+      <HintPath>..\libs\Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MonoMod">
+      <HintPath>..\libs\MonoMod.exe</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
