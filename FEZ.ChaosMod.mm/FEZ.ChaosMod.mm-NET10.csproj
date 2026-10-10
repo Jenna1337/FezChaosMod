@@ -28,12 +28,32 @@
     
     <!-- Disables the generation of the .deps.json file completely -->
     <GenerateDependencyFile>false</GenerateDependencyFile>
+    
   </PropertyGroup>
 
-<!-- todo: delete this -->
-  <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
-  </ItemGroup>
+  <Import Project="$(MSBuildThisFileDirectory)../UserProperties.xml"
+          Condition="Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
+
+  <Target Name="VerifyModReferences" BeforeTargets="Build">
+    <Error Text="You forgot to configure UserProperties.xml"
+           Condition="!Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
+  </Target>
+
+  <Target Name="PrepareMod" AfterTargets="Build">
+    <PropertyGroup>
+      <ModCompileOutputDir Condition="'$(ModOutputDir)' != ''">$(ModOutputDir)</ModCompileOutputDir>
+      <ModCompileOutputDir Condition="'$(ModOutputDir)' == ''">$(ProjectDir)out</ModCompileOutputDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ModFiles Include="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb;$(TargetDir)$(TargetName).deps.json;$(TargetDir)ImGui.NET.dll;$(ProjectDir)Metadata.xml;$(ProjectDir)LICENSE"/>
+      <NativeAssets Include="$(NuGetPackageRoot)imgui.net\1.90.9.1\runtimes\**\native\*"/>
+    </ItemGroup>
+    
+    <MakeDir Directories="$(ModCompileOutputDir)"/>
+    <Copy SourceFiles="@(ModFiles)" DestinationFolder="$(ModCompileOutputDir)"/>
+    <Copy SourceFiles="@(NativeAssets)" DestinationFolder="$(ModCompileOutputDir)\runtimes\%(RecursiveDir)"/>
+  </Target>
 
   <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
@@ -43,41 +63,58 @@
 
   <!-- External Assembly References from your libs folder -->
   <ItemGroup>
-    <Reference Include="MonoMod.RuntimeDetour">
-      <HintPath>..\libs\MonoMod.RuntimeDetour.dll</HintPath>
-    </Reference>
-    <Reference Include="FNA">
-      <HintPath>..\libs\FNA.dll</HintPath>
+    <Reference Include="Common">
+      <HintPath>$(FezDir)\Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ContentSerialization">
-      <HintPath>..\libs\ContentSerialization.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="XnaWordWrapCore">
-      <HintPath>..\libs\XnaWordWrapCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FEZ">
-      <HintPath>..\libs\FEZ.exe</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="FezEngine">
-      <HintPath>..\libs\FezEngine.dll</HintPath>
+      <HintPath>$(FezDir)\ContentSerialization.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="EasyStorage">
-      <HintPath>..\libs\EasyStorage.dll</HintPath>
+      <HintPath>$(FezDir)\EasyStorage.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Common">
-      <HintPath>..\libs\Common.dll</HintPath>
+    <Reference Include="FEZ">
+      <HintPath>$(FezDir)\HAT.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MonoMod">
-      <HintPath>..\libs\MonoMod.exe</HintPath>
+    <Reference Include="FezEngine">
+      <HintPath>$(FezDir)\FezEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-  </ItemGroup>
+    <Reference Include="FNA">
+      <HintPath>$(FezDir)\FNA.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="XnaWordWrapCore">
+      <HintPath>$(FezDir)\XnaWordWrapCore.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour">
+      <HintPath>$(MonoModDir)\MonoMod.RuntimeDetour.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MonoMod.Utils">
+      <HintPath>$(MonoModDir)\MonoMod.Utils.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>$(MonoModDir)\Mono.Cecil.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+   <!-- To use ImGuiX helper class -->
+   <Reference Include="IMGUI">
+      <HintPath>..\$(ImGuiDir)\IMGUI.dll</HintPath>
+      <Private>False</Private>
+   </Reference>
+   
+   <!-- To use ImGuiNET namespace -->
+   <Reference Include="ImGui.NET">
+      <HintPath>..\$(ImGuiDir)\ImGui.NET.dll</HintPath>
+      <Private>False</Private>
+  </Reference>
+</ItemGroup>
 
 </Project>

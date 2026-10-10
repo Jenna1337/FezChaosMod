@@ -6,3 +6,4 @@ libs/*.dll
 PackedRelease/
 */publish/*
 *.user
+UserProperties.xml

@@ -4,4 +4,7 @@
    <Author>Jenna Sloan</Author>
    <Version>0.9.5</Version>
    <LibraryName>FEZ.ChaosMod.mm.dll</LibraryName>
+   <Dependencies>
+      <DependencyInfo Name="HAT" MinimumVersion="3.0"/>
+   </Dependencies>
 </Metadata>
