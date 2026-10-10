@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Linq;
 using System.IO;
-using FezGame.GameInfo;
 using System.Text.RegularExpressions;
 
 namespace FezGame.ChaosMod

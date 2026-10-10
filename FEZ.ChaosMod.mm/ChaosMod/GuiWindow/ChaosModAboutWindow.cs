@@ -1,77 +1,47 @@
 ﻿using FezGame.ChaosMod;
-using FezGame.GameInfo;
-using System;
-using System.Windows.Forms;
+using ImGuiNET;
 
 namespace FezGame
 {
-    class ChaosModAboutWindow : Form
+    public class ChaosModAboutWindow
     {
-        private Button buttonOk;
-        private Label labelMadeBy;
-        private Label labelVersionChaosMod;
+        public bool IsOpen = true;
 
-        public ChaosModAboutWindow()
+        public void Draw()
         {
-            InitializeComponent();
-            labelVersionChaosMod.Text = $"Chaos Mod Version: {FezChaosMod.Version}";
-            buttonOk.Focus();
-        }
+            if (!IsOpen) return;
 
-        private void InitializeComponent()
-        {
-            this.labelVersionChaosMod = new System.Windows.Forms.Label();
-            this.buttonOk = new System.Windows.Forms.Button();
-            this.labelMadeBy = new System.Windows.Forms.Label();
-            this.SuspendLayout();
-            // 
-            // labelVersionChaosMod
-            // 
-            this.labelVersionChaosMod.AutoSize = true;
-            this.labelVersionChaosMod.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelVersionChaosMod.Location = new System.Drawing.Point(31, 94);
-            this.labelVersionChaosMod.Name = "labelVersionChaosMod";
-            this.labelVersionChaosMod.Size = new System.Drawing.Size(195, 22);
-            this.labelVersionChaosMod.TabIndex = 0;
-            this.labelVersionChaosMod.Text = "labelVersionChaosMod";
-            // 
-            // buttonOk
-            // 
-            this.buttonOk.Location = new System.Drawing.Point(141, 204);
-            this.buttonOk.Name = "buttonOk";
-            this.buttonOk.Size = new System.Drawing.Size(108, 37);
-            this.buttonOk.TabIndex = 2;
-            this.buttonOk.Text = "OK";
-            this.buttonOk.UseVisualStyleBackColor = true;
-            this.buttonOk.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // labelMadeBy
-            // 
-            this.labelMadeBy.AutoSize = true;
-            this.labelMadeBy.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelMadeBy.Location = new System.Drawing.Point(31, 47);
-            this.labelMadeBy.Name = "labelMadeBy";
-            this.labelMadeBy.Size = new System.Drawing.Size(318, 22);
-            this.labelMadeBy.TabIndex = 3;
-            this.labelMadeBy.Text = "FEZ Chaos Mod made by Jenna Sloan";
-            // 
-            // ChaosModAboutWindow
-            // 
-            this.ClientSize = new System.Drawing.Size(379, 313);
-            this.Controls.Add(this.labelMadeBy);
-            this.Controls.Add(this.buttonOk);
-            this.Controls.Add(this.labelVersionChaosMod);
-            this.Name = "ChaosModAboutWindow";
-            this.ShowIcon = false;
-            this.Text = "About FEZ Chaos Mod";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            // Set a default initial window size matching your original form dimensions (379x313)
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(379, 313), ImGuiCond.FirstUseEver);
 
-        }
+            // Open window with fixed or standard flags
+            if (ImGui.Begin("About FEZ Chaos Mod", ref IsOpen, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize))
+            {
+                // Add some vertical spacing to match original padding layout
+                ImGui.Dummy(new System.Numerics.Vector2(0, 20));
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            this.Hide();
+                // Author label
+                ImGui.Text("FEZ Chaos Mod made by Jenna Sloan");
+
+                ImGui.Spacing();
+
+                // Version label dynamically pulling from FezChaosMod.Version
+                ImGui.Text($"Chaos Mod Version: {FezChaosMod.Version}");
+
+                // Position the OK button near the bottom center/right matching original coordinates
+                // We calculate available height to push it down
+                float availableHeight = ImGui.GetContentRegionAvail().Y;
+                ImGui.Dummy(new System.Numerics.Vector2(0, availableHeight - 70));
+
+                // Center the button horizontally roughly where it was
+                ImGui.SetCursorPosX((ImGui.GetWindowWidth() - 108) * 0.5f);
+
+                if (ImGui.Button("OK", new System.Numerics.Vector2(108, 37)))
+                {
+                    IsOpen = false;
+                }
+            }
+            ImGui.End();
         }
     }
 }

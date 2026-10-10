@@ -1,122 +1,69 @@
 ﻿using FezGame.ChaosMod;
-using FezGame.GameInfo;
-using System;
-using System.Windows.Forms;
+using ImGuiNET;
+using System.Collections.Generic;
+using System.Numerics;
 
 namespace FezGame
 {
-    class AdditionalChaosEffectSettingsWindow : Form
+    public class AdditionalChaosEffectSettingsWindow
     {
-        private GroupBox GroupBox1;
-        private Button ButtonOk;
-
-        private CheckedListBox CheckList { get; }
-        private CheckedListBox ShadowCheckList { get; }
-
         private readonly FezChaosMod.AdditionalChaosEffectSettings settings;
+        public bool IsOpen = true;
 
         public AdditionalChaosEffectSettingsWindow(FezChaosMod.AdditionalChaosEffectSettings settings)
         {
-            InitializeComponent();
             this.settings = settings;
-
-            this.Name = settings.AdditionalSettingsName;
-
-            CheckList = new CheckedListBox
-            {
-                Name = settings.AdditionalSettingsName,
-                Dock = DockStyle.Fill,
-                FormattingEnabled = true,
-                IntegralHeight = false,
-            };
-            foreach (var pair in settings.AdditionalSettingsCheckListList)
-            {
-                _ = CheckList.Items.Add(pair.Key, pair.Value);
-            }
-
-            //Create a syncronized invisible clone to get the list to appear in ChaosModSettingHelper
-            ShadowCheckList = new CheckedListBox
-            {
-                Name = settings.AdditionalSettingsName,
-                Height = 0,
-                Width = 0,
-                Visible = false,
-            };
-            foreach (var pair in settings.AdditionalSettingsCheckListList)
-            {
-                _ = ShadowCheckList.Items.Add(pair.Key, pair.Value);
-            }
-
-            ChaosModWindow.Instance.Controls.Add(ShadowCheckList);
-
-            ShadowCheckList.ItemCheck += HandleCheck;
-            CheckList.ItemCheck += HandleCheck;
-            GroupBox1.Controls.Add(CheckList);
-
-            GroupBox1.Text = settings.AdditionalSettingsName;
-
-            ButtonOk.Focus();
         }
 
-        private void InitializeComponent()
+        public void Draw()
         {
-            this.ButtonOk = new System.Windows.Forms.Button();
-            this.GroupBox1 = new System.Windows.Forms.GroupBox();
-            this.SuspendLayout();
-            // 
-            // buttonOk
-            // 
-            this.ButtonOk.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.ButtonOk.Location = new System.Drawing.Point(0, 276);
-            this.ButtonOk.Name = "ButtonOk";
-            this.ButtonOk.Size = new System.Drawing.Size(379, 37);
-            this.ButtonOk.TabIndex = 2;
-            this.ButtonOk.Text = "OK";
-            this.ButtonOk.UseVisualStyleBackColor = true;
-            this.ButtonOk.Click += new System.EventHandler(this.Button1_Click);
-            // 
-            // groupBox1
-            // 
-            this.GroupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GroupBox1.Location = new System.Drawing.Point(0, 0);
-            this.GroupBox1.Name = "GroupBox1";
-            this.GroupBox1.Size = new System.Drawing.Size(379, 276);
-            this.GroupBox1.TabIndex = 3;
-            this.GroupBox1.TabStop = false;
-            this.GroupBox1.Text = "GroupBox1";
-            // 
-            // AdditionalChaosEffectSettingsWindow
-            // 
-            this.ClientSize = new System.Drawing.Size(379, 313);
-            this.Controls.Add(this.GroupBox1);
-            this.Controls.Add(this.ButtonOk);
-            this.Name = "AdditionalChaosEffectSettingsWindow";
-            this.ShowIcon = false;
-            this.Text = "Additional Chaos Effect Settings";
-            this.ResumeLayout(false);
+            if (!IsOpen) return;
 
-        }
+            // Window title defaults to settings name or fallback
+            string windowTitle = settings.AdditionalSettingsName ?? "Additional Chaos Effect Settings";
 
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-        }
-        private bool doingcheck = false;
-        private void HandleCheck(object o, ItemCheckEventArgs a)
-        {
-            if (doingcheck)
+            // Set a default initial window size for convenience
+            ImGui.SetNextWindowSize(new System.Numerics.Vector2(380, 315), ImGuiCond.FirstUseEver);
+
+            if (ImGui.Begin(windowTitle, ref IsOpen, ImGuiWindowFlags.NoCollapse))
             {
-                return;
+                // Group box equivalent (child window with a border for the checklist area)
+                // Leaving room at the bottom for the OK button
+                Vector2 contentRegion = ImGui.GetContentRegionAvail();
+                contentRegion.Y -= 45; // Reserve space for button
+
+                if (ImGui.BeginChild("SettingsScrollRegion", contentRegion, ImGuiChildFlags.Border, ImGuiWindowFlags.None))
+                {
+                    // Iterate through the settings list directly
+                    // Note: If AdditionalSettingsCheckListList is a List of KeyValuePairs or custom objects, 
+                    // adjust the loop variables to match your structure.
+                    for (int i = 0; i < settings.AdditionalSettingsCheckListList.Count; i++)
+                    {
+                        var pair = settings.AdditionalSettingsCheckListList[i];
+
+                        // Create a mutable local bool for ImGui Checkbox binding
+                        bool isChecked = pair.Value;
+
+                        if (ImGui.Checkbox(pair.Key, ref isChecked))
+                        {
+                            // If the user toggles the checkbox, update state and notify settings
+                            settings.AdditionalSettingsCheckListList[i] = new KeyValuePair<string, bool>(pair.Key, isChecked);
+                            settings.ItemCheck(pair.Key, isChecked);
+                        }
+                    }
+                }
+                ImGui.EndChild();
+
+                ImGui.Spacing();
+
+                // OK / Close Button docked near the bottom center/right
+                // Centering or stretching the button to match WinForms look
+                if (ImGui.Button("OK", new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X, 35)))
+                {
+                    IsOpen = false;
+                }
             }
-
-            doingcheck = true;
-            settings.ItemCheck(CheckList.Items[a.Index].ToString(), a.NewValue == CheckState.Checked);
-            
-            //make sure both lists are updated
-            CheckList.SetItemCheckState(a.Index, a.NewValue);
-            ShadowCheckList.SetItemCheckState(a.Index, a.NewValue);
-
-            doingcheck = false;
+            ImGui.End();
         }
     }
 }

@@ -1,22 +1,23 @@
 ﻿using FezEngine.Components;
+using FezEngine.Components.Scripting;
 using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Structure;
+using FezEngine.Structure.Input;
 using FezEngine.Tools;
 using FezGame.Components;
+using FezGame.GameInfo;
 using FezGame.Services;
 using FezGame.Structure;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 using System.Linq;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Audio;
-using FezEngine.Components.Scripting;
-using FezGame.GameInfo;
-using FezEngine.Structure.Input;
+using System.Threading;
 
 namespace FezGame.ChaosMod
 {
@@ -54,6 +55,8 @@ namespace FezGame.ChaosMod
         /// Should be less than or equal to <see cref="MaxActiveEffectsToDisplay"/>
         /// </summary>
         public int LatestEffectsToDisplay = 2;
+
+        private const Microsoft.Xna.Framework.Input.Keys ToggleChaosModMenu = Microsoft.Xna.Framework.Input.Keys.F1;
 
         #region ServiceDependencies
         [ServiceDependency]
@@ -97,6 +100,10 @@ namespace FezGame.ChaosMod
 
         [ServiceDependency]
         public IDotManager DotHost { private get; set; }
+
+        [ServiceDependency]
+        public IKeyboardStateManager KeyboardState { private get; set; }
+
         #endregion
 
         public delegate void AdditionalChaosEffectSettingsItemCheckHandler(string name, bool val);
@@ -106,12 +113,12 @@ namespace FezGame.ChaosMod
         public class AdditionalChaosEffectSettings
         {
             public string AdditionalSettingsName { get; }
-            public IEnumerable<KeyValuePair<string, bool>> AdditionalSettingsCheckListList { get; }
+            public List<KeyValuePair<string, bool>> AdditionalSettingsCheckListList { get; }
             public AdditionalChaosEffectSettingsItemCheckHandler ItemCheck { get; }
             public AdditionalChaosEffectSettings(string AdditionalSettingsName, IEnumerable<KeyValuePair<string, bool>> AdditionalSettingsCheckListList, AdditionalChaosEffectSettingsItemCheckHandler ItemCheck)
             {
                 this.AdditionalSettingsName = AdditionalSettingsName;
-                this.AdditionalSettingsCheckListList = AdditionalSettingsCheckListList;
+                this.AdditionalSettingsCheckListList = AdditionalSettingsCheckListList.ToList();
                 this.ItemCheck = ItemCheck;
             }
         }
@@ -320,6 +327,10 @@ namespace FezGame.ChaosMod
 
         #endregion
 
+        public bool IsEffectActive(ChaosEffect effect)
+        {
+            return activeChaosEffects.Any((ActiveChaosEffect activeEffect) => activeEffect.Effect.Equals(effect));
+        }
 
         private double EffectsRatioSum
         {
@@ -488,6 +499,7 @@ namespace FezGame.ChaosMod
 
         private ChaosModWindow ChaosModWindow;
         private static readonly Color InitializingChaosModSettingsWindowWaitingTextColor = Color.SlateGray;
+
         public override void Initialize()
         {
             if (Instance != null
@@ -511,6 +523,7 @@ namespace FezGame.ChaosMod
             //Game.TargetElapsedTime = TimeSpan.FromTicks(1);
             if (!DidInit)
             {
+                KeyboardState.RegisterKey(ToggleChaosModMenu);
                 LoadingText = "Loading effects";
                 //DidInit = true;
 
@@ -751,14 +764,12 @@ namespace FezGame.ChaosMod
                 #endregion
 
                 LoadingText = "Initializing Chaos Mod settings window...";
-                Thread thread = new Thread(() => (this.ChaosModWindow = new ChaosModWindow(this)).ShowDialog());
-                thread.SetApartmentState(ApartmentState.STA);
-                thread.Start();
+                this.ChaosModWindow = new ChaosModWindow(this);
 
                 initBenchmarkTimer.Stop();
                 DidInit = true;
                 Timer.Start();
-                _ = Waiters.Wait(() => ChaosModWindow != null && ChaosModWindow.Created && !ChaosModWindow.IsDisposed && ChaosModWindow.Visible, () =>
+                //_ = Waiters.Wait(() => ChaosModWindow != null && ChaosModWindow.Created && !ChaosModWindow.IsDisposed && ChaosModWindow.Visible, () =>
                 {
                     LoadingText = null;
                     ChaosModWindow.LogLineDebug(WorldInfo.GetAllLevelDataAsString());
@@ -771,7 +782,7 @@ namespace FezGame.ChaosMod
                     ChaosModWindow.LogLineDebug("{\"ActionAnimations\": {" + String.Join(", ", Common.Util.GetValues<ActionType>().Where(a => a != 0).Select(a => $"\"{a}\": \"{a.GetAnimationPath()}\""))+ "}}");
 
                     ChaosModWindow.LogLineDebug($"Initialization duration: {initBenchmarkTimer.Elapsed.TotalSeconds}s ({initBenchmarkTimer.Elapsed.TotalMilliseconds}ms)");
-                });
+                };
             }
         }
         /// <summary>
@@ -782,7 +793,7 @@ namespace FezGame.ChaosMod
             /// <summary>
             /// The <see cref="ChaosEffect"/> for this <see cref="ActiveChaosEffect"/>.
             /// </summary>
-            private ChaosEffect Effect { get; }
+            internal ChaosEffect Effect { get; }
             /// <summary>
             /// The timer that tracks how long the effect has been running. Will be set to <c>null</c> when the effect is done.
             /// </summary>
@@ -894,9 +905,18 @@ namespace FezGame.ChaosMod
         public bool AllowRotateAnywhere = false;
         public bool AllowFirstPersonAnywhere = false;
         public bool ZuSpeakEnglish = false;
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            if (KeyboardState.GetKeyState(ToggleChaosModMenu) == FezButtonState.Pressed)
+            {
+                if (ChaosModWindow.Instance != null)
+                {
+                    ChaosModWindow.Instance.IsOpen = !ChaosModWindow.Instance.IsOpen;
+                    ChaosModWindow.LogLine($"Settings window visibility: {ChaosModWindow.Instance.IsOpen}");
+                }
+            }
             //Initialize0();
             _updatesDone++;
             if (!SpiralInterrupted && LastDotBehave == Components.DotHost.BehaviourType.SpiralAroundWithCamera && DotHost.Behaviour == Components.DotHost.BehaviourType.ReadyToTalk)
@@ -1139,6 +1159,12 @@ false
 
             drawingTools.DrawShadowedText(debugText, ShowDebugInfo ? Color.White : Color.Transparent, Vector2.Zero, scale);
 
+            // Render ImGui right over the game
+            if (ChaosModWindow.Instance != null && ChaosModWindow.Instance.IsOpen)
+            {
+                // Tell ImGui a new frame is starting (if your ImGui renderer doesn't handle this automatically)
+                ChaosModWindow.Instance.Draw();
+            }
         }
 
         private string GetCurrentButtonInputsAsString()

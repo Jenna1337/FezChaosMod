@@ -3,14 +3,10 @@
 
   <PropertyGroup>
     <!-- todo: change to normal net10.0 once winforms gets removed -->
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>FEZ.ChaosMod.mm</RootNamespace>
     <AssemblyName>FEZ.ChaosMod.mm</AssemblyName>
-    
-    <!-- todo: remove these -->
-    <UseWindowsForms>true</UseWindowsForms>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     
     <!-- Retaining original FEZ constant and common settings -->
     <DefineConstants>FEZCLIENT</DefineConstants>
@@ -31,6 +27,10 @@
     
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
+  </ItemGroup>
+  
   <Import Project="$(MSBuildThisFileDirectory)../UserProperties.xml"
           Condition="Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
 
@@ -46,8 +46,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ModFiles Include="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb;$(TargetDir)$(TargetName).deps.json;$(TargetDir)ImGui.NET.dll;$(ProjectDir)Metadata.xml;$(ProjectDir)LICENSE"/>
-      <NativeAssets Include="$(NuGetPackageRoot)imgui.net\1.90.9.1\runtimes\**\native\*"/>
+      <ModFiles Include="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb;$(ProjectDir)..\Metadata.xml"/>
     </ItemGroup>
     
     <MakeDir Directories="$(ModCompileOutputDir)"/>

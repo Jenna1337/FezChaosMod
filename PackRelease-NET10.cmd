@@ -17,8 +17,7 @@
 @REM cd /d "C:\Program Files\dotnet"
 
 @REM the following line should build all the projects in the solution
-@REM todo: change net10.0-windows to net10.0 when winforms gets removed
-dotnet publish "%projectpath%\FezChaosMod-NET10.slnx" -c Release -f net10.0-windows -p:ArtifactsPath="." -p:ArtifactsPivots="" -p:ArtifactsProjectName=""
+dotnet publish "%projectpath%\FezChaosMod-NET10.slnx" -c Release -f net10.0 -p:ArtifactsPath="." -p:ArtifactsPivots="" -p:ArtifactsProjectName=""
 @echo Builds completed.
 
 cd /d %projectpath%
