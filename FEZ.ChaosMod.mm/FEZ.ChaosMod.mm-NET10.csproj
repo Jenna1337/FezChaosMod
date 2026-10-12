@@ -51,15 +51,6 @@
       DestinationFolder="$(ModCompileOutputDir)\runtimes\%(RecursiveDir)" />
   </Target>
 
-  <ItemGroup>
-    <Compile Remove="AssemblyInfo.cs" />
-    <Compile Remove="MonoModRules.cs" />
-    <!-- ImGui renders progress indicators without GDI+ textures or WinForms resources. -->
-    <Compile Remove="ChaosMod/GuiInGame/CircularProgressBar.cs" />
-    <Compile Remove="ChaosMod/GuiInGame/LinearProgressBar.cs" />
-    <EmbeddedResource Remove="ChaosMod/GuiWindow/*.resx" />
-  </ItemGroup>
-
 
   <!-- External Assembly References from your libs folder -->
   <ItemGroup>
