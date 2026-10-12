@@ -29,7 +29,7 @@ namespace FezGame
 
         public class ChaosEffectSetting
         {
-            public double Weight;
+            public double Ratio;
             public double Duration;
             public bool Enabled;
             public readonly string Name;
@@ -37,7 +37,7 @@ namespace FezGame
 
             public ChaosEffectSetting(ChaosEffect effect)
             {
-                this.Weight = effect._weight;
+                this.Ratio = effect._ratio;
                 this.Duration = effect._duration;
                 this.Enabled = effect.Enabled;
                 this.Name = effect.Name;
@@ -126,7 +126,9 @@ namespace FezGame
                     }
                     else if (FieldType.Equals(typeof(AdditionalChaosEffectSettings)))
                     {
-                        IteratePublicFields(FieldType, field.GetValue(ob), MappingFunc, "");
+                        var addSetts = (AdditionalChaosEffectSettings)field.GetValue(ob);
+                        //TODO
+                        //addSetts.AdditionalSettingsCheckListList.ForEach(MappingFunc(Field));
                     }
                 }
             }

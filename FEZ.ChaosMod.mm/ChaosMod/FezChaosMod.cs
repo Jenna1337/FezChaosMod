@@ -306,7 +306,7 @@ namespace FezGame.ChaosMod
         /// The list of all the chaos mod effects.
         /// </summary>
         public readonly List<ChaosEffect> ChaosEffectsList;
-        private static bool DidInit = false;
+        internal static bool DidInit = false;
         private string LoadingText = "";
         private static readonly Stopwatch SongStarterDelayTimer = new Stopwatch();
         private static readonly Stopwatch SkyChangerDelayTimer = new Stopwatch();

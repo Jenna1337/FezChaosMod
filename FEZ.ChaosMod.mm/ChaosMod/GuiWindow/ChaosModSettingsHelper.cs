@@ -73,7 +73,7 @@ namespace FezGame.ChaosMod
                 $"{FezChaosModVersionName}{IniKeyValDelimiter}{FezChaosMod.Version}",
                 ""
             };
-            foreach (var d in dict.OrderBy(dd => dd.Key))
+            foreach (var d in dict)//.OrderBy(dd => dd.Key))
             {
                 string formattedValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", d.Value);
                 lines.Add($"{d.Key}{IniKeyValDelimiter}{d.Value.ToString()}");
