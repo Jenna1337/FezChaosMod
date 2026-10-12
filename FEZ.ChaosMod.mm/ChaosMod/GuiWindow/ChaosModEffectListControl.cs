@@ -62,11 +62,11 @@ namespace FezGame
             ImGui.SameLine();
 
             // 2. Ratio Spinner / Input
-            float ratio = (float)effect.Ratio;
+            float ratio = (float)effect.Weight;
             ImGui.SetNextItemWidth(100f);
             if (ImGui.InputFloat(idPrefix + "Ratio", ref ratio, 0.01f, 0.1f, "%.4f"))
             {
-                effect.Ratio = ratio;
+                effect.Weight = ratio;
             }
             if (ImGui.IsItemHovered()) ImGui.SetTooltip("Ratio");
 

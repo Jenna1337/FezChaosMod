@@ -137,11 +137,11 @@ namespace FezGame.ChaosMod
             /// Function to run every time the game is drawn.
             /// </summary>
             public Action Func { get; }
-            internal double _ratio;
+            internal double _weight;
             /// <summary>
             /// The number used for the weighted random. If not <see cref="Enabled">enabled</see>, returns 0.
             /// </summary>
-            public double Ratio { get => Enabled ? _ratio : 0; set => _ratio = value; }
+            public double Weight { get => Enabled ? _weight : 0; set => _weight = value; }
             /// <summary>
             /// Should be true iff the effect is enabled, there isn't another active effect with the same <see cref="Category">category</see>, and the effect can be activated.
             /// </summary>
@@ -184,18 +184,18 @@ namespace FezGame.ChaosMod
             /// </summary>
             /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
             /// <param name="func"><inheritdoc cref="Func" path="/summary"/></param>
-            /// <param name="ratio"><inheritdoc cref="Ratio" path="/summary"/></param>
+            /// <param name="weight"><inheritdoc cref="Weight" path="/summary"/></param>
             /// <param name="test"><inheritdoc cref="Condition" path="/summary"/></param>
             /// <param name="duration"><inheritdoc cref="Duration" path="/summary"/></param>
             /// <param name="onDone"><inheritdoc cref="OnDone" path="/summary"/></param>
             /// <param name="category"><inheritdoc cref="Category" path="/summary"/></param>
             /// <param name="pauseTimerTest"><inheritdoc cref="ShouldPauseTimer" path="/summary"/></param>
             /// <param name="additionalSettings"><inheritdoc cref="AdditionalSettings" path="/summary"/></param>
-            public ChaosEffect(string name, Action func, double ratio, Func<bool> test = null, double duration = 0d, Action onDone = null, string category = null, Func<bool> pauseTimerTest = null, AdditionalChaosEffectSettings additionalSettings = null)
+            public ChaosEffect(string name, Action func, double weight, Func<bool> test = null, double duration = 0d, Action onDone = null, string category = null, Func<bool> pauseTimerTest = null, AdditionalChaosEffectSettings additionalSettings = null)
             {
                 Name = name;
                 Func = func;
-                _ratio = ratio;
+                _weight = weight;
                 Condition = test;
                 Duration = duration;
                 OnDone = onDone;
@@ -340,7 +340,7 @@ namespace FezGame.ChaosMod
                 foreach (ChaosEffect eff in ChaosEffectsList)
                 {
                     if (eff.CanUse)
-                        sum += eff.Ratio;
+                        sum += eff.Weight;
                 }
                 return sum;
             }
@@ -1043,7 +1043,7 @@ false
                 {
                     if (effect.CanUse)
                     {
-                        numericValue -= effect.Ratio;
+                        numericValue -= effect.Weight;
 
                         if (numericValue > 0)
                             continue;

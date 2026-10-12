@@ -1,11 +1,13 @@
-﻿using FezGame.ChaosMod;
+﻿using FezEngine.Components;
+using FezGame.ChaosMod;
+using FezGame.ChaosMod;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using FezGame.ChaosMod;
-using static FezGame.ChaosMod.FezChaosMod;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters;
+using static FezGame.ChaosMod.FezChaosMod;
 
 namespace FezGame
 {
@@ -23,20 +25,21 @@ namespace FezGame
         public bool zuSpeakEnglish = false;
         public bool showDebugInfo = true;
 
-        public List<ChaosEffectSetting> chaosEffectSettings = FezChaosMod.Instance.ChaosEffectsList.Select(
-            effect => new ChaosEffectSetting(effect)).ToList();
+        public List<ChaosEffectSetting> chaosEffectSettings;
 
         public class ChaosEffectSetting
         {
-            private double Ratio;
-            private double Duration;
-            private readonly string Name;
-            AdditionalChaosEffectSettings AdditionalSettings;
+            public double Weight;
+            public double Duration;
+            public bool Enabled;
+            public readonly string Name;
+            public AdditionalChaosEffectSettings AdditionalSettings;
 
             public ChaosEffectSetting(ChaosEffect effect)
             {
-                this.Ratio = effect._ratio;
+                this.Weight = effect._weight;
                 this.Duration = effect._duration;
+                this.Enabled = effect.Enabled;
                 this.Name = effect.Name;
                 this.AdditionalSettings = effect.AdditionalSettings;
             }
@@ -46,6 +49,11 @@ namespace FezGame
 
         public ChaosModSettings()
         {
+            Waiters.Wait(() => FezChaosMod.DidInit, () =>
+            {
+                chaosEffectSettings = FezChaosMod.Instance.ChaosEffectsList.Select(
+                effect => new ChaosEffectSetting(effect)).ToList();
+            });
         }
 
         // --- Mappers for INI Settings Files ---
@@ -53,17 +61,21 @@ namespace FezGame
         public Dictionary<string, object> GetAllInputsValues(bool prependControlNameIfMultivalued = false)
         {
             Dictionary<string, object> settings = [];
-            IteratePublicFields(typeof(ChaosModSettings), field =>
+            IteratePublicFields(typeof(ChaosModSettings), this, (field, ob, path) =>
             {
-                settings.TryAdd(field.Name, field.GetValue(this));
+                if (!string.IsNullOrEmpty(path))
+                {
+                    path += ".";
+                }
+                settings.TryAdd(path + field.Name, field.GetValue(ob));
             });
             return settings;
         }
         public void SetAllInputsValues(Dictionary<string, string> ctrlvals)
         {
-            IteratePublicFields(typeof(ChaosModSettings), field =>
+            IteratePublicFields(typeof(ChaosModSettings), this, (field, ob, path) =>
             {
-                field.SetValue(this, Convert.ChangeType(ctrlvals[field.Name], field.FieldType, System.Globalization.CultureInfo.InvariantCulture));
+                field.SetValue(ob, Convert.ChangeType(ctrlvals[field.Name], field.FieldType, System.Globalization.CultureInfo.InvariantCulture));
             });
         }
 
@@ -75,37 +87,56 @@ namespace FezGame
 
         private void CopyInto(ChaosModSettings target)
         {
-            IteratePublicFields(typeof(ChaosModSettings), field =>
+            IteratePublicFields(typeof(ChaosModSettings), this, (field, ob, _) =>
             {
-                field.SetValue(target, field.GetValue(this));
+                field.SetValue(target, field.GetValue(ob));
             });
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="settingsName"></param>
-        /// <param name="existingValue"></param>
-        /// <returns>new value</returns>
-        public delegate object SettingsFunction(FieldInfo settingsName, object existingValue);
-        private void IterateAllSettings(SettingsFunction MappingFunc)
-        {
-            IteratePublicFields(typeof(ChaosModSettings), field =>
-            {
-                field.SetValue(this, MappingFunc(field, field.GetValue(this)));
-            });
-        }
-        private void IteratePublicFields(Type type, Action<FieldInfo> MappingFunc)
+        private void IteratePublicFields(Type type, object ob, Action<FieldInfo, object, string> MappingFunc, string path = "")
         {
             var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public);
             foreach (var field in fields)
             {
-                if (field.FieldType.IsPrimitive)
+                var FieldType = field.FieldType;
+                if (FieldType.IsPrimitive)
                 {
-                    MappingFunc(field);
+                    MappingFunc(field, ob, path);
                 }
-                //TODO handle nested field
+                else
+                {
+                    if (FieldType.IsListType())
+                    {
+                        Type listItemType = FieldType.GetGenericArguments()[0];
+                        System.Collections.IList list = (System.Collections.IList)field.GetValue(ob);
+                        var basepath = path;
+                        foreach (var item in list)
+                        {
+                            path = basepath;
+                            if (typeof(ChaosEffectSetting).Equals(listItemType))
+                            {
+                                if (!string.IsNullOrEmpty(path))
+                                {
+                                    path += ".";
+                                }
+                                path += ((ChaosEffectSetting)item).Name;
+                            }
+                            IteratePublicFields(listItemType, item, MappingFunc, path);
+                        }
+                    }
+                    else if (FieldType.Equals(typeof(AdditionalChaosEffectSettings)))
+                    {
+                        IteratePublicFields(FieldType, field.GetValue(ob), MappingFunc, "");
+                    }
+                }
             }
+        }
+    }
+    internal static class TypeExtensions
+    {
+        public static bool IsListType(this Type type)
+        {
+            return (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>));
         }
     }
 
