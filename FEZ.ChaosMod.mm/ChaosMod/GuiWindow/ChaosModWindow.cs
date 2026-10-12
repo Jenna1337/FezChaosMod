@@ -1,7 +1,6 @@
 ﻿using FezGame.ChaosMod;
 using ImGuiNET;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace FezGame
@@ -16,21 +15,9 @@ namespace FezGame
         private readonly FezChaosMod chaosMod;
         private readonly ChaosModEffectListControl effectListUI;
         private readonly ChaosModAboutWindow aboutWindow = new ChaosModAboutWindow();
+        private static ChaosModSettings settings = new ChaosModSettings();
 
-        // UI state fields mapping to old control names for INI compatibility
-        public bool chaosModeEnabled = true;
-        public float delayBetweenEffects = 0f;
-        public float durationMultiplier = 1f;
-        public int maxEffectsToDisplay = 10;
-        public int latestEffectsToDisplay = 5;
-
-        public bool allowRotateAnywhere = false;
-        public bool firstPersonAnywhere = false;
-        public bool stereoMode = false;
-        public bool zuSpeakEnglish = false;
-        public bool showDebugInfo = true;
-
-        private string activeSaveFile = null;
+        internal string activeSaveFile = "chaosmod.ini";
         private static string loggerText = "";
         private const int MaxLogLines = 1000;
 
@@ -44,12 +31,12 @@ namespace FezGame
             this.effectListUI = new ChaosModEffectListControl(chaosMod);
 
             // Load initial values from mod instance
-            showDebugInfo = chaosMod.ShowDebugInfo;
-            allowRotateAnywhere = chaosMod.AllowRotateAnywhere;
-            delayBetweenEffects = (float)chaosMod.DelayBetweenEffects;
-            durationMultiplier = (float)chaosMod.EffectsDurationMultiplier;
-            maxEffectsToDisplay = chaosMod.MaxActiveEffectsToDisplay;
-            latestEffectsToDisplay = chaosMod.LatestEffectsToDisplay;
+            settings.showDebugInfo = chaosMod.ShowDebugInfo;
+            settings.allowRotateAnywhere = chaosMod.AllowRotateAnywhere;
+            settings.delayBetweenEffects = (float)chaosMod.DelayBetweenEffects;
+            settings.durationMultiplier = (float)chaosMod.EffectsDurationMultiplier;
+            settings.maxEffectsToDisplay = chaosMod.MaxActiveEffectsToDisplay;
+            settings.latestEffectsToDisplay = chaosMod.LatestEffectsToDisplay;
 
             LogLine("Initialization complete.");
             LogLine($"Welcome to Chaos Mod version {FezChaosMod.Version}");
@@ -96,7 +83,7 @@ namespace FezGame
             try
             {
                 var gameState = FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>();
-                if (gameState != null) stereoMode = gameState.StereoMode;
+                if (gameState != null) settings.stereoMode = gameState.StereoMode;
             }
             catch { }
 
@@ -116,9 +103,7 @@ namespace FezGame
                         if (ImGui.MenuItem("New", "Ctrl+N"))
                         {
                             // Reset defaults
-                            delayBetweenEffects = 0f;
-                            durationMultiplier = 1f;
-                            chaosModeEnabled = true;
+                            settings.Reset();
                         }
                         if (ImGui.MenuItem("Open...", "Ctrl+O"))
                         {
@@ -127,8 +112,7 @@ namespace FezGame
                         }
                         if (ImGui.MenuItem("Save", "Ctrl+S"))
                         {
-                            if (!string.IsNullOrEmpty(activeSaveFile) && File.Exists(activeSaveFile))
-                                SaveSettingsToFile(activeSaveFile);
+                            SaveSettingsToFile(activeSaveFile);
                         }
                         if (ImGui.MenuItem("Save As..."))
                         {
@@ -164,37 +148,37 @@ namespace FezGame
                             // Left Control Settings Group
                             ImGui.BeginGroup();
 
-                            if (ImGui.Checkbox("Chaos Mod Enabled", ref chaosModeEnabled))
+                            if (ImGui.Checkbox("Chaos Mod Enabled", ref settings.chaosModeEnabled))
                             {
-                                FezChaosMod.Enabled = chaosModeEnabled;
+                                FezChaosMod.Enabled = settings.chaosModeEnabled;
                             }
 
                             ImGui.Spacing();
 
                             ImGui.SetNextItemWidth(120f);
-                            if (ImGui.InputFloat("Delay Between Effects (seconds)", ref delayBetweenEffects, 0.1f, 1f, "%.3f"))
+                            if (ImGui.InputFloat("Delay Between Effects (seconds)", ref settings.delayBetweenEffects, 0.1f, 1f, "%.3f"))
                             {
-                                chaosMod.DelayBetweenEffects = delayBetweenEffects;
+                                chaosMod.DelayBetweenEffects = settings.delayBetweenEffects;
                             }
 
                             ImGui.SetNextItemWidth(120f);
-                            if (ImGui.InputFloat("Effect Duration Multiplier", ref durationMultiplier, 0.1f, 1f, "%.3f"))
+                            if (ImGui.InputFloat("Effect Duration Multiplier", ref settings.durationMultiplier, 0.1f, 1f, "%.3f"))
                             {
-                                chaosMod.EffectsDurationMultiplier = durationMultiplier;
+                                chaosMod.EffectsDurationMultiplier = settings.durationMultiplier;
                             }
 
                             ImGui.SetNextItemWidth(120f);
-                            if (ImGui.InputInt("Max Effects to Display", ref maxEffectsToDisplay))
+                            if (ImGui.InputInt("Max Effects to Display", ref settings.maxEffectsToDisplay))
                             {
-                                chaosMod.MaxActiveEffectsToDisplay = maxEffectsToDisplay;
-                                if (latestEffectsToDisplay > maxEffectsToDisplay) latestEffectsToDisplay = maxEffectsToDisplay;
+                                chaosMod.MaxActiveEffectsToDisplay = settings.maxEffectsToDisplay;
+                                if (settings.latestEffectsToDisplay > settings.maxEffectsToDisplay) settings.latestEffectsToDisplay = settings.maxEffectsToDisplay;
                             }
 
                             ImGui.SetNextItemWidth(120f);
-                            if (ImGui.InputInt("Latest Effects to Display", ref latestEffectsToDisplay))
+                            if (ImGui.InputInt("Latest Effects to Display", ref settings.latestEffectsToDisplay))
                             {
-                                if (latestEffectsToDisplay > maxEffectsToDisplay) latestEffectsToDisplay = maxEffectsToDisplay;
-                                chaosMod.LatestEffectsToDisplay = latestEffectsToDisplay;
+                                if (settings.latestEffectsToDisplay > settings.maxEffectsToDisplay) settings.latestEffectsToDisplay = settings.maxEffectsToDisplay;
+                                chaosMod.LatestEffectsToDisplay = settings.latestEffectsToDisplay;
                             }
 
                             ImGui.EndGroup();
@@ -232,33 +216,33 @@ namespace FezGame
                     {
                         ImGui.Spacing();
 
-                        if (ImGui.Checkbox("Display Debug Info", ref showDebugInfo))
+                        if (ImGui.Checkbox("Display Debug Info", ref settings.showDebugInfo))
                         {
-                            chaosMod.ShowDebugInfo = showDebugInfo;
+                            chaosMod.ShowDebugInfo = settings.showDebugInfo;
                         }
 
-                        if (ImGui.Checkbox("Allow Rotate Anywhere", ref allowRotateAnywhere))
+                        if (ImGui.Checkbox("Allow Rotate Anywhere", ref settings.allowRotateAnywhere))
                         {
-                            chaosMod.AllowRotateAnywhere = allowRotateAnywhere;
+                            chaosMod.AllowRotateAnywhere = settings.allowRotateAnywhere;
                         }
 
-                        if (ImGui.Checkbox("Allow First Person Anywhere", ref firstPersonAnywhere))
+                        if (ImGui.Checkbox("Allow First Person Anywhere", ref settings.firstPersonAnywhere))
                         {
-                            chaosMod.AllowFirstPersonAnywhere = firstPersonAnywhere;
+                            chaosMod.AllowFirstPersonAnywhere = settings.firstPersonAnywhere;
                         }
 
-                        if (ImGui.Checkbox("Stereoscopic Mode", ref stereoMode))
+                        if (ImGui.Checkbox("Stereoscopic Mode", ref settings.stereoMode))
                         {
                             try
                             {
-                                FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>().StereoMode = stereoMode;
+                                FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>().StereoMode = settings.stereoMode;
                             }
                             catch { }
                         }
 
-                        if (ImGui.Checkbox("All Zu speak is English", ref zuSpeakEnglish))
+                        if (ImGui.Checkbox("All Zu speak is English", ref settings.zuSpeakEnglish))
                         {
-                            chaosMod.ZuSpeakEnglish = zuSpeakEnglish;
+                            chaosMod.ZuSpeakEnglish = settings.zuSpeakEnglish;
                         }
 
                         ImGui.EndTabItem();
@@ -280,107 +264,14 @@ namespace FezGame
             }
         }
 
-        // --- Mappers for INI Settings Files ---
 
-        public Dictionary<string, Dictionary<string, object>> GetAllInputsValues(bool prependControlNameIfMultivalued = false)
-        {
-            return new Dictionary<string, Dictionary<string, object>>
-            {
-                ["ChaosModeCheckBox"] = new Dictionary<string, object>
-                {
-                    ["ChaosModeCheckBox"] = chaosModeEnabled
-                },
-                ["EffectsDelaySpinner"] = new Dictionary<string, object>
-                {
-                    ["EffectsDelaySpinner"] = (decimal)delayBetweenEffects
-                },
-                ["EffectsDurationMultiplierSpinner"] = new Dictionary<string, object>
-                {
-                    ["EffectsDurationMultiplierSpinner"] = (decimal)durationMultiplier
-                },
-                ["MaxEffectsToDisplaySpinner"] = new Dictionary<string, object>
-                {
-                    ["MaxEffectsToDisplaySpinner"] = (decimal)maxEffectsToDisplay
-                },
-                ["LatestEffectsToDisplaySpinner"] = new Dictionary<string, object>
-                {
-                    ["LatestEffectsToDisplaySpinner"] = (decimal)latestEffectsToDisplay
-                },
-                ["AllowRotateAnywhereCheckBox"] = new Dictionary<string, object>
-                {
-                    ["AllowRotateAnywhereCheckBox"] = allowRotateAnywhere
-                },
-                ["FirstPersonAnywhereCheckBox"] = new Dictionary<string, object>
-                {
-                    ["FirstPersonAnywhereCheckBox"] = firstPersonAnywhere
-                },
-                ["StereoModeCheckBox"] = new Dictionary<string, object>
-                {
-                    ["StereoModeCheckBox"] = stereoMode
-                },
-                ["ZuSpeakEnglishCheckBox"] = new Dictionary<string, object>
-                {
-                    ["ZuSpeakEnglishCheckBox"] = zuSpeakEnglish
-                },
-                ["DebugInfoCheckBox"] = new Dictionary<string, object>
-                {
-                    ["DebugInfoCheckBox"] = showDebugInfo
-                }
-            };
-        }
-        public void SetAllInputsValues(Dictionary<string, Dictionary<string, string>> ctrlvals)
-        {
-            foreach (var section in ctrlvals.Values)
-            {
-                foreach (var kvp in section)
-                {
-                    string key = kvp.Key;
-                    string val = kvp.Value;
-
-                    switch (key)
-                    {
-                    case "ChaosModeCheckBox":
-                        if (bool.TryParse(val, out bool cMode)) chaosModeEnabled = cMode;
-                        break;
-                    case "EffectsDelaySpinner":
-                        if (float.TryParse(val, out float delay)) delayBetweenEffects = delay;
-                        break;
-                    case "EffectsDurationMultiplierSpinner":
-                        if (float.TryParse(val, out float mult)) durationMultiplier = mult;
-                        break;
-                    case "MaxEffectsToDisplaySpinner":
-                        if (int.TryParse(val, out int max)) maxEffectsToDisplay = max;
-                        break;
-                    case "LatestEffectsToDisplaySpinner":
-                        if (int.TryParse(val, out int latest)) latestEffectsToDisplay = latest;
-                        break;
-                    case "AllowRotateAnywhereCheckBox":
-                        if (bool.TryParse(val, out bool rot)) allowRotateAnywhere = rot;
-                        break;
-                    case "FirstPersonAnywhereCheckBox":
-                        if (bool.TryParse(val, out bool fp)) firstPersonAnywhere = fp;
-                        break;
-                    case "StereoModeCheckBox":
-                        if (bool.TryParse(val, out bool stereo)) stereoMode = stereo;
-                        break;
-                    case "ZuSpeakEnglishCheckBox":
-                        if (bool.TryParse(val, out bool zu)) zuSpeakEnglish = zu;
-                        break;
-                    case "DebugInfoCheckBox":
-                        if (bool.TryParse(val, out bool dbg)) showDebugInfo = dbg;
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void SaveSettingsToFile(string file)
+        internal void SaveSettingsToFile(string file)
         {
             try
             {
-                activeSaveFile = Path.GetFullPath(file);
+                this.activeSaveFile = Path.GetFullPath(file);
                 LogLineDebug("Saving to file: " + file);
-                ChaosModSettingsHelper.Write(this, file);
+                ChaosModSettingsHelper.Write(settings, file);
             }
             catch (Exception e)
             {
@@ -389,13 +280,13 @@ namespace FezGame
             }
         }
 
-        private void LoadSettingsFromFile(string file)
+        internal void LoadSettingsFromFile(string file)
         {
             try
             {
                 activeSaveFile = Path.GetFullPath(file);
                 LogLineDebug("Loading from file: " + file);
-                ChaosModSettingsHelper.Read(this, file);
+                ChaosModSettingsHelper.Read(settings, file);
             }
             catch (Exception e)
             {
@@ -404,4 +295,4 @@ namespace FezGame
             }
         }
     }
-}
+    }

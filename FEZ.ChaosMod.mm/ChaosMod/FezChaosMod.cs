@@ -29,9 +29,9 @@ namespace FezGame.ChaosMod
         /// <summary>
         /// A string representing the current version of this class.
         /// </summary>
-        public static readonly string Version = "0.9.5"
+        public static readonly string Version = "1.0.0"
 #if DEBUG
-        + $" (debug build {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version})"
+        + $" (debug build)"
 #endif
         ;//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
 
@@ -137,7 +137,7 @@ namespace FezGame.ChaosMod
             /// Function to run every time the game is drawn.
             /// </summary>
             public Action Func { get; }
-            private double _ratio;
+            internal double _ratio;
             /// <summary>
             /// The number used for the weighted random. If not <see cref="Enabled">enabled</see>, returns 0.
             /// </summary>
@@ -153,7 +153,7 @@ namespace FezGame.ChaosMod
             /// Flag to determine if the effect should 
             /// </summary>
             public bool Enabled = true;
-            private double _duration;
+            internal double _duration;
             /// <summary>
             /// The duration for which this effect should last, in seconds, multiplied by the <see cref="EffectsDurationMultiplier"/>. <br/>
             /// Note: <see cref="EffectsDurationMultiplier"/> is not used when setting this value.
@@ -773,14 +773,14 @@ namespace FezGame.ChaosMod
                 //_ = Waiters.Wait(() => ChaosModWindow != null && ChaosModWindow.Created && !ChaosModWindow.IsDisposed && ChaosModWindow.Visible, () =>
                 {
                     LoadingText = null;
-                    ChaosModWindow.LogLineDebug(WorldInfo.GetAllLevelDataAsString());
-
+                    //ChaosModWindow.LogLineDebug(WorldInfo.GetAllLevelDataAsString());
+                    //
                     ChaosModWindow.LogLineDebug($"Skies: {{{String.Join(", ", SkiesNames)}}}");
                     ChaosModWindow.LogLineDebug($"Songs: {{{String.Join(", ", BGMusicNames)}}}");
                     ChaosModWindow.LogLineDebug($"Hubs: {{{String.Join(", ", HubLevelNames)}}}");
-
-                    ChaosModWindow.LogLineDebug("{\"ScriptEntityTypeDescriptors\": " + ScriptDescriptor.ListAllScriptEntityTypeDescriptors() + "}");
-                    ChaosModWindow.LogLineDebug("{\"ActionAnimations\": {" + String.Join(", ", Common.Util.GetValues<ActionType>().Where(a => a != 0).Select(a => $"\"{a}\": \"{a.GetAnimationPath()}\""))+ "}}");
+                    //
+                    //ChaosModWindow.LogLineDebug("{\"ScriptEntityTypeDescriptors\": " + ScriptDescriptor.ListAllScriptEntityTypeDescriptors() + "}");
+                    //ChaosModWindow.LogLineDebug("{\"ActionAnimations\": {" + String.Join(", ", Common.Util.GetValues<ActionType>().Where(a => a != 0).Select(a => $"\"{a}\": \"{a.GetAnimationPath()}\""))+ "}}");
 
                     ChaosModWindow.LogLineDebug($"Initialization duration: {initBenchmarkTimer.Elapsed.TotalSeconds}s ({initBenchmarkTimer.Elapsed.TotalMilliseconds}ms)");
                 };
@@ -915,7 +915,6 @@ namespace FezGame.ChaosMod
                 if (ChaosModWindow.Instance != null)
                 {
                     ChaosModWindow.Instance.IsOpen = !ChaosModWindow.Instance.IsOpen;
-                    ChaosModWindow.LogLine($"Settings window visibility: {ChaosModWindow.Instance.IsOpen}");
                 }
             }
             //Initialize0();
