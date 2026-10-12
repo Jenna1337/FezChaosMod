@@ -2,7 +2,7 @@
    <Name>FezChaosMod</Name>
    <Description>Adds random effects that activate every so many seconds!</Description>
    <Author>Jenna Sloan</Author>
-   <Version>0.9.5</Version>
+   <Version>1.0.0</Version>
    <LibraryName>FEZ.ChaosMod.mm.dll</LibraryName>
    <Dependencies>
       <DependencyInfo Name="HAT" MinimumVersion="3.0"/>

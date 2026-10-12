@@ -165,11 +165,15 @@ Active effects now start displaying from the bottom up
 Added start/end buttons for each effect to the UI
 Moved additional effect settings (e.g., "random teleport checklist") to an "Additional Settings" button to the right of the "end effect" button
 
-0.9.5
+0.9.5 - Unreleased due to various reasons
 Bug fixes
 Miscellaneous improvements
 Nested effect categories in the GUI window
 Overhauled Chaos Mod Settings window UI
 Fixed name of additional settings windows
 
+1.0.0 - TBA (want to fix save files first)
+Port to .NET 10
+Revamp user interface (press F1 to open menu)
+Reworked save files
 
