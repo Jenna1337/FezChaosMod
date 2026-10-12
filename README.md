@@ -20,7 +20,7 @@ For a full list of features, see [changelog.txt](/changelog.txt)
 
 ## Installation
 
-> __Note__: due to how winforms doesn't seem to work that great on any OS besides Windows, the currently only supported OS is Windows 10.
+> __Note__: the .NET 10 build uses IMGUI for settings and progress indicators and does not require System.Drawing.Common or WinForms.
 
 ### Method 1: HAT
 
@@ -36,6 +36,16 @@ For a full list of features, see [changelog.txt](/changelog.txt)
 4. Run `MONOMODDED_FEZ.exe` and enjoy!
 
 ## Building
+
+### .NET 10 / HAT
+
+1. Install the .NET 10 SDK and a compatible FEZ installation with HAT and IMGUI.
+2. Copy `UserProperties.xml.template` to `UserProperties.xml` and configure `FezDir`, `MonoModDir`, `ImGuiDir`, and `ModOutputDir`.
+3. Run `dotnet build FezChaosMod-NET10.slnx --configuration Release`. The build copies the mod DLL, symbols, and metadata to `ModOutputDir`.
+
+Settings windows and progress indicators use the IMGUI mod's renderer. Remaining game text and textures use FNA; the .NET 10 build excludes the legacy GDI+ progress renderers and WinForms resources.
+
+### Legacy MonoMod
 
 1. Clone repository.
 2. Copy all dependencies listed in `libs` directory and paste them into said directory.

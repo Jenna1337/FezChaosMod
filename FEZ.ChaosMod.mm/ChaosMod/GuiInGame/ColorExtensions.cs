@@ -1,75 +1,60 @@
-﻿
-
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace FezGame.ChaosMod
 {
     public static class ColorExtensions
     {
-        public static Microsoft.Xna.Framework.Color ToXnaColor(this System.Drawing.Color color)
-        {
-            return new Microsoft.Xna.Framework.Color(color.R, color.G, color.B, color.A);
-        }
-        public static System.Drawing.Color ToDrawingColor(this Microsoft.Xna.Framework.Color color)
-        {
-            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
-        }
 
         public static float GetHue(this Color color)
         {
-            return color.ToDrawingColor().GetHue();
+            float r = color.R / 255f, g = color.G / 255f, b = color.B / 255f;
+            float max = Math.Max(r, Math.Max(g, b));
+            float min = Math.Min(r, Math.Min(g, b));
+            float delta = max - min;
+            if (delta == 0f) return 0f;
+
+            float hue = max == r ? (g - b) / delta
+                : max == g ? 2f + (b - r) / delta
+                : 4f + (r - g) / delta;
+            hue *= 60f;
+            return hue < 0f ? hue + 360f : hue;
         }
         public static float GetSaturation(this Color color)
         {
-            return color.ToDrawingColor().GetSaturation();
+            float max = Math.Max(color.R, Math.Max(color.G, color.B)) / 255f;
+            float min = Math.Min(color.R, Math.Min(color.G, color.B)) / 255f;
+            if (max == min) return 0f;
+            float sum = max + min;
+            return (max - min) / (sum <= 1f ? sum : 2f - sum);
         }
         public static float GetLightness(this Color color)
         {
-            return color.ToDrawingColor().GetBrightness();
+            return (Math.Max(color.R, Math.Max(color.G, color.B))
+                + Math.Min(color.R, Math.Min(color.G, color.B))) / 510f;
         }
 
         public static Color HueRotate(this Color color, float degrees)
-        {
-            return color.ToDrawingColor().HueRotate(degrees);
-        }
-        public static Color HueRotate(this System.Drawing.Color color, float degrees)
         {
             return color.Adjust(hueRotateDegrees: degrees);
         }
 
         public static Color Darken(this Color color, float percentage)
         {
-            return color.ToDrawingColor().Darken(percentage);
-        }
-        public static Color Darken(this System.Drawing.Color color, float percentage)
-        {
             return color.Adjust(lightenPercentage: -percentage);
         }
 
         public static Color Lighten(this Color color, float percentage)
-        {
-            return color.ToDrawingColor().Lighten(percentage);
-        }
-        public static Color Lighten(this System.Drawing.Color color, float percentage)
         {
             return color.Adjust(lightenPercentage: percentage);
         }
 
         public static Color Desaturate(this Color color, float percentage)
         {
-            return color.ToDrawingColor().Desaturate(percentage);
-        }
-        public static Color Desaturate(this System.Drawing.Color color, float percentage)
-        {
             return color.Adjust(saturatePercentage: -percentage);
         }
 
         public static Color Saturate(this Color color, float percentage)
-        {
-            return color.ToDrawingColor().Saturate(percentage);
-        }
-        public static Color Saturate(this System.Drawing.Color color, float percentage)
         {
             return color.Adjust(saturatePercentage: percentage);
         }
@@ -82,11 +67,11 @@ namespace FezGame.ChaosMod
         /// <param name="saturatePercentage">The percentage to scale the saturation</param>
         /// <param name="lightenPercentage">The percentage to scale the lightness</param>
         /// <returns></returns>
-        public static Color Adjust(this System.Drawing.Color color, float hueRotateDegrees = 0f, float saturatePercentage = 0f, float lightenPercentage = 0f)
+        public static Color Adjust(this Color color, float hueRotateDegrees = 0f, float saturatePercentage = 0f, float lightenPercentage = 0f)
         {
             float h = color.GetHue();
             float s = color.GetSaturation();
-            float l = color.GetBrightness();
+            float l = color.GetLightness();
 
             while (hueRotateDegrees < 0)
                 hueRotateDegrees += 360f;

@@ -2,41 +2,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- todo: change to normal net10.0 once winforms gets removed -->
     <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>FEZ.ChaosMod.mm</RootNamespace>
     <AssemblyName>FEZ.ChaosMod.mm</AssemblyName>
-    
+
     <!-- Retaining original FEZ constant and common settings -->
     <DefineConstants>FEZCLIENT</DefineConstants>
     <Platforms>x86</Platforms>
-    
+
     <!-- Your Assembly Information -->
     <Product>FezMultiplayerMod</Product>
     <Description>A multiplayer mod for FEZ.</Description>
     <Copyright>Copyright © Jenna Sloan</Copyright>
     <Company>FEZ Modding</Company>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    
+
     <!-- Don't include dependencies -->
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
-    
+
     <!-- Disables the generation of the .deps.json file completely -->
     <GenerateDependencyFile>false</GenerateDependencyFile>
-    
+
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
-  </ItemGroup>
-  
   <Import Project="$(MSBuildThisFileDirectory)../UserProperties.xml"
-          Condition="Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
+    Condition="Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
 
   <Target Name="VerifyModReferences" BeforeTargets="Build">
     <Error Text="You forgot to configure UserProperties.xml"
-           Condition="!Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
+      Condition="!Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
   </Target>
 
   <Target Name="PrepareMod" AfterTargets="Build">
@@ -46,17 +41,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ModFiles Include="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb;$(ProjectDir)..\Metadata.xml"/>
+      <ModFiles
+        Include="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb;$(ProjectDir)..\Metadata.xml" />
     </ItemGroup>
-    
-    <MakeDir Directories="$(ModCompileOutputDir)"/>
-    <Copy SourceFiles="@(ModFiles)" DestinationFolder="$(ModCompileOutputDir)"/>
-    <Copy SourceFiles="@(NativeAssets)" DestinationFolder="$(ModCompileOutputDir)\runtimes\%(RecursiveDir)"/>
+
+    <MakeDir Directories="$(ModCompileOutputDir)" />
+    <Copy SourceFiles="@(ModFiles)" DestinationFolder="$(ModCompileOutputDir)" />
+    <Copy SourceFiles="@(NativeAssets)"
+      DestinationFolder="$(ModCompileOutputDir)\runtimes\%(RecursiveDir)" />
   </Target>
 
   <ItemGroup>
     <Compile Remove="AssemblyInfo.cs" />
     <Compile Remove="MonoModRules.cs" />
+    <!-- ImGui renders progress indicators without GDI+ textures or WinForms resources. -->
+    <Compile Remove="ChaosMod/GuiInGame/CircularProgressBar.cs" />
+    <Compile Remove="ChaosMod/GuiInGame/LinearProgressBar.cs" />
+    <EmbeddedResource Remove="ChaosMod/GuiWindow/*.resx" />
   </ItemGroup>
 
 
@@ -102,18 +103,14 @@
       <HintPath>$(MonoModDir)\Mono.Cecil.dll</HintPath>
       <Private>False</Private>
     </Reference>
-
-   <!-- To use ImGuiX helper class -->
-   <Reference Include="IMGUI">
-      <HintPath>..\$(ImGuiDir)\IMGUI.dll</HintPath>
+    <Reference Include="IMGUI">
+      <HintPath>$(ImGuiDir)\IMGUI.dll</HintPath>
       <Private>False</Private>
-   </Reference>
-   
-   <!-- To use ImGuiNET namespace -->
-   <Reference Include="ImGui.NET">
-      <HintPath>..\$(ImGuiDir)\ImGui.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="ImGui.NET">
+      <HintPath>$(ImGuiDir)\ImGui.NET.dll</HintPath>
       <Private>False</Private>
-  </Reference>
-</ItemGroup>
+    </Reference>
+  </ItemGroup>
 
 </Project>

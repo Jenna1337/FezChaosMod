@@ -63,6 +63,7 @@ namespace FezGame.ChaosMod
             return BigFont.MeasureString(text);
         }
 
+#if !NET10_0_OR_GREATER
         public Texture2D BitMapToTexture2D(System.Drawing.Bitmap bitmap)
         {
             var colors = new Color[bitmap.Width * bitmap.Height];
@@ -78,6 +79,7 @@ namespace FezGame.ChaosMod
 
             return texture;
         }
+#endif
         public Texture2D ColorArrayToTexture2D(Color[] colors, int Height, int Width)
         {
             Texture2D texture = new Texture2D(graphicsDevice, Width, Height, false, SurfaceFormat.Color);

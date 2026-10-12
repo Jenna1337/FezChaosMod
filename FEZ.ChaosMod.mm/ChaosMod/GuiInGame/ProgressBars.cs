@@ -19,11 +19,13 @@ namespace FezGame.ChaosMod
             ProgressBar.TextColor = TextColor;
             ProgressBar.PausedColor = PausedColor;
         }
+#if !NET10_0_OR_GREATER
         internal static void SetColors(System.Drawing.Color ProgressColor, System.Drawing.Color TextColor, System.Drawing.Color PausedColor)
         {
             ProgressBar.ProgressColor = ProgressColor.ToXnaColor();
             ProgressBar.TextColor = TextColor.ToXnaColor();
             ProgressBar.PausedColor = PausedColor.ToXnaColor();
         }
+#endif
     }
 }

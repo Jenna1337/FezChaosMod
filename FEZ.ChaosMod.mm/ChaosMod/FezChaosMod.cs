@@ -215,7 +215,7 @@ namespace FezGame.ChaosMod
                 ActiveChaosEffect activeChaosEffect = new ActiveChaosEffect(this);
                 FezChaosMod.Instance.activeChaosEffects.Add(activeChaosEffect);
                 ChaosModWindow.LogLine(this.Name);
-                FezChaosMod.Instance.ChaosEffectActivated(activeChaosEffect);
+                FezChaosMod.Instance.ChaosEffectActivated?.Invoke(activeChaosEffect);
                 this.Func();
                 FezChaosMod.Instance.Timer.Restart();
             }
@@ -262,7 +262,7 @@ namespace FezGame.ChaosMod
                 if (!this.Exists(a => a.Name.Equals(effect.Name)))
                 {
                     base.Add(effect);
-                    myChaosMod.ChaosEffectAdded(effect);
+                    myChaosMod.ChaosEffectAdded?.Invoke(effect);
                 }
                 else
                 {
@@ -512,7 +512,8 @@ namespace FezGame.ChaosMod
             }
 
             Instance = this;
-            this.DrawOrder = int.MaxValue;
+            // Submit ImGui commands before the IMGUI component renders its frame.
+            this.DrawOrder = int.MaxValue - 1;
 
             LoadingText = "Loading Content...";
             _ = Waiters.Wait(() => MemoryContentManager.AssetExists("Skies/DEFAULT"), () => { Waiters.Wait(1, Initialize0); });//wait until the assets are loaded
@@ -887,7 +888,7 @@ namespace FezGame.ChaosMod
                     Effect.OnDone?.Invoke();
                     ActiveTimer = null;
                     //ActiveTimer.Stop();
-                    FezChaosMod.Instance.ChaosEffectEnded(this);
+                    FezChaosMod.Instance.ChaosEffectEnded?.Invoke(this);
                 }
             }
 
@@ -1162,7 +1163,7 @@ false
             // Render ImGui right over the game
             if (ChaosModWindow.Instance != null && ChaosModWindow.Instance.IsOpen)
             {
-                // Tell ImGui a new frame is starting (if your ImGui renderer doesn't handle this automatically)
+                // IMGUI owns the frame lifecycle; only submit this mod's UI here.
                 ChaosModWindow.Instance.Draw();
             }
         }
