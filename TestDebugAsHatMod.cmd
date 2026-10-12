@@ -7,21 +7,22 @@
 @REM Note: does not check all Steam library locations; see steamapps/libraryfolders.vdf
 @FOR /F "tokens=2* skip=2" %%a in ('reg query "HKCU\SOFTWARE\Valve\Steam" /v "SteamPath"') do set fezpath="%%b/steamapps/common/FEZ/Mods/FezChaosMod"
 
+echo %fezpath%
 mkdir %fezpath%
 cd /d %fezpath%
 @rem cd "%ProgramFiles(x86)%/Steam/steamapps/common/FEZ/"
 
 @if ERRORLEVEL 0 (
 	@REM 
-	copy "D:\Github\FezChaosMod\FEZ.ChaosMod.mm\bin\Debug\*"
-	copy "D:\Github\FezChaosMod\Metadata.xml"
+	@REM copy "D:\Github\FezChaosMod\FEZ.ChaosMod.mm\bin\Debug\*"
+	@REM  copy "D:\Github\FezChaosMod\Metadata.xml"
 	
 	cd ..\..
 	
 	@REM MonoMod.exe FEZ.exe
 	@echo Exit Code is %errorlevel%
 	@if ERRORLEVEL 0 (
-		start MONOMODDED_FEZ_HAT.exe
+		start FEZ.exe
 	) ELSE (
 		@echo Did you leave FEZ open?
 		@pause
