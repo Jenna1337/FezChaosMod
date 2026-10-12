@@ -29,7 +29,7 @@ namespace FezGame
 
         public class ChaosEffectSetting
         {
-            public double Ratio;
+            public double Weight;
             public double Duration;
             public bool Enabled;
             public readonly string Name;
@@ -37,7 +37,7 @@ namespace FezGame
 
             public ChaosEffectSetting(ChaosEffect effect)
             {
-                this.Ratio = effect._ratio;
+                this.Weight = effect._weight;
                 this.Duration = effect._duration;
                 this.Enabled = effect.Enabled;
                 this.Name = effect.Name;
