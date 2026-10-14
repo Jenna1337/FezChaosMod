@@ -326,7 +326,7 @@ namespace FezGame.ChaosMod
 
         public bool IsEffectActive(ChaosEffect effect)
         {
-            return activeChaosEffects.Any((ActiveChaosEffect activeEffect) => activeEffect.Effect.Equals(effect));
+            return activeChaosEffects.Any((ActiveChaosEffect activeEffect) => !activeEffect.IsDone && activeEffect.Effect.Equals(effect));
         }
 
         private double EffectsRatioSum

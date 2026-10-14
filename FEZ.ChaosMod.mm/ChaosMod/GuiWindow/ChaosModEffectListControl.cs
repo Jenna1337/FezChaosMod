@@ -1,6 +1,5 @@
 ﻿using FezGame.ChaosMod;
 using ImGuiNET;
-using System.Collections.Generic;
 using System.Linq;
 using static FezGame.ChaosMod.FezChaosMod;
 
@@ -57,16 +56,18 @@ namespace FezGame
             if (ImGui.Checkbox(effect.Name + idPrefix + "Check", ref isEnabled))
             {
                 effect.Enabled = isEnabled;
+                ChaosModWindow.Settings.chaosEffectSettings.First(ef => ef.Name == effect.Name).Enabled = isEnabled;
             }
 
             ImGui.SameLine();
 
             // 2. Weight Spinner / Input
-            float weight = (float)effect.Weight;
+            float weight = (float)effect._weight;
             ImGui.SetNextItemWidth(100f);
             if (ImGui.InputFloat(idPrefix + "Weight", ref weight, 0.01f, 0.1f, "%.4f"))
             {
-                effect.Weight = weight;
+                effect._weight = weight;
+                ChaosModWindow.Settings.chaosEffectSettings.First(ef => ef.Name == effect.Name).Weight = weight;
             }
             if (ImGui.IsItemHovered()) ImGui.SetTooltip("Weight");
 
@@ -74,11 +75,12 @@ namespace FezGame
             if (effect.Duration > 0)
             {
                 ImGui.SameLine();
-                float duration = (float)effect.Duration;
+                float duration = (float)effect._duration;
                 ImGui.SetNextItemWidth(100f);
                 if (ImGui.InputFloat(idPrefix + "Duration", ref duration, 0.1f, 1f, "%.4f"))
                 {
-                    effect.Duration = duration;
+                    effect._duration = duration;
+                    ChaosModWindow.Settings.chaosEffectSettings.First(ef => ef.Name == effect.Name).Duration = duration;
                 }
                 if (ImGui.IsItemHovered()) ImGui.SetTooltip("Duration");
             }
