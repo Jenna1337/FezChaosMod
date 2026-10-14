@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -52,6 +51,8 @@ namespace FezGame.ChaosMod
             {
                 var trimmed = line.TrimStart();
                 if (trimmed.StartsWith(";") || trimmed.Length <= 0)
+                    continue;
+                if (trimmed.StartsWith("["))
                     continue;
                 var kvmatch = Regex.Match(trimmed, $@"(.*?)(?:{IniKeyValDelimiter}(.*))?$");
                 var readValue = kvmatch.Groups[2].Success ? kvmatch.Groups[2].Value : "";

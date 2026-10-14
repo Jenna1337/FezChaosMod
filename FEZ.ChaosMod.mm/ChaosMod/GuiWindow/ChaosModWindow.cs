@@ -15,7 +15,7 @@ namespace FezGame
         private readonly FezChaosMod chaosMod;
         private readonly ChaosModEffectListControl effectListUI;
         private readonly ChaosModAboutWindow aboutWindow = new ChaosModAboutWindow();
-        private static ChaosModSettings settings = new ChaosModSettings();
+        internal static ChaosModSettings Settings = null;
 
         internal string activeSaveFile = "chaosmod.ini";
         private static string loggerText = "";
@@ -30,16 +30,21 @@ namespace FezGame
             this.chaosMod = chaosMod;
             this.effectListUI = new ChaosModEffectListControl(chaosMod);
 
+            if (Settings == null)
+            {
+                Settings = new ChaosModSettings();
+            }
             // Load initial values from mod instance
-            settings.showDebugInfo = chaosMod.ShowDebugInfo;
-            settings.allowRotateAnywhere = chaosMod.AllowRotateAnywhere;
-            settings.delayBetweenEffects = (float)chaosMod.DelayBetweenEffects;
-            settings.durationMultiplier = (float)chaosMod.EffectsDurationMultiplier;
-            settings.maxEffectsToDisplay = chaosMod.MaxActiveEffectsToDisplay;
-            settings.latestEffectsToDisplay = chaosMod.LatestEffectsToDisplay;
+            Settings.showDebugInfo = chaosMod.ShowDebugInfo;
+            Settings.allowRotateAnywhere = chaosMod.AllowRotateAnywhere;
+            Settings.delayBetweenEffects = (float)chaosMod.DelayBetweenEffects;
+            Settings.durationMultiplier = (float)chaosMod.EffectsDurationMultiplier;
+            Settings.maxEffectsToDisplay = chaosMod.MaxActiveEffectsToDisplay;
+            Settings.latestEffectsToDisplay = chaosMod.LatestEffectsToDisplay;
 
             LogLine("Initialization complete.");
             LogLine($"Welcome to Chaos Mod version {FezChaosMod.Version}");
+
         }
 
         public static void LogLine(string text)
@@ -83,7 +88,7 @@ namespace FezGame
             try
             {
                 var gameState = FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>();
-                if (gameState != null) settings.stereoMode = gameState.StereoMode;
+                if (gameState != null) Settings.stereoMode = gameState.StereoMode;
             }
             catch { }
 
@@ -103,7 +108,7 @@ namespace FezGame
                         if (ImGui.MenuItem("New", "Ctrl+N"))
                         {
                             // Reset defaults
-                            settings.Reset();
+                            Settings.Reset();
                         }
                         if (ImGui.MenuItem("Open...", "Ctrl+O"))
                         {
@@ -148,37 +153,37 @@ namespace FezGame
                             // Left Control Settings Group
                             ImGui.BeginGroup();
 
-                            if (ImGui.Checkbox("Chaos Mod Enabled", ref settings.chaosModeEnabled))
+                            if (ImGui.Checkbox("Chaos Mod Enabled", ref Settings.chaosModeEnabled))
                             {
-                                FezChaosMod.Enabled = settings.chaosModeEnabled;
+                                FezChaosMod.Enabled = Settings.chaosModeEnabled;
                             }
 
                             ImGui.Spacing();
 
                             ImGui.SetNextItemWidth(120f);
-                            if (ImGui.InputFloat("Delay Between Effects (seconds)", ref settings.delayBetweenEffects, 0.1f, 1f, "%.3f"))
+                            if (ImGui.InputFloat("Delay Between Effects (seconds)", ref Settings.delayBetweenEffects, 0.1f, 1f, "%.3f"))
                             {
-                                chaosMod.DelayBetweenEffects = settings.delayBetweenEffects;
+                                chaosMod.DelayBetweenEffects = Settings.delayBetweenEffects;
                             }
 
                             ImGui.SetNextItemWidth(120f);
-                            if (ImGui.InputFloat("Effect Duration Multiplier", ref settings.durationMultiplier, 0.1f, 1f, "%.3f"))
+                            if (ImGui.InputFloat("Effect Duration Multiplier", ref Settings.durationMultiplier, 0.1f, 1f, "%.3f"))
                             {
-                                chaosMod.EffectsDurationMultiplier = settings.durationMultiplier;
+                                chaosMod.EffectsDurationMultiplier = Settings.durationMultiplier;
                             }
 
                             ImGui.SetNextItemWidth(120f);
-                            if (ImGui.InputInt("Max Effects to Display", ref settings.maxEffectsToDisplay))
+                            if (ImGui.InputInt("Max Effects to Display", ref Settings.maxEffectsToDisplay))
                             {
-                                chaosMod.MaxActiveEffectsToDisplay = settings.maxEffectsToDisplay;
-                                if (settings.latestEffectsToDisplay > settings.maxEffectsToDisplay) settings.latestEffectsToDisplay = settings.maxEffectsToDisplay;
+                                chaosMod.MaxActiveEffectsToDisplay = Settings.maxEffectsToDisplay;
+                                if (Settings.latestEffectsToDisplay > Settings.maxEffectsToDisplay) Settings.latestEffectsToDisplay = Settings.maxEffectsToDisplay;
                             }
 
                             ImGui.SetNextItemWidth(120f);
-                            if (ImGui.InputInt("Latest Effects to Display", ref settings.latestEffectsToDisplay))
+                            if (ImGui.InputInt("Latest Effects to Display", ref Settings.latestEffectsToDisplay))
                             {
-                                if (settings.latestEffectsToDisplay > settings.maxEffectsToDisplay) settings.latestEffectsToDisplay = settings.maxEffectsToDisplay;
-                                chaosMod.LatestEffectsToDisplay = settings.latestEffectsToDisplay;
+                                if (Settings.latestEffectsToDisplay > Settings.maxEffectsToDisplay) Settings.latestEffectsToDisplay = Settings.maxEffectsToDisplay;
+                                chaosMod.LatestEffectsToDisplay = Settings.latestEffectsToDisplay;
                             }
 
                             ImGui.EndGroup();
@@ -216,33 +221,33 @@ namespace FezGame
                     {
                         ImGui.Spacing();
 
-                        if (ImGui.Checkbox("Display Debug Info", ref settings.showDebugInfo))
+                        if (ImGui.Checkbox("Display Debug Info", ref Settings.showDebugInfo))
                         {
-                            chaosMod.ShowDebugInfo = settings.showDebugInfo;
+                            chaosMod.ShowDebugInfo = Settings.showDebugInfo;
                         }
 
-                        if (ImGui.Checkbox("Allow Rotate Anywhere", ref settings.allowRotateAnywhere))
+                        if (ImGui.Checkbox("Allow Rotate Anywhere", ref Settings.allowRotateAnywhere))
                         {
-                            chaosMod.AllowRotateAnywhere = settings.allowRotateAnywhere;
+                            chaosMod.AllowRotateAnywhere = Settings.allowRotateAnywhere;
                         }
 
-                        if (ImGui.Checkbox("Allow First Person Anywhere", ref settings.firstPersonAnywhere))
+                        if (ImGui.Checkbox("Allow First Person Anywhere", ref Settings.firstPersonAnywhere))
                         {
-                            chaosMod.AllowFirstPersonAnywhere = settings.firstPersonAnywhere;
+                            chaosMod.AllowFirstPersonAnywhere = Settings.firstPersonAnywhere;
                         }
 
-                        if (ImGui.Checkbox("Stereoscopic Mode", ref settings.stereoMode))
+                        if (ImGui.Checkbox("Stereoscopic Mode", ref Settings.stereoMode))
                         {
                             try
                             {
-                                FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>().StereoMode = settings.stereoMode;
+                                FezEngine.Tools.ServiceHelper.Get<Services.IGameStateManager>().StereoMode = Settings.stereoMode;
                             }
                             catch { }
                         }
 
-                        if (ImGui.Checkbox("All Zu speak is English", ref settings.zuSpeakEnglish))
+                        if (ImGui.Checkbox("All Zu speak is English", ref Settings.zuSpeakEnglish))
                         {
-                            chaosMod.ZuSpeakEnglish = settings.zuSpeakEnglish;
+                            chaosMod.ZuSpeakEnglish = Settings.zuSpeakEnglish;
                         }
 
                         ImGui.EndTabItem();
@@ -271,7 +276,7 @@ namespace FezGame
             {
                 this.activeSaveFile = Path.GetFullPath(file);
                 LogLineDebug("Saving to file: " + file);
-                ChaosModSettingsHelper.Write(settings, file);
+                ChaosModSettingsHelper.Write(Settings, file);
             }
             catch (Exception e)
             {
@@ -286,7 +291,7 @@ namespace FezGame
             {
                 activeSaveFile = Path.GetFullPath(file);
                 LogLineDebug("Loading from file: " + file);
-                ChaosModSettingsHelper.Read(settings, file);
+                ChaosModSettingsHelper.Read(Settings, file);
             }
             catch (Exception e)
             {
@@ -295,4 +300,4 @@ namespace FezGame
             }
         }
     }
-    }
+}
