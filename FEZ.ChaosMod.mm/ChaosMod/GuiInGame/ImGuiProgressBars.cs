@@ -58,8 +58,12 @@ namespace FezGame.ChaosMod
                 startAngle += angle;
                 sweep -= angle;
             }
-
-            ImGuiProgressDrawing.DrawCenteredText(drawList, text, center, scale, TextColor);
+            var textSize = ImGui.CalcTextSize(text);
+            float textSizeMax = Math.Max(textSize.X, textSize.Y);
+            float maxTextSquareSideLength = Size / (float)Math.Sqrt(2);
+            float fitScale = maxTextSquareSideLength / textSizeMax;
+            float scaleAdjustedForTextSize = scale * fitScale;
+            ImGuiProgressDrawing.DrawCenteredText(drawList, text, center, scaleAdjustedForTextSize, TextColor);
         }
 
         public void Dispose() { }

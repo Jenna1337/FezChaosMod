@@ -1,5 +1,4 @@
 ﻿using FezEngine.Components;
-using FezEngine.Services;
 using FezEngine.Tools;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -58,28 +57,6 @@ namespace FezGame.ChaosMod
         {
             Batch.Dispose();
         }
-        public Vector2 MeasureString(string text)
-        {
-            return BigFont.MeasureString(text);
-        }
-
-#if !NET10_0_OR_GREATER
-        public Texture2D BitMapToTexture2D(System.Drawing.Bitmap bitmap)
-        {
-            var colors = new Color[bitmap.Width * bitmap.Height];
-            for (int x = 0; x < bitmap.Width; ++x)
-                for (int y = 0; y < bitmap.Height; ++y)
-                {
-                    var color = bitmap.GetPixel(x, y);
-                    colors[x + y * bitmap.Height] = new Color(color.R, color.G, color.B, color.A);
-                }
-
-            Texture2D texture = ColorArrayToTexture2D(colors, bitmap.Width, bitmap.Height);
-            texture.SetData(colors);
-
-            return texture;
-        }
-#endif
         public Texture2D ColorArrayToTexture2D(Color[] colors, int Height, int Width)
         {
             Texture2D texture = new Texture2D(graphicsDevice, Width, Height, false, SurfaceFormat.Color);

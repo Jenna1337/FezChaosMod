@@ -1,5 +1,4 @@
 ﻿using FezEngine.Components;
-using FezEngine.Components.Scripting;
 using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Structure;
@@ -9,15 +8,13 @@ using FezGame.Components;
 using FezGame.GameInfo;
 using FezGame.Services;
 using FezGame.Structure;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 
 namespace FezGame.ChaosMod
 {
@@ -350,7 +347,7 @@ namespace FezGame.ChaosMod
           || /*LevelManager.Name.Equals("GOMEZ_HOUSE_2D") ||*/ !PlayerManager.CanControl
           || PlayerManager.Action == ActionType.EnteringPipe || PlayerManager.Action.IsEnteringDoor()
           || PlayerManager.Action == ActionType.ExitDoor || PlayerManager.Action == ActionType.ExitDoorCarry || PlayerManager.Action == ActionType.ExitDoorCarryHeavy
-          //|| HurtingActions.Contains(PlayerManager.Action)
+            //|| HurtingActions.Contains(PlayerManager.Action)
             /* || PlayerManager.Action != ActionType.Dying || PlayerManager.Action != ActionType.Suffering || PlayerManager.Action != ActionType.SuckedIn || PlayerManager.Action != ActionType.CollectingFez
 			|| PlayerManager.Action != ActionType.FindingTreasure*/;
         private bool InIntro // i.e., before getting the FEZ
@@ -603,10 +600,11 @@ namespace FezGame.ChaosMod
                 //ChaosEffectsList.Add(new ChaosEffect("DebugModeEnable", () => { GameState.DebugMode = true; }, 1f));
                 //ChaosEffectsList.Add(new ChaosEffect("DebugModeDisable", () => { GameState.DebugMode = false; }, 1f));
 
-                ChaosEffectsList.Add(new ChaosEffect("SetGravityInverted", () => {
-                    if(!CurrentLevelInfo.HasSinkBlocks)
+                ChaosEffectsList.Add(new ChaosEffect("SetGravityInverted", () =>
+                {
+                    if (!CurrentLevelInfo.HasSinkBlocks)
                         CollisionManager.GravityFactor = PlayerManager.Action.IsEnteringDoor() ? 1f : -1.0f;//tertiary operator so the door puts Gomez on the top trile surface instead of the bottom
-                }, 1f, ()=> !CurrentLevelInfo.HasSinkBlocks, duration: 3d, onDone: ResetGravity, category: "Gravity", pauseTimerTest: () => CurrentLevelInfo.HasSinkBlocks));
+                }, 1f, () => !CurrentLevelInfo.HasSinkBlocks, duration: 3d, onDone: ResetGravity, category: "Gravity", pauseTimerTest: () => CurrentLevelInfo.HasSinkBlocks));
                 //ChaosEffectsList.Add(new ChaosEffect("SetGravity1.0", () => { CollisionManager.GravityFactor = 1.0f; }, 1f, duration: 10d, category: "Gravity"));
                 ChaosEffectsList.Add(new ChaosEffect("SetGravityMoon", () => { CollisionManager.GravityFactor = 0.165f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity"));//The gravity of Earth's moon, assuming 1f is equivalent to Earth's gravity
                 ChaosEffectsList.Add(new ChaosEffect("SetGravityFezMoon", () => { CollisionManager.GravityFactor = 0.25f; }, 1f, duration: 10d, onDone: ResetGravity, category: "Gravity"));//The gravity of the game's moon level, "PYRAMID"
@@ -664,11 +662,11 @@ namespace FezGame.ChaosMod
                     string levelname = LevelNamesForRandTele[random.Next(0, LevelNamesForRandTele.Count)];
                     LevelManager.ChangeLevel(levelname);
                     //GC.Collect();
-                }, 0.01f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport", 
+                }, 0.01f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport",
                 additionalSettings: new AdditionalChaosEffectSettings(
                     "RandTeleCheckList",
                     LevelNames.All.Select(n => new KeyValuePair<string, bool>(n, LevelNamesForRandTele.Contains(n))),
-                    (string name, bool val)=>
+                    (string name, bool val) =>
                     {
                         if (val && !FezChaosMod.Instance.LevelNamesForRandTele.Contains(name))
                             FezChaosMod.Instance.LevelNamesForRandTele.Add(name);
@@ -680,7 +678,7 @@ namespace FezGame.ChaosMod
                 {
                     string levelname = HubLevelNames[random.Next(0, HubLevelNames.Length)];
                     LevelManager.ChangeLevel(levelname);
-                }, 0.1f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity>0, category: "Teleport"));
+                }, 0.1f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport"));
                 LevelManager.LevelChanged += TimeInLevelTimer.Restart;
                 TimeInLevelTimer.Start();
 
@@ -783,7 +781,8 @@ namespace FezGame.ChaosMod
                     //ChaosModWindow.LogLineDebug("{\"ActionAnimations\": {" + String.Join(", ", Common.Util.GetValues<ActionType>().Where(a => a != 0).Select(a => $"\"{a}\": \"{a.GetAnimationPath()}\""))+ "}}");
 
                     ChaosModWindow.LogLineDebug($"Initialization duration: {initBenchmarkTimer.Elapsed.TotalSeconds}s ({initBenchmarkTimer.Elapsed.TotalMilliseconds}ms)");
-                };
+                }
+                ;
             }
         }
         /// <summary>
@@ -849,7 +848,7 @@ namespace FezGame.ChaosMod
                     double timeLeft = Effect.Duration - (ActiveTimer != null ? ActiveTimer.Elapsed.TotalSeconds : 0);
                     string Text = timeLeft < 60 ? Math.Ceiling(timeLeft).ToString() : null;//Only show the time if it has less than 60 seconds remaining
                     Color color = Hidden ? Color.Transparent : (ShouldBlink ? EffectTextColorBlink : (Progress >= 1 ? EffectTextColorDone : EffectTextColorActive));
-                    ChaosModEffectTextDrawer.Draw(Effect.Name, Progress, index, Text, color, ActiveTimer!=null && !ActiveTimer.IsRunning);
+                    ChaosModEffectTextDrawer.Draw(Effect.Name, Progress, index, Text, color, ActiveTimer != null && !ActiveTimer.IsRunning);
                 }
             }
             /// <summary>
@@ -976,7 +975,7 @@ false
 
         public override void Draw(GameTime gameTime)
         {
-            if(this.disposing)
+            if (this.disposing)
             {
                 return;
             }
@@ -1069,7 +1068,7 @@ false
                 ChaosModNextEffectCountDownProgressBar.DrawProgressBar(
                     elapsedtime / DelayBetweenEffects,
                     Text,
-                    new Rectangle(0, 0, viewport.Width, (int)Math.Ceiling(DrawingTools.Instance.MeasureString("0").Y * scale) + 4),
+                    new Rectangle(0, 0, viewport.Width, (int)Math.Ceiling(ImGui.CalcTextSize("0").Y * scale) + 4),
                     scale, ChaosTimerPaused);
 
                 int index;
@@ -1092,7 +1091,7 @@ false
                         if (index >= activeChaosEffects.Count)
                             break;
                         var item = activeChaosEffects[index];
-                        if (item.IsDone && index < activeChaosEffects.Count-LatestEffectsToDisplay)
+                        if (item.IsDone && index < activeChaosEffects.Count - LatestEffectsToDisplay)
                         {
                             activeChaosEffects.Remove(item);
                             index = 0;
