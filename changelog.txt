@@ -135,6 +135,11 @@ Changed how checkboxes are saved; this should not affect settings files
 More bug fixes
 Cleanup
 
+
+
+
+* Chaos mod:
+
 0.9.1 - 2023-01-04T07:01:56Z
 Now uses MonoMod ( https://github.com/MonoMod/MonoMod )
 As a result of moving to MonoMod, several features (including new speedrun splits, and clock-tower-ignore-time) got cut.
@@ -175,5 +180,6 @@ Fixed name of additional settings windows
 1.0.0 - TBA (want to fix save files first)
 Port to .NET 10
 Revamp user interface (press F1 to open menu)
+Shoutouts to @zrckr
 Reworked save files
 
