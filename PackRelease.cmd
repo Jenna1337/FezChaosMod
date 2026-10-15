@@ -6,7 +6,7 @@
 @set projectpath=%cd%
 @set packedpath=PackedRelease
 @set projectname=FezChaosMod
-@set projectsubpath=FEZ.ChaosMod.mm
+@set projectsubpath=FezChaosMod
 
 @IF [%1]==[/nobuild] GOTO AFTERBUILD
 @IF [%1]==[/timeonly] GOTO PRINTBUILDTIME
@@ -17,7 +17,7 @@
 @REM cd /d "C:\Program Files\dotnet"
 
 @REM the following line should build all the projects in the solution
-dotnet publish "%projectpath%\FezChaosMod-NET10.slnx" -c Release -f net10.0 -p:ArtifactsPath="." -p:ArtifactsPivots="" -p:ArtifactsProjectName=""
+dotnet publish "%projectpath%\FezChaosMod.slnx" -c Release -f net10.0 -p:ArtifactsPath="." -p:ArtifactsPivots="" -p:ArtifactsProjectName=""
 @echo Builds completed.
 
 cd /d %projectpath%

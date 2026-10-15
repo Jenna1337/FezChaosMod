@@ -2,7 +2,7 @@
   <Configurations>
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="FEZ.ChaosMod.mm/FEZ.ChaosMod.mm-NET10.csproj">
+  <Project Path="FezChaosMod/FezChaosMod.csproj">
     <Platform Project="x86" />
   </Project>
 </Solution>
