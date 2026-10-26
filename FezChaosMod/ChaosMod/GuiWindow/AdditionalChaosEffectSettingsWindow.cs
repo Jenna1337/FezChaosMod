@@ -1,6 +1,5 @@
 ﻿using FezGame.ChaosMod;
 using ImGuiNET;
-using System.Collections.Generic;
 using System.Numerics;
 
 namespace FezGame
@@ -35,8 +34,6 @@ namespace FezGame
                 if (ImGui.BeginChild("SettingsScrollRegion", contentRegion, ImGuiChildFlags.Border, ImGuiWindowFlags.None))
                 {
                     // Iterate through the settings list directly
-                    // Note: If AdditionalSettingsCheckListList is a List of KeyValuePairs or custom objects, 
-                    // adjust the loop variables to match your structure.
                     for (int i = 0; i < settings.AdditionalSettingsCheckListList.Count; i++)
                     {
                         var pair = settings.AdditionalSettingsCheckListList[i];
@@ -47,7 +44,7 @@ namespace FezGame
                         if (ImGui.Checkbox(pair.Key, ref isChecked))
                         {
                             // If the user toggles the checkbox, update state and notify settings
-                            settings.AdditionalSettingsCheckListList[i] = new KeyValuePair<string, bool>(pair.Key, isChecked);
+                            settings.AdditionalSettingsCheckListList[i].Value = isChecked;
                             settings.ItemCheck(pair.Key, isChecked);
                         }
                     }

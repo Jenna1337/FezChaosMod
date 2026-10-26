@@ -63,17 +63,10 @@ namespace FezGame
                 Effect.Enabled = Enabled;
                 if (AdditionalSettings != null)
                 {
+                    //Note: these actually point to the same object
                     //TODO verify additional settings are applied properly
                     var newList = AdditionalSettings.AdditionalSettingsCheckListList;
                     var oldList = Effect.AdditionalSettings.AdditionalSettingsCheckListList;
-                    // 1. Turn the new data into a lookup dictionary for fast speed
-                    var newLookup = newList.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-                    // 2. Filter oldList to remove keys that are being updated by newList
-                    oldList.RemoveAll(kvp => newLookup.ContainsKey(kvp.Key));
-
-                    // 3. Add all the items from newList (both updates and brand-new items)
-                    oldList.AddRange(newList);
                 }
             }
         }
@@ -114,33 +107,89 @@ namespace FezGame
 
         // --- Mappers for INI Settings Files ---
         private const string UidReflectionPathSeparator = ".";
-        public Dictionary<string, object> GetAllInputsValues(bool prependControlNameIfMultivalued = false)
+        private const string GeneralSettingsSectionName = "General";
+        private const string EffectsSectionName = "Effects";
+        string GetSectionName(FieldInfo field, string path)
         {
-            Dictionary<string, object> settings = [];
+            string sectionName = "";
+            if (typeof(ChaosModSettings).Equals(field.DeclaringType))
+            {
+                sectionName = GeneralSettingsSectionName;
+            }
+            if (typeof(ChaosEffectSetting).Equals(field.DeclaringType))
+            {
+                sectionName = EffectsSectionName;
+            }
+            if (field.FieldType.Equals(typeof(AdditionalChaosEffectSettings)))
+            {
+                sectionName = path;
+            }
+            return sectionName;
+        }
+        public IniDataFileData GetAllInputsValues(bool prependControlNameIfMultivalued = false)
+        {
+            IniDataFileData settings = [];
+            IniDataSection GetSection(FieldInfo field, string path)
+            {
+                string sectionName = GetSectionName(field, path);
+                IniDataSection section;
+                if (!settings.TryGetValue(sectionName, out section))
+                {
+                    section = new IniDataSection();
+                    settings.Add(sectionName, section);
+                }
+                return section;
+            }
             IteratePublicFields(typeof(ChaosModSettings), this, (field, ob, path) =>
             {
-                //TODO add support for AdditionalChaosEffectSettings
-                if (!string.IsNullOrEmpty(path))
+                bool isAdditionalSettings = field.FieldType.Equals(typeof(AdditionalChaosEffectSettings));
+                if (!string.IsNullOrEmpty(path) && !isAdditionalSettings)
                 {
                     path += UidReflectionPathSeparator;
                 }
-                settings.TryAdd(path + field.Name, field.GetValue(ob));
+                IniDataSection section = GetSection(field, path);
+                if (!isAdditionalSettings)
+                {
+                    section.TryAdd(path + field.Name, field.GetValue(ob));
+                }
+                else
+                {
+                    AdditionalSettingsCheckListItem keyValuePair = (AdditionalSettingsCheckListItem)ob;
+                    section.TryAdd(keyValuePair.Key, keyValuePair.Value);
+                }
             });
             return settings;
         }
-        public void SetAllInputsValues(Dictionary<string, string> ctrlvals)
+        public void SetAllInputsValues(IniFile ctrlvals)
         {
+            string[] sectionsToCheckFirst = [
+                ChaosModSettingsHelper.MetadataSectionName,
+            ];
             IteratePublicFields(typeof(ChaosModSettings), this, (field, ob, path) =>
             {
-                if (!string.IsNullOrEmpty(path))
+                bool isAdditionalSettings = field.FieldType.Equals(typeof(AdditionalChaosEffectSettings));
+                if (!string.IsNullOrEmpty(path) && !isAdditionalSettings)
                 {
                     path += UidReflectionPathSeparator;
                 }
                 string uid = path + field.Name;
-                if (ctrlvals.TryGetValue(uid, out string val))
+                if (isAdditionalSettings)
                 {
-                    //TODO add support for AdditionalChaosEffectSettings
-                    field.SetValue(ob, Convert.ChangeType(ctrlvals[uid], field.FieldType, System.Globalization.CultureInfo.InvariantCulture));
+                    uid = ((AdditionalSettingsCheckListItem)ob).Key;
+                }
+                string expectedSection = GetSectionName(field, path);
+                if (ctrlvals.TryGetValue(uid, out string val, [expectedSection, .. sectionsToCheckFirst]))
+                {
+                    var newType = isAdditionalSettings ? typeof(bool) : field.FieldType;
+                    object newVal = Convert.ChangeType(val, newType, System.Globalization.CultureInfo.InvariantCulture);
+                    if (isAdditionalSettings)
+                    {
+                        ((AdditionalSettingsCheckListItem)ob).Value = (bool)newVal;
+                    }
+                    else
+                    {
+                        field.SetValue(ob, newVal);
+                    }
                 }
                 else
                 {
@@ -209,9 +258,7 @@ namespace FezGame
                         var addSetts = (AdditionalChaosEffectSettings)field.GetValue(ob);
                         if (addSetts != null)
                         {
-                            System.Diagnostics.Debugger.Break();
-                            //TODO
-                            //addSetts.AdditionalSettingsCheckListList.ForEach(MappingFunc(Field));
+                            addSetts.AdditionalSettingsCheckListList.ForEach(kp => MappingFunc(field, kp, addSetts.AdditionalSettingsName));
                         }
                     }
                 }

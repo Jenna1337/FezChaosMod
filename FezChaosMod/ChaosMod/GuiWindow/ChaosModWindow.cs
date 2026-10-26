@@ -42,6 +42,8 @@ namespace FezGame
             Settings.maxEffectsToDisplay = chaosMod.MaxActiveEffectsToDisplay;
             Settings.latestEffectsToDisplay = chaosMod.LatestEffectsToDisplay;
 
+            LoadSettingsFromFile(activeSaveFile);
+
             LogLine("Initialization complete.");
             LogLine($"Welcome to Chaos Mod version {FezChaosMod.Version}");
 

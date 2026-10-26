@@ -4,9 +4,43 @@ using System.Text.RegularExpressions;
 
 namespace FezGame.ChaosMod
 {
+    public class IniDataSection : Dictionary<string, object> { }
+    public class IniDataFileData : Dictionary<string, IniDataSection>;
+    public class IniSection : Dictionary<string, string> { }
+    public class IniFile : Dictionary<string, IniSection>
+    {
+        /// <summary>
+        /// Searches globally across all sections for the first matching key.
+        /// </summary>
+        public bool TryGetValue(string key, out string value, params string[] sectionsToCheckFirst)
+        {
+            if (sectionsToCheckFirst != null)
+            {
+                foreach (var sectionName in sectionsToCheckFirst)
+                {
+                    if (this.TryGetValue(sectionName, out IniSection section))
+                    {
+                        if (section.TryGetValue(key, out value))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            foreach (var section in this.Values)
+            {
+                if (section.TryGetValue(key, out value))
+                {
+                    return true;
+                }
+            }
+            value = null;
+            return false;
+        }
+    }
     static class ChaosModSettingsHelper
     {
-        private static readonly string MetadataSectionName = "Metadata";
+        internal static readonly string MetadataSectionName = "Metadata";
         private static readonly string FezChaosModVersionName = "ChaosMod.Version";
         /// <summary>
         /// Loads chaos mod settings file
@@ -15,7 +49,7 @@ namespace FezGame.ChaosMod
         /// <param name="filepath">The file path of the settings file</param>
         public static void Read(ChaosModSettings settings, string filepath)
         {
-            Dictionary<string, string> ctrlvals = ReadIniFile(filepath);
+            IniFile ctrlvals = ReadIniFile(filepath);
 
 #if !DEBUG
             ChaosModWindow.ClearLog();
@@ -35,7 +69,7 @@ namespace FezGame.ChaosMod
         /// <param name="filepath">The file path to save the settings file</param>
         public static void Write(ChaosModSettings settings, string filepath)
         {
-            Dictionary<string, object> ctrlvals = settings.GetAllInputsValues(false);
+            var ctrlvals = settings.GetAllInputsValues(false);
             WriteIniFile(filepath, ctrlvals);
         }
 
@@ -43,28 +77,38 @@ namespace FezGame.ChaosMod
         private static readonly char IniKeyValDelimiter = '=';
 
         //note: does not support multiline values
-        private static Dictionary<string, string> ReadIniFile(string filepath)
+        private static IniFile ReadIniFile(string filepath)
         {
-            var inidata = new Dictionary<string, string>();
+            var inidata = new IniFile();
             string[] lines = File.ReadAllLines(filepath, System.Text.Encoding.UTF8);
+            string section = "";
             foreach (var line in lines)
             {
                 var trimmed = line.TrimStart();
                 if (trimmed.StartsWith(";") || trimmed.Length <= 0)
+                {
                     continue;
+                }
+
                 if (trimmed.StartsWith("["))
+                {
+                    section = Regex.Match(trimmed, @"\[(.*?)(?:\]|$)").Groups[1].Value.Trim();
+                    if (!inidata.ContainsKey(section))
+                        inidata[section] = new IniSection();
                     continue;
+                }
+
                 var kvmatch = Regex.Match(trimmed, $@"(.*?)(?:{IniKeyValDelimiter}(.*))?$");
                 var readValue = kvmatch.Groups[2].Success ? kvmatch.Groups[2].Value : "";
                 if (!string.IsNullOrEmpty(readValue))
                 {
-                    inidata[kvmatch.Groups[1].Value.Trim()] = readValue;
+                    inidata[section][kvmatch.Groups[1].Value.Trim()] = readValue;
                 }
             }
             return inidata;
         }
         //note: does not support multiline values
-        private static void WriteIniFile(string filepath, Dictionary<string, object> dict)
+        private static void WriteIniFile(string filepath, IniDataFileData dict)
         {
             List<string> lines = new List<string>()
             {
@@ -74,10 +118,19 @@ namespace FezGame.ChaosMod
                 $"{FezChaosModVersionName}{IniKeyValDelimiter}{FezChaosMod.Version}",
                 ""
             };
-            foreach (var d in dict)//.OrderBy(dd => dd.Key))
+            foreach (var dd in dict)//.OrderBy(dd => dd.Key))
             {
-                string formattedValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", d.Value);
-                lines.Add($"{d.Key}{IniKeyValDelimiter}{d.Value.ToString()}");
+                if (!string.IsNullOrEmpty(dd.Key))
+                {
+                    lines.Add($"[{dd.Key}]");
+                }
+
+                foreach (var d in dd.Value)//.OrderBy(d=>d.Key))
+                {
+                    string formattedValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", d.Value);
+                    lines.Add($"{d.Key}{IniKeyValDelimiter}{d.Value.ToString()}");
+                }
+                lines.Add("");
             }
             File.WriteAllLines(filepath, lines, System.Text.Encoding.UTF8);
         }

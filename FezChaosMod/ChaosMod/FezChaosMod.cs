@@ -103,6 +103,20 @@ namespace FezGame.ChaosMod
 
         #endregion
 
+        public class AdditionalSettingsCheckListItem
+        {
+            public string Key;
+            public bool Value;
+
+            public AdditionalSettingsCheckListItem()
+            {
+            }
+            public AdditionalSettingsCheckListItem(string key, bool value)
+            {
+                Key = key;
+                Value = value;
+            }
+        }
         public delegate void AdditionalChaosEffectSettingsItemCheckHandler(string name, bool val);
         /// <summary>
         /// Used as an optional parameter for <see cref="ChaosEffect"/>. 
@@ -110,9 +124,9 @@ namespace FezGame.ChaosMod
         public class AdditionalChaosEffectSettings
         {
             public string AdditionalSettingsName { get; }
-            public List<KeyValuePair<string, bool>> AdditionalSettingsCheckListList { get; }
+            public List<AdditionalSettingsCheckListItem> AdditionalSettingsCheckListList { get; }
             public AdditionalChaosEffectSettingsItemCheckHandler ItemCheck { get; }
-            public AdditionalChaosEffectSettings(string AdditionalSettingsName, IEnumerable<KeyValuePair<string, bool>> AdditionalSettingsCheckListList, AdditionalChaosEffectSettingsItemCheckHandler ItemCheck)
+            public AdditionalChaosEffectSettings(string AdditionalSettingsName, IEnumerable<AdditionalSettingsCheckListItem> AdditionalSettingsCheckListList, AdditionalChaosEffectSettingsItemCheckHandler ItemCheck)
             {
                 this.AdditionalSettingsName = AdditionalSettingsName;
                 this.AdditionalSettingsCheckListList = AdditionalSettingsCheckListList.ToList();
@@ -665,7 +679,7 @@ namespace FezGame.ChaosMod
                 }, 0.01f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport",
                 additionalSettings: new AdditionalChaosEffectSettings(
                     "RandTeleCheckList",
-                    LevelNames.All.Select(n => new KeyValuePair<string, bool>(n, LevelNamesForRandTele.Contains(n))),
+                    LevelNames.All.Select(n => new AdditionalSettingsCheckListItem(n, LevelNamesForRandTele.Contains(n))),
                     (string name, bool val) =>
                     {
                         if (val && !FezChaosMod.Instance.LevelNamesForRandTele.Contains(name))
