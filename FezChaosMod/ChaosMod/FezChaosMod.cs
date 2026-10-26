@@ -117,7 +117,6 @@ namespace FezGame.ChaosMod
                 Value = value;
             }
         }
-        public delegate void AdditionalChaosEffectSettingsItemCheckHandler(string name, bool val);
         /// <summary>
         /// Used as an optional parameter for <see cref="ChaosEffect"/>. 
         /// </summary>
@@ -125,12 +124,20 @@ namespace FezGame.ChaosMod
         {
             public string AdditionalSettingsName { get; }
             public List<AdditionalSettingsCheckListItem> AdditionalSettingsCheckListList { get; }
-            public AdditionalChaosEffectSettingsItemCheckHandler ItemCheck { get; }
-            public AdditionalChaosEffectSettings(string AdditionalSettingsName, IEnumerable<AdditionalSettingsCheckListItem> AdditionalSettingsCheckListList, AdditionalChaosEffectSettingsItemCheckHandler ItemCheck)
+            public AdditionalChaosEffectSettings(string AdditionalSettingsName, IEnumerable<AdditionalSettingsCheckListItem> AdditionalSettingsCheckListList)
             {
                 this.AdditionalSettingsName = AdditionalSettingsName;
                 this.AdditionalSettingsCheckListList = AdditionalSettingsCheckListList.ToList();
-                this.ItemCheck = ItemCheck;
+            }
+
+            internal AdditionalChaosEffectSettings Clone()
+            {
+                var newList = new List<AdditionalSettingsCheckListItem>();
+                foreach (var item in AdditionalSettingsCheckListList)
+                {
+                    newList.Add(new(item.Key, item.Value));
+                }
+                return new AdditionalChaosEffectSettings(AdditionalSettingsName, newList);
             }
         }
 
@@ -285,7 +292,7 @@ namespace FezGame.ChaosMod
         }
 
         #region Constants and variables
-        public List<string> LevelNamesForRandTele;
+        public AdditionalChaosEffectSettings GoToRandomLevelAdditionalChaosEffectSettings;
 
         private static Sky[] Skies;
         private static StarField Starfield;
@@ -547,8 +554,6 @@ namespace FezGame.ChaosMod
                 ChaosModEffectTextDrawer = new ChaosModEffectText();
                 SetColors(Color.Blue, Color.White);//TODO make this customizable
 
-                LevelNamesForRandTele = LevelNames.Main.Where(a => a != "QUANTUM").ToList();
-
                 SkiesNames = WorldInfo.GetSkiesNames(); //Note: does not include "DEFAULT", "STARLINE", or "ZUSKY"
 
                 HubLevelNames = LevelNames.Hub.ToArray();
@@ -668,8 +673,14 @@ namespace FezGame.ChaosMod
                     else
                         LevelManager.ChangeLevel(LevelManager.Name);
                 }, 1f, () => !(InCutsceneLevel) && TimeInLevelTimer.Elapsed.TotalSeconds > 5f, category: "Teleport"));*/
+                var RandomLevelDefaultList = LevelNames.Main.Where(a => a != "QUANTUM").ToList();
+                GoToRandomLevelAdditionalChaosEffectSettings = new AdditionalChaosEffectSettings(
+                    "RandTeleCheckList",
+                    LevelNames.All.Select(n => new AdditionalSettingsCheckListItem(n, RandomLevelDefaultList.Contains(n)))
+                );
                 ChaosEffectsList.Add(new ChaosEffect("GoToRandomLevel", () =>
                 {
+                    List<string> LevelNamesForRandTele = GoToRandomLevelAdditionalChaosEffectSettings.AdditionalSettingsCheckListList.Where(kv => kv.Value).Select(kv => kv.Key).ToList();
                     if (LevelNamesForRandTele.Count <= 0)
                     {
                         ChaosModWindow.LogLine("No levels found in the random teleport level list");
@@ -679,17 +690,7 @@ namespace FezGame.ChaosMod
                     ScheduledLevelChangeName = levelname;
                     //GC.Collect();
                 }, 0.01f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport",
-                additionalSettings: new AdditionalChaosEffectSettings(
-                    "RandTeleCheckList",
-                    LevelNames.All.Select(n => new AdditionalSettingsCheckListItem(n, LevelNamesForRandTele.Contains(n))),
-                    (string name, bool val) =>
-                    {
-                        if (val && !FezChaosMod.Instance.LevelNamesForRandTele.Contains(name))
-                            FezChaosMod.Instance.LevelNamesForRandTele.Add(name);
-                        else
-                            FezChaosMod.Instance.LevelNamesForRandTele.Remove(name);
-                    }
-                )));
+                additionalSettings: GoToRandomLevelAdditionalChaosEffectSettings));
                 ChaosEffectsList.Add(new ChaosEffect("GoToRandomHubLevel", () =>
                 {
                     string levelname = HubLevelNames[random.Next(0, HubLevelNames.Length)];
@@ -777,6 +778,7 @@ namespace FezGame.ChaosMod
 
 
                 #endregion
+                EnsureGlitches();
 
                 LoadingText = "Initializing Chaos Mod settings window...";
                 this.ChaosModWindow = new ChaosModWindow(this);
@@ -978,8 +980,14 @@ namespace FezGame.ChaosMod
             }
             if (ScheduledLevelChangeName != null)
             {
-                LevelManager.ChangeLevel(ScheduledLevelChangeName);
-                ScheduledLevelChangeName = null;
+                try
+                {
+                    LevelManager.ChangeLevel(ScheduledLevelChangeName);
+                }
+                finally
+                {
+                    ScheduledLevelChangeName = null;
+                }
             }
         }
         private ulong _updatesDone = 0, _framesRendered = 0, _ups = 0, _fps = 0;
@@ -998,7 +1006,10 @@ false
             {
                 return;
             }
-
+            if (Glitches != null && Glitches.IsFrozen)
+            {
+                return;
+            }
             float scale = (float)Math.Floor(Game.GraphicsDevice.GetViewScale());
             Viewport viewport = Game.GraphicsDevice.Viewport;
             bool ChaosTimerPaused = this.ChaosTimerPaused;
@@ -1145,8 +1156,11 @@ false
                     var activeEffect = activeChaosEffects[i];
                     activeEffect.Hidden = i < UnlistedActiveEffects;
                     activeEffect.Draw(index);
+
                     if (!activeEffect.Hidden)
+                    {
                         index--;
+                    }
                 }
             }
 

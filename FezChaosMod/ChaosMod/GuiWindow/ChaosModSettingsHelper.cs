@@ -4,8 +4,6 @@ using System.Text.RegularExpressions;
 
 namespace FezGame.ChaosMod
 {
-    public class IniDataSection : Dictionary<string, object> { }
-    public class IniDataFileData : Dictionary<string, IniDataSection>;
     public class IniSection : Dictionary<string, string> { }
     public class IniFile : Dictionary<string, IniSection>
     {
@@ -69,7 +67,7 @@ namespace FezGame.ChaosMod
         /// <param name="filepath">The file path to save the settings file</param>
         public static void Write(ChaosModSettings settings, string filepath)
         {
-            var ctrlvals = settings.GetAllInputsValues(false);
+            var ctrlvals = settings.GetAllInputsValues();
             WriteIniFile(filepath, ctrlvals);
         }
 
@@ -108,7 +106,7 @@ namespace FezGame.ChaosMod
             return inidata;
         }
         //note: does not support multiline values
-        private static void WriteIniFile(string filepath, IniDataFileData dict)
+        private static void WriteIniFile(string filepath, IniFile dict)
         {
             List<string> lines = new List<string>()
             {
@@ -127,8 +125,7 @@ namespace FezGame.ChaosMod
 
                 foreach (var d in dd.Value)//.OrderBy(d=>d.Key))
                 {
-                    string formattedValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", d.Value);
-                    lines.Add($"{d.Key}{IniKeyValDelimiter}{d.Value.ToString()}");
+                    lines.Add($"{d.Key}{IniKeyValDelimiter}{d.Value}");
                 }
                 lines.Add("");
             }

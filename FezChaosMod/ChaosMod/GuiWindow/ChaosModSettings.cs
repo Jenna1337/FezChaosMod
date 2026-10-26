@@ -54,7 +54,7 @@ namespace FezGame
                 Duration = effect._duration;
                 Enabled = effect.Enabled;
                 Name = effect.Name;
-                AdditionalSettings = effect.AdditionalSettings;
+                AdditionalSettings = effect.AdditionalSettings?.Clone();
             }
             public void ApplySettings()
             {
@@ -67,6 +67,15 @@ namespace FezGame
                     //TODO verify additional settings are applied properly
                     var newList = AdditionalSettings.AdditionalSettingsCheckListList;
                     var oldList = Effect.AdditionalSettings.AdditionalSettingsCheckListList;
+                    // 1. Turn the new data into a lookup dictionary for fast speed
+                    var newLookup = newList.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+                    // 2. Filter oldList to remove keys that are being updated by newList
+                    oldList.RemoveAll(kvp => newLookup.ContainsKey(kvp.Key));
+
+                    // 3. Add all the items from newList (both updates and brand-new items)
+                    oldList.AddRange(newList);
+
                 }
             }
         }
@@ -126,36 +135,44 @@ namespace FezGame
             }
             return sectionName;
         }
-        public IniDataFileData GetAllInputsValues(bool prependControlNameIfMultivalued = false)
+        public IniFile GetAllInputsValues(ChaosModSettings source = null)
         {
-            IniDataFileData settings = [];
-            IniDataSection GetSection(FieldInfo field, string path)
+            if (source == null)
+            {
+                source = this;
+            }
+            IniFile settings = [];
+            IniSection GetSection(FieldInfo field, string path)
             {
                 string sectionName = GetSectionName(field, path);
-                IniDataSection section;
+                IniSection section;
                 if (!settings.TryGetValue(sectionName, out section))
                 {
-                    section = new IniDataSection();
+                    section = new IniSection();
                     settings.Add(sectionName, section);
                 }
                 return section;
             }
-            IteratePublicFields(typeof(ChaosModSettings), this, (field, ob, path) =>
+            string formatValue(object value)
+            {
+                return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", value);
+            }
+            IteratePublicFields(typeof(ChaosModSettings), source, (field, ob, path) =>
             {
                 bool isAdditionalSettings = field.FieldType.Equals(typeof(AdditionalChaosEffectSettings));
                 if (!string.IsNullOrEmpty(path) && !isAdditionalSettings)
                 {
                     path += UidReflectionPathSeparator;
                 }
-                IniDataSection section = GetSection(field, path);
+                IniSection section = GetSection(field, path);
                 if (!isAdditionalSettings)
                 {
-                    section.TryAdd(path + field.Name, field.GetValue(ob));
+                    section.TryAdd(path + field.Name, formatValue(field.GetValue(ob)));
                 }
                 else
                 {
                     AdditionalSettingsCheckListItem keyValuePair = (AdditionalSettingsCheckListItem)ob;
-                    section.TryAdd(keyValuePair.Key, keyValuePair.Value);
+                    section.TryAdd(keyValuePair.Key, formatValue(keyValuePair.Value));
                 }
             });
             return settings;
@@ -205,16 +222,7 @@ namespace FezGame
         internal void Reset()
         {
             //copy values from DefaultSettings into this
-            DefaultSettings.CopyInto(this);
-            ApplySettings();
-        }
-
-        private void CopyInto(ChaosModSettings target)
-        {
-            IteratePublicFields(typeof(ChaosModSettings), this, (field, ob, _) =>
-            {
-                field.SetValue(target, field.GetValue(ob));
-            });
+            SetAllInputsValues(GetAllInputsValues(DefaultSettings));
         }
 
         private void IteratePublicFields(Type type, object ob, Action<FieldInfo, object, string> MappingFunc, string path = "")

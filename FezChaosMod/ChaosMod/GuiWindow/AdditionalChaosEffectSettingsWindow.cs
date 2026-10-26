@@ -45,7 +45,6 @@ namespace FezGame
                         {
                             // If the user toggles the checkbox, update state and notify settings
                             settings.AdditionalSettingsCheckListList[i].Value = isChecked;
-                            settings.ItemCheck(pair.Key, isChecked);
                         }
                     }
                 }
