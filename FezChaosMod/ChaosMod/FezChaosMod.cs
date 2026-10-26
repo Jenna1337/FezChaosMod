@@ -390,6 +390,8 @@ namespace FezGame.ChaosMod
         public event Action OnHurt;
         public ulong HurtCount = 0;
 
+        public string ScheduledLevelChangeName = null;
+
         public FezChaosMod(Game game)
             : base(game)
         {
@@ -674,7 +676,7 @@ namespace FezGame.ChaosMod
                         return;
                     }
                     string levelname = LevelNamesForRandTele[random.Next(0, LevelNamesForRandTele.Count)];
-                    LevelManager.ChangeLevel(levelname);
+                    ScheduledLevelChangeName = levelname;
                     //GC.Collect();
                 }, 0.01f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport",
                 additionalSettings: new AdditionalChaosEffectSettings(
@@ -691,7 +693,7 @@ namespace FezGame.ChaosMod
                 ChaosEffectsList.Add(new ChaosEffect("GoToRandomHubLevel", () =>
                 {
                     string levelname = HubLevelNames[random.Next(0, HubLevelNames.Length)];
-                    LevelManager.ChangeLevel(levelname);
+                    ScheduledLevelChangeName = levelname;
                 }, 0.1f, () => !InCutsceneLevel && TimeInLevelTimer.Elapsed.TotalSeconds > 5f && !IsHurting && CurrentLevelInfo.Gravity > 0, category: "Teleport"));
                 LevelManager.LevelChanged += TimeInLevelTimer.Restart;
                 TimeInLevelTimer.Start();
@@ -974,9 +976,12 @@ namespace FezGame.ChaosMod
                     OnHurt();
                 }
             }
-
+            if (ScheduledLevelChangeName != null)
+            {
+                LevelManager.ChangeLevel(ScheduledLevelChangeName);
+                ScheduledLevelChangeName = null;
+            }
         }
-
         private ulong _updatesDone = 0, _framesRendered = 0, _ups = 0, _fps = 0;
         private DateTime _lastTime = DateTime.Now;
         public bool ShowDebugInfo =
