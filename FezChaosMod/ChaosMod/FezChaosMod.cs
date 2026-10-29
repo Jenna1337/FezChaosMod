@@ -1006,10 +1006,6 @@ false
             {
                 return;
             }
-            if (Glitches != null && Glitches.IsFrozen)
-            {
-                return;
-            }
             float scale = (float)Math.Floor(Game.GraphicsDevice.GetViewScale());
             Viewport viewport = Game.GraphicsDevice.Viewport;
             bool ChaosTimerPaused = this.ChaosTimerPaused;
