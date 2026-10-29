@@ -23,6 +23,7 @@ For a full list of features, see [changelog.txt](/changelog.txt)
 
 1. Install [HAT](https://github.com/Krzyhau/HAT) via the instructions there
 2. Download FezChaosMod.zip from https://github.com/Jenna1337/FezChaosMod/releases/latest and put it in the "Mods" directory.
+2. Download IMGUI.zip from https://github.com/zrckr/IMGUI/releases/latest and put it in the "Mods" directory as a folder.
 3. Run `MONOMODDED_FEZ.exe` and enjoy!
 
 ## Building
