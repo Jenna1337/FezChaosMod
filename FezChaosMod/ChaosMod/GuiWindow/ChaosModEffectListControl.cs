@@ -1,4 +1,5 @@
 ﻿using FezGame.ChaosMod;
+using IMGUI;
 using ImGuiNET;
 using System.Linq;
 using static FezGame.ChaosMod.FezChaosMod;
@@ -16,6 +17,7 @@ namespace FezGame
             this.chaosMod = chaosMod;
         }
 
+        public static readonly string NameSeperator = ".";
         public void Draw()
         {
             // Group effects by category (defaulting to "Uncategorized" if null/empty)
@@ -23,16 +25,43 @@ namespace FezGame
                 .GroupBy(e => string.IsNullOrEmpty(e.Category) ? "Uncategorized" : e.Category)
                 .OrderBy(g => g.Key);
 
+            float maxLabelWidth = chaosMod.ChaosEffectsList.Max(effect => ImGui.CalcTextSize(effect.Name).X);
+            float targetLabelWidth = maxLabelWidth + ImGui.GetFrameHeight() + ImGui.GetStyle().ItemInnerSpacing.X;
+
             foreach (var categoryGroup in categorizedEffects)
             {
                 // Render category as a collapsible header
+                bool hasChecked = categoryGroup.Any(eff => eff.Enabled);
+                bool hasUnchecked = categoryGroup.Any(eff => !eff.Enabled);
+                CheckState isChecked =
+                hasChecked ? (
+                    hasUnchecked ? CheckState.Indeterminate
+                                 : CheckState.Checked
+                ) : CheckState.Unchecked;
+
+                if (ImGuiExtensions.CheckboxTristate("Category---" + categoryGroup.Key, ref isChecked))
+                {
+                    System.Diagnostics.Debugger.Break();
+                    // Checkbox click logic goes here
+                    foreach (var effect in categoryGroup)
+                    {
+                        effect.Enabled = !(isChecked == CheckState.Checked);
+                    }
+                }
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui.SetTooltip("Enable/Disable all the effects in this category");
+                }
+
+                ImGui.SameLine();
+
                 if (ImGui.CollapsingHeader(categoryGroup.Key, ImGuiTreeNodeFlags.DefaultOpen))
                 {
                     ImGui.Indent(10.0f);
 
                     foreach (var effect in categoryGroup)
                     {
-                        DrawEffectRow(effect);
+                        DrawEffectRow(effect, targetLabelWidth);
                     }
 
                     ImGui.Unindent(10.0f);
@@ -47,11 +76,11 @@ namespace FezGame
             }
         }
 
-        private void DrawEffectRow(ChaosEffect effect)
+        private void DrawEffectRow(ChaosEffect effect, float checkboxAlignX = 0)
         {
             string idPrefix = "##" + effect.Name;
 
-            // 1. Enabled Checkbox
+            // Enabled Checkbox
             bool isEnabled = effect.Enabled;
             if (ImGui.Checkbox(effect.Name + idPrefix + "Check", ref isEnabled))
             {
@@ -60,8 +89,12 @@ namespace FezGame
             }
 
             ImGui.SameLine();
+            if (checkboxAlignX > 0)
+            {
+                ImGui.SetCursorPosX(checkboxAlignX);
+            }
 
-            // 2. Weight Spinner / Input
+            // Weight Spinner / Input
             float weight = (float)effect._weight;
             ImGui.SetNextItemWidth(100f);
             if (ImGui.InputFloat(idPrefix + "Weight", ref weight, 0.01f, 0.1f, "%.4f"))
