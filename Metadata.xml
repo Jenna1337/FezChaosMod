@@ -3,7 +3,7 @@
    <Description>Adds random effects that activate every so many seconds!</Description>
    <Author>Jenna Sloan</Author>
    <Version>1.0.0</Version>
-   <LibraryName>FEZ.ChaosMod.mm.dll</LibraryName>
+   <LibraryName>FezChaosMod.dll</LibraryName>
    <Dependencies>
       <DependencyInfo Name="HAT" MinimumVersion="3.0"/>
       <DependencyInfo Name="IMGUI" MinimumVersion="1.0"/>

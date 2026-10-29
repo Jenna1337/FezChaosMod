@@ -4,8 +4,8 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>FEZ.ChaosMod.mm</RootNamespace>
-    <AssemblyName>FEZ.ChaosMod.mm</AssemblyName>
+    <RootNamespace>FezChaosMod</RootNamespace>
+    <AssemblyName>FezChaosMod</AssemblyName>
 
     <!-- Retaining original FEZ constant and common settings -->
     <DefineConstants>FEZCLIENT</DefineConstants>
