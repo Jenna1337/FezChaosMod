@@ -41,7 +41,6 @@ namespace FezGame
 
                 if (ImGuiExtensions.CheckboxTristate("Category---" + categoryGroup.Key, ref isChecked))
                 {
-                    System.Diagnostics.Debugger.Break();
                     // Checkbox click logic goes here
                     foreach (var effect in categoryGroup)
                     {
