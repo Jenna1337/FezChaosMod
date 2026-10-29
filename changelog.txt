@@ -177,7 +177,7 @@ Nested effect categories in the GUI window
 Overhauled Chaos Mod Settings window UI
 Fixed name of additional settings windows
 
-1.0.0 - 2026-10-29T22:52:27Z
+1.0.0 - TBA (need to add proper save/load file dialogs)
 Port to .NET 10
 Removed WinForms dependency
 Revamp user interface (press F1 to open menu)
