@@ -177,9 +177,11 @@ Nested effect categories in the GUI window
 Overhauled Chaos Mod Settings window UI
 Fixed name of additional settings windows
 
-1.0.0 - TBA (want to fix save files first)
+1.0.0 - 2026-10-29T22:52:27Z
 Port to .NET 10
+Removed WinForms dependency
 Revamp user interface (press F1 to open menu)
+Added IMGUI mod dependency
 Shoutouts to @zrckr
 Reworked save files
 
