@@ -1,5 +1,6 @@
 ﻿using FezGame.ChaosMod;
 using ImGuiNET;
+using Nez.ImGuiTools;
 using System;
 using System.IO;
 
@@ -20,6 +21,10 @@ namespace FezGame
         internal string activeSaveFile = "chaosmod.ini";
         private static string loggerText = "";
         private const int MaxLogLines = 1000;
+
+        const string ChaosModWindowFilePickerId = "ChaosModWindowFilePicker";
+        private readonly FilePicker FilePicker;
+        private FilePickerMode filePickerMode = 0;
 
         public ChaosModWindow(FezChaosMod chaosMod)
         {
@@ -43,6 +48,8 @@ namespace FezGame
             Settings.latestEffectsToDisplay = chaosMod.LatestEffectsToDisplay;
 
             LoadSettingsFromFile(activeSaveFile);
+
+            FilePicker = FilePicker.GetFilePicker(ChaosModWindowFilePickerId, activeSaveFile);
 
             LogLine("Initialization complete.");
             LogLine($"Welcome to Chaos Mod version {FezChaosMod.Version}");
@@ -81,9 +88,15 @@ namespace FezGame
         {
             loggerText = string.Empty;
         }
-
+        private enum FilePickerMode
+        {
+            Read, Write
+        }
         public void Draw()
         {
+
+
+
             if (!IsOpen) return;
 
             // Sync stereoscopic mode live from engine service if active
@@ -114,8 +127,8 @@ namespace FezGame
                         }
                         if (ImGui.MenuItem("Open...", "Ctrl+O"))
                         {
-                            if (File.Exists(activeSaveFile))
-                                LoadSettingsFromFile(activeSaveFile);
+                            FilePicker.IsOpen = true;
+                            filePickerMode = FilePickerMode.Read;
                         }
                         if (ImGui.MenuItem("Save", "Ctrl+S"))
                         {
@@ -123,8 +136,9 @@ namespace FezGame
                         }
                         if (ImGui.MenuItem("Save As..."))
                         {
-                            if (!string.IsNullOrEmpty(activeSaveFile))
-                                SaveSettingsToFile(activeSaveFile);
+                            FilePicker.IsOpen = true;
+                            filePickerMode = FilePickerMode.Write;
+
                         }
                         ImGui.EndMenu();
                     }
@@ -262,12 +276,33 @@ namespace FezGame
             {
                 IsOpen = isOpenLocal;
             }
+
             ImGui.End();
 
             // Render About sub-window if open
             if (aboutWindow.IsOpen)
             {
                 aboutWindow.Draw();
+            }
+
+            if (FilePicker.Draw())
+            {
+                string selection = FilePicker.SelectedFile;
+
+                //TODO?
+                activeSaveFile = selection;
+                switch (filePickerMode)
+                {
+                case FilePickerMode.Read:
+                    if (File.Exists(activeSaveFile))
+                        LoadSettingsFromFile(activeSaveFile);
+                    break;
+
+                case FilePickerMode.Write:
+                    if (!string.IsNullOrEmpty(activeSaveFile))
+                        SaveSettingsToFile(activeSaveFile);
+                    break;
+                }
             }
         }
 
