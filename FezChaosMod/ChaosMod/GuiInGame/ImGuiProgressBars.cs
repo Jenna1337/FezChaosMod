@@ -1,4 +1,3 @@
-#if NET10_0_OR_GREATER
 using ImGuiNET;
 using Microsoft.Xna.Framework;
 using System;
@@ -86,4 +85,3 @@ namespace FezGame.ChaosMod
         public void Dispose() { }
     }
 }
-#endif

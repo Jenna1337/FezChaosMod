@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace FezGame.ChaosMod
+﻿namespace FezGame.ChaosMod
 {
     public class ProgressBar
     {
@@ -12,20 +7,12 @@ namespace FezGame.ChaosMod
         protected static Microsoft.Xna.Framework.Color ProgressColor { get; set; }
         protected static Microsoft.Xna.Framework.Color TextColor { get; set; }
         protected static Microsoft.Xna.Framework.Color PausedColor { get; set; }
-        
+
         internal static void SetColors(Microsoft.Xna.Framework.Color ProgressColor, Microsoft.Xna.Framework.Color TextColor, Microsoft.Xna.Framework.Color PausedColor)
         {
             ProgressBar.ProgressColor = ProgressColor;
             ProgressBar.TextColor = TextColor;
             ProgressBar.PausedColor = PausedColor;
         }
-#if !NET10_0_OR_GREATER
-        internal static void SetColors(System.Drawing.Color ProgressColor, System.Drawing.Color TextColor, System.Drawing.Color PausedColor)
-        {
-            ProgressBar.ProgressColor = ProgressColor.ToXnaColor();
-            ProgressBar.TextColor = TextColor.ToXnaColor();
-            ProgressBar.PausedColor = PausedColor.ToXnaColor();
-        }
-#endif
     }
 }
