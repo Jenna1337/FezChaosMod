@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Nez.ImGuiTools
 {
@@ -16,22 +17,21 @@ namespace Nez.ImGuiTools
     /// </remarks>
     public class FilePicker
     {
-        public string RootFolder;
         public string CurrentFolder;
         public string SelectedFile;
-        public List<string> AllowedExtensions;
+        private string[] AllowedExtensions;
         public bool OnlyAllowFolders;
         public readonly string Id;
 
         public static FilePicker GetFolderPicker(string id, string startingPath)
             => GetFilePicker(id, startingPath, onlyAllowFolders: true);
 
-        public static FilePicker GetFilePicker(string id, string startingPath, string[] allowedExtensions = null, bool onlyAllowFolders = false)
+        public static FilePicker GetFilePicker(string id, string startingPath, bool onlyAllowFolders = false)
         {
             FilePicker picker;
             if (!FilePickers.TryGetValue(id, out picker))
             {
-                picker = new FilePicker(id, startingPath, allowedExtensions, onlyAllowFolders);
+                picker = new FilePicker(id, startingPath, onlyAllowFolders);
                 FilePickers.Add(id, picker);
             }
             return picker;
@@ -39,7 +39,7 @@ namespace Nez.ImGuiTools
 
         private static readonly Dictionary<string, FilePicker> FilePickers = new Dictionary<string, FilePicker>();
 
-        private FilePicker(string id, string startingPath, string[] allowedExtensions = null, bool onlyAllowFolders = false)
+        private FilePicker(string id, string startingPath, bool onlyAllowFolders = false)
         {
             Id = id;
             if (File.Exists(startingPath))
@@ -53,19 +53,8 @@ namespace Nez.ImGuiTools
                     startingPath = AppContext.BaseDirectory;
             }
 
-            RootFolder = startingPath;
-            CurrentFolder = startingPath;
+            CurrentFolder = Path.GetFullPath(startingPath);
             OnlyAllowFolders = onlyAllowFolders;
-
-            if (AllowedExtensions != null)
-            {
-                if (AllowedExtensions != null)
-                    AllowedExtensions.Clear();
-                else
-                    AllowedExtensions = new List<string>();
-
-                AllowedExtensions.AddRange(allowedExtensions);
-            }
         }
 
         private bool isOpen = false;
@@ -83,6 +72,20 @@ namespace Nez.ImGuiTools
                     shouldOpenPopupTrigger = true;
                 }
             }
+        }
+
+        private int currentFilterItem = 0;
+        private const string AllFiles = "All Files (*.*)";
+        private OrderedDictionary<string, string[]> FilterList = [];
+        private string[] FilterListKeys = [];
+        public void AddFileExtensionOption(string name, string[] exts)
+        {
+            if (AllowedExtensions == null)
+            {
+                AllowedExtensions = exts;
+            }
+            FilterList.Add(name, exts);
+            FilterListKeys = FilterList.Keys.Append(AllFiles).ToArray();
         }
 
         /// <summary>
@@ -114,16 +117,54 @@ namespace Nez.ImGuiTools
             {
                 IsOpen = isOpenLocal;
 
-                ImGui.Text("Current Folder: " + Path.GetFileName(RootFolder) + CurrentFolder.Replace(RootFolder, ""));
+                var style = ImGui.GetStyle();
+                float rightIndent = style.WindowPadding.X;
+                float framePaddingX = style.FramePadding.X;
+                float itemSpacingX = style.ItemSpacing.X;
+                float itemSpacingY = style.ItemSpacing.Y;
+                float frameHeight = ImGui.GetFrameHeightWithSpacing();
+
+                if (ImGui.Button("Up"))
+                {
+                    CurrentFolder = Directory.GetParent(CurrentFolder).FullName;
+                }
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(-1.0f);
+                string path = CurrentFolder;
+                if (ImGui.InputText($"##{Id}--PathInput", ref path, 256, ImGuiInputTextFlags.EnterReturnsTrue))
+                {
+                    if (File.Exists(path))
+                    {
+                        CurrentFolder = Path.GetFullPath(Path.GetDirectoryName(path));
+                    }
+                    else if (Directory.Exists(path))
+                    {
+                        CurrentFolder = Path.GetFullPath(path);
+                    }
+                }
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui.SetTooltip("Current Folder");
+                }
+                if (ImGui.IsItemHovered() && ImGui.IsItemFocused())
+                {
+                    ImGui.SetTooltip("Press enter to navigate to the entered directory");
+                }
+
                 ImGui.Separator();
 
+                const int footerLines = 2;
+
+                // Total height needed for the bottom elements
+                float totalFooterHeight = frameHeight * footerLines + itemSpacingY * (footerLines - 1);
+
                 // Wrap file browsing inside a child frame so buttons remain locked to the bottom
-                if (ImGui.BeginChild("FileBrowserList", new System.Numerics.Vector2(0, -35), ImGuiChildFlags.Border))
+                if (ImGui.BeginChild("FileBrowserList", new System.Numerics.Vector2(0, -totalFooterHeight), ImGuiChildFlags.Border))
                 {
                     var di = new DirectoryInfo(CurrentFolder);
                     if (di.Exists)
                     {
-                        if (di.Parent != null && CurrentFolder != RootFolder)
+                        if (di.Parent != null)
                         {
                             ImGui.PushStyleColor(ImGuiCol.Text, Color.Yellow.PackedValue);
                             if (ImGui.Selectable("../", false, ImGuiSelectableFlags.DontClosePopups))
@@ -161,35 +202,65 @@ namespace Nez.ImGuiTools
                     }
                     ImGui.EndChild();
                 }
+                ImGui.Text("File name: ");
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(-1.0f);
+                string input = Path.GetFileName(SelectedFile ?? "");
+                if (ImGui.InputText($"##{Id}--FileName", ref input, 128))
+                {
+                }
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui.SetTooltip("File name");
+                }
 
+                //new line
+
+                const string CancelButtonText = "Cancel";
+                const string OpenButtonText = "Open";
+                float widthBtn1 = ImGui.CalcTextSize(CancelButtonText).X + (framePaddingX * 2.0f);
+                float widthBtn2 = ImGui.CalcTextSize(OpenButtonText).X + (framePaddingX * 2.0f);
+                float totalWidthNeeded = widthBtn1 + itemSpacingX + widthBtn2;
+                float targetX = ImGui.GetContentRegionAvail().X - totalWidthNeeded;
+
+                ImGui.SetNextItemWidth(targetX - itemSpacingX - ImGui.GetCursorPosX());
+                if (ImGui.Combo($"##{Id}--FilterCombo", ref currentFilterItem, FilterListKeys.ToArray(), FilterListKeys.Length))
+                {
+                    string value = FilterListKeys[currentFilterItem];
+                    if (value == AllFiles)
+                    {
+                        AllowedExtensions = null;
+                    }
+                    else
+                    {
+                        AllowedExtensions = FilterList[value];
+                    }
+                }
+                ImGui.SameLine();
+
+
+                //right align buttons
+                //ImGui.SetCursorPosX(targetX);
                 // Keep buttons strictly INSIDE BeginPopupModal's execution bracket
-                if (ImGui.Button("Cancel"))
+                if (ImGui.Button(CancelButtonText))
                 {
                     result = false;
                     IsOpen = false;
                     ImGui.CloseCurrentPopup();
                 }
 
-                if (OnlyAllowFolders)
+                ImGui.SameLine();
+                ImGui.BeginDisabled(OnlyAllowFolders || SelectedFile != null);
+                if (ImGui.Button(OpenButtonText))
                 {
-                    ImGui.SameLine();
-                    if (ImGui.Button("Open"))
+                    result = true;
+                    if (OnlyAllowFolders)
                     {
-                        result = true;
                         SelectedFile = CurrentFolder;
-                        IsOpen = false;
-                        ImGui.CloseCurrentPopup();
                     }
-                }
-                else if (SelectedFile != null)
-                {
-                    ImGui.SameLine();
-                    if (ImGui.Button("Open"))
-                    {
-                        result = true;
-                        IsOpen = false;
-                        ImGui.CloseCurrentPopup();
-                    }
+                    IsOpen = false;
+                    ImGui.CloseCurrentPopup();
+
                 }
                 ImGui.EndPopup();
             }
@@ -200,21 +271,6 @@ namespace Nez.ImGuiTools
             }
 
             return result;
-        }
-
-
-        bool TryGetFileInfo(string fileName, out FileInfo realFile)
-        {
-            try
-            {
-                realFile = new FileInfo(fileName);
-                return true;
-            }
-            catch
-            {
-                realFile = null;
-                return false;
-            }
         }
 
         List<string> GetFileSystemEntries(string fullName)

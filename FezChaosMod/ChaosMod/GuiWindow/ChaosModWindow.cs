@@ -50,6 +50,8 @@ namespace FezGame
             LoadSettingsFromFile(activeSaveFile);
 
             FilePicker = FilePicker.GetFilePicker(ChaosModWindowFilePickerId, activeSaveFile);
+            FilePicker.SelectedFile = activeSaveFile;
+            FilePicker.AddFileExtensionOption("INI Files", [".ini"]);
 
             LogLine("Initialization complete.");
             LogLine($"Welcome to Chaos Mod version {FezChaosMod.Version}");
