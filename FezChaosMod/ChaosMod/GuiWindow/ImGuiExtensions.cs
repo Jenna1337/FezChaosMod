@@ -11,7 +11,6 @@ namespace IMGUI
     }
     public static class ImGuiExtensions
     {
-        // C# wrapper using ImGuiNET's internal item flags
         public static bool CheckboxTristate(string id, ref CheckState state)
         {
             bool changed = false;
