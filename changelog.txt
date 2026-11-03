@@ -186,3 +186,5 @@ Shoutouts to @zrckr for fixing ImGui problems
 shoutouts to @prime31 for the simple ImGui file picker that I improved
 Reworked save files
 
+1.0.1 - 2026-11-03T00:11:01Z
+fixed several bugs with the file picker 
