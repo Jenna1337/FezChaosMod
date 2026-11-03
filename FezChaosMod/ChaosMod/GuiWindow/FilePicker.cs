@@ -17,11 +17,16 @@ namespace Nez.ImGuiTools
     /// </remarks>
     public class FilePicker
     {
+        public enum FilePickerMode
+        {
+            Open, Save
+        }
         public string CurrentFolder;
         public string SelectedFile;
         private string[] AllowedExtensions;
         public bool OnlyAllowFolders;
         public readonly string Id;
+        public FilePickerMode Mode = FilePickerMode.Open;
 
         public static FilePicker GetFolderPicker(string id, string startingPath)
             => GetFilePicker(id, startingPath, onlyAllowFolders: true);
@@ -60,7 +65,7 @@ namespace Nez.ImGuiTools
         private bool isOpen = false;
         private bool shouldOpenPopupTrigger = false; // Internal deferred activation flag
 
-        public bool IsOpen
+        private bool IsOpen
         {
             get => isOpen; set
             {
@@ -72,6 +77,11 @@ namespace Nez.ImGuiTools
                     shouldOpenPopupTrigger = true;
                 }
             }
+        }
+        public void OpenModal(FilePickerMode mode)
+        {
+            IsOpen = true;
+            Mode = mode;
         }
 
         private int currentFilterItem = 0;
@@ -124,9 +134,13 @@ namespace Nez.ImGuiTools
                 float itemSpacingY = style.ItemSpacing.Y;
                 float frameHeight = ImGui.GetFrameHeightWithSpacing();
 
-                if (ImGui.Button("Up"))
+                if (ImGui.ArrowButton($"{Id}--UpButton", ImGuiDir.Up))
                 {
-                    CurrentFolder = Directory.GetParent(CurrentFolder).FullName;
+                    var parent = Directory.GetParent(CurrentFolder);
+                    if (parent != null)
+                    {
+                        CurrentFolder = parent.FullName;
+                    }
                 }
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(-1.0f);
@@ -191,7 +205,7 @@ namespace Nez.ImGuiTools
                                 if (ImGui.Selectable(name, isSelected, ImGuiSelectableFlags.DontClosePopups))
                                     SelectedFile = fse;
 
-                                if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && isSelected)
+                                if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && isSelected && ImGui.IsItemHovered())
                                 {
                                     result = true;
                                     IsOpen = false;
@@ -202,12 +216,14 @@ namespace Nez.ImGuiTools
                     }
                     ImGui.EndChild();
                 }
+
                 ImGui.Text("File name: ");
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(-1.0f);
                 string input = Path.GetFileName(SelectedFile ?? "");
                 if (ImGui.InputText($"##{Id}--FileName", ref input, 128))
                 {
+                    SelectedFile = Path.Combine(CurrentFolder, input).Trim();
                 }
                 if (ImGui.IsItemHovered())
                 {
@@ -217,7 +233,7 @@ namespace Nez.ImGuiTools
                 //new line
 
                 const string CancelButtonText = "Cancel";
-                const string OpenButtonText = "Open";
+                string OpenButtonText = Mode.ToString();
                 float widthBtn1 = ImGui.CalcTextSize(CancelButtonText).X + (framePaddingX * 2.0f);
                 float widthBtn2 = ImGui.CalcTextSize(OpenButtonText).X + (framePaddingX * 2.0f);
                 float totalWidthNeeded = widthBtn1 + itemSpacingX + widthBtn2;
@@ -250,7 +266,8 @@ namespace Nez.ImGuiTools
                 }
 
                 ImGui.SameLine();
-                ImGui.BeginDisabled(OnlyAllowFolders || SelectedFile != null);
+                bool enabled = Mode == FilePickerMode.Save || OnlyAllowFolders || SelectedFile != null;
+                ImGui.BeginDisabled(!enabled);
                 if (ImGui.Button(OpenButtonText))
                 {
                     result = true;
@@ -262,6 +279,13 @@ namespace Nez.ImGuiTools
                     ImGui.CloseCurrentPopup();
 
                 }
+                if (ImGui.IsKeyPressed(ImGuiKey.Escape))
+                {
+                    result = false;
+                    IsOpen = false;
+                    ImGui.CloseCurrentPopup();
+                }
+
                 ImGui.EndPopup();
             }
             else

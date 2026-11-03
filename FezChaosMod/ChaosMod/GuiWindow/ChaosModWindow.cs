@@ -23,9 +23,7 @@ namespace FezGame
         private const int MaxLogLines = 1000;
 
         const string ChaosModWindowFilePickerId = "ChaosModWindowFilePicker";
-        private readonly FilePicker FilePicker;
-        private FilePickerMode filePickerMode = 0;
-
+        private readonly FilePicker SettingsFilePicker;
         public ChaosModWindow(FezChaosMod chaosMod)
         {
             if (Instance != null)
@@ -49,9 +47,9 @@ namespace FezGame
 
             LoadSettingsFromFile(activeSaveFile);
 
-            FilePicker = FilePicker.GetFilePicker(ChaosModWindowFilePickerId, activeSaveFile);
-            FilePicker.SelectedFile = activeSaveFile;
-            FilePicker.AddFileExtensionOption("INI Files", [".ini"]);
+            SettingsFilePicker = FilePicker.GetFilePicker(ChaosModWindowFilePickerId, activeSaveFile);
+            SettingsFilePicker.SelectedFile = activeSaveFile;
+            SettingsFilePicker.AddFileExtensionOption("INI Files", [".ini"]);
 
             LogLine("Initialization complete.");
             LogLine($"Welcome to Chaos Mod version {FezChaosMod.Version}");
@@ -90,10 +88,6 @@ namespace FezGame
         {
             loggerText = string.Empty;
         }
-        private enum FilePickerMode
-        {
-            Read, Write
-        }
         public void Draw()
         {
 
@@ -129,8 +123,7 @@ namespace FezGame
                         }
                         if (ImGui.MenuItem("Open...", "Ctrl+O"))
                         {
-                            FilePicker.IsOpen = true;
-                            filePickerMode = FilePickerMode.Read;
+                            SettingsFilePicker.OpenModal(FilePicker.FilePickerMode.Open);
                         }
                         if (ImGui.MenuItem("Save", "Ctrl+S"))
                         {
@@ -138,8 +131,7 @@ namespace FezGame
                         }
                         if (ImGui.MenuItem("Save As..."))
                         {
-                            FilePicker.IsOpen = true;
-                            filePickerMode = FilePickerMode.Write;
+                            SettingsFilePicker.OpenModal(FilePicker.FilePickerMode.Save);
 
                         }
                         ImGui.EndMenu();
@@ -287,23 +279,28 @@ namespace FezGame
                 aboutWindow.Draw();
             }
 
-            if (FilePicker.Draw())
+            if (SettingsFilePicker.Draw())
             {
-                string selection = FilePicker.SelectedFile;
+                string selection = SettingsFilePicker.SelectedFile;
 
-                //TODO?
-                activeSaveFile = selection;
-                switch (filePickerMode)
+                if (File.Exists(selection))
                 {
-                case FilePickerMode.Read:
-                    if (File.Exists(activeSaveFile))
+                    activeSaveFile = selection;
+                    switch (SettingsFilePicker.Mode)
+                    {
+                    case FilePicker.FilePickerMode.Open:
                         LoadSettingsFromFile(activeSaveFile);
-                    break;
+                        break;
 
-                case FilePickerMode.Write:
-                    if (!string.IsNullOrEmpty(activeSaveFile))
-                        SaveSettingsToFile(activeSaveFile);
-                    break;
+                    case FilePicker.FilePickerMode.Save:
+                        if (!string.IsNullOrEmpty(activeSaveFile))
+                            SaveSettingsToFile(activeSaveFile);
+                        break;
+                    }
+                }
+                else
+                {
+                    LogLine("File does not exist: " + selection);
                 }
             }
         }
@@ -328,9 +325,9 @@ namespace FezGame
         {
             try
             {
-                activeSaveFile = Path.GetFullPath(file);
                 LogLineDebug("Loading from file: " + file);
                 ChaosModSettingsHelper.Read(Settings, file);
+                activeSaveFile = Path.GetFullPath(file);
             }
             catch (Exception e)
             {
