@@ -782,6 +782,10 @@ namespace FezGame.ChaosMod
 
                 LoadingText = "Initializing Chaos Mod settings window...";
                 this.ChaosModWindow = new ChaosModWindow(this);
+                if (ChaosModWindow.Settings.DoVersionCheckOnStart)
+                {
+                    VersionChecker.CheckVersions();
+                }
 
                 initBenchmarkTimer.Stop();
                 DidInit = true;
@@ -1006,6 +1010,7 @@ false
             {
                 return;
             }
+            VersionChecker.Draw();
             float scale = (float)Math.Floor(Game.GraphicsDevice.GetViewScale());
             Viewport viewport = Game.GraphicsDevice.Viewport;
             bool ChaosTimerPaused = this.ChaosTimerPaused;

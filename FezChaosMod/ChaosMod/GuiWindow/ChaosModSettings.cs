@@ -30,6 +30,9 @@ namespace FezGame
         public bool zuSpeakEnglish = false;
         [ChaosModSetting]
         public bool showDebugInfo = true;
+        [ChaosModSetting]
+        public bool DoVersionCheckOnStart = true;
+
 
         [ChaosModSetting]
         public List<ChaosEffectSetting> chaosEffectSettings;
@@ -102,6 +105,7 @@ namespace FezGame
 
         private static ChaosModSettings DefaultSettings = null;
         private static bool IsInit = false;
+
         public ChaosModSettings()
         {
             if (!IsInit)

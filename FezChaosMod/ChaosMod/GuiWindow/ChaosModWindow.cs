@@ -143,6 +143,10 @@ namespace FezGame
                         {
                             aboutWindow.IsOpen = true;
                         }
+                        if (ImGui.MenuItem("Check for new version"))
+                        {
+                            VersionChecker.OpenPopup();
+                        }
                         ImGui.EndMenu();
                     }
                     ImGui.EndMenuBar();
@@ -230,6 +234,10 @@ namespace FezGame
                     if (ImGui.BeginTabItem("Miscellaneous"))
                     {
                         ImGui.Spacing();
+
+                        if (ImGui.Checkbox("Do version check on startup", ref Settings.DoVersionCheckOnStart))
+                        {
+                        }
 
                         if (ImGui.Checkbox("Display Debug Info", ref Settings.showDebugInfo))
                         {
