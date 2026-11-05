@@ -114,7 +114,6 @@ namespace FezGame
         {
             openVersionCheckWindow = true;
         }
-        private static bool isOpen = false;
         public static void Draw()
         {
             const string VersionCheckerWindowName = "FezChaosMod Version Checker";
@@ -122,7 +121,6 @@ namespace FezGame
             {
                 ImGui.OpenPopup(VersionCheckerWindowName);
                 openVersionCheckWindow = false; // Reset so it doesn't re-trigger every frame
-                isOpen = true;
             }
 
             ImGuiViewportPtr viewport = ImGui.GetMainViewport();

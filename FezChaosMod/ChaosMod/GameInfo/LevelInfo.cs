@@ -1,8 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using FezEngine;
 using FezEngine.Services;
 using FezEngine.Structure;
@@ -10,6 +5,10 @@ using FezEngine.Tools;
 using FezGame.ChaosMod;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace FezGame.GameInfo
 {
@@ -48,7 +47,7 @@ namespace FezGame.GameInfo
             public override string ToString()
             {
                 var str = $"{{\"Type\": \"{this.GetType().GetFormattedName()}\", \"LevelName\": \"{LevelName}\", \"VolumeId\": {(VolumeId.HasValue ? VolumeId.Value.ToString() : "null")}";
-                if(IsShortcut)
+                if (IsShortcut)
                     str += $", \"IsShortcut\": {(IsShortcut ? "true" : "false")}";
                 if (IsPipe)
                     str += $", \"IsPipe\": {(IsPipe ? "true" : "false")}";
@@ -58,7 +57,7 @@ namespace FezGame.GameInfo
                     str += $", \"NeedsAllOwls\": {(NeedsAllOwls ? "true" : "false")}";
                 if (NeedsKey)
                     str += $", \"NeedsKey\": {(NeedsKey ? "true" : "false")}";
-                if (RequiredCubes>0)
+                if (RequiredCubes > 0)
                     str += $", \"RequiredCubes\": {RequiredCubes}";
                 str += $", \"FromOrientation\": \"{FromOrientation}\", \"Exit\": {Exit}}}";
 
@@ -94,7 +93,7 @@ namespace FezGame.GameInfo
             public override string ToString()
             {
                 var str = $"{{\"Type\": \"{this.GetType().GetFormattedName()}\", \"TargetLevelName\": \"{TargetLevelName}\"";
-                if(TargetVolumeId.HasValue)
+                if (TargetVolumeId.HasValue)
                     str += $", \"TargetVolumeId\": {TargetVolumeId}";
                 str += $"}}";
                 return str;
@@ -123,7 +122,7 @@ namespace FezGame.GameInfo
                 {
                     var m = System.Reflection.MethodBase.GetCurrentMethod();
                     ChaosModWindow.LogLineDebug($"{m.DeclaringType.GetFormattedName()}.{m.Name}: Warning: Target level volume ({TargetVolumeId}) does not exist as an entrance in the target level ({TargetLevelName}). Attempting to locate the first entrance in the target level that leads back to this level.");
-                    
+
                     en = ents.Find(te => te.LevelName == FromWhere.LevelName);
                     if (en.LevelName == null || en.LevelName == "")
                     {
@@ -512,25 +511,25 @@ namespace FezGame.GameInfo
             levelName = levelName.Replace('\\', '/');
             string text = levelName;
             Level level;
-                if (!string.IsNullOrEmpty(levelName))
-                {
-                    levelName = levelName.Substring(0, levelName.LastIndexOf("/") + 1) + levelName.Substring(levelName.LastIndexOf("/") + 1);
-                }
-                if (!MemoryContentManager.AssetExists("Levels\\" + levelName.Replace('/', '\\')))
-                {
-                    levelName = text;
-                }
-                try
-                {
-                    level = CMProvider.Global.Load<Level>("Levels/" + levelName);
-                }
-                catch (Exception e)
-                {
-                    ChaosModWindow.LogLineDebug(e.ToString());
-                    System.Diagnostics.Debugger.Break();
-                    throw e;
-                }
-            
+            if (!string.IsNullOrEmpty(levelName))
+            {
+                levelName = levelName.Substring(0, levelName.LastIndexOf("/") + 1) + levelName.Substring(levelName.LastIndexOf("/") + 1);
+            }
+            if (!MemoryContentManager.AssetExists("Levels\\" + levelName.Replace('/', '\\')))
+            {
+                levelName = text;
+            }
+            try
+            {
+                level = CMProvider.Global.Load<Level>("Levels/" + levelName);
+            }
+            catch (Exception e)
+            {
+                ChaosModWindow.LogLineDebug(e.ToString());
+                System.Diagnostics.Debugger.Break();
+                throw;
+            }
+
             level.Name = levelName;
             ContentManager forLevel = ServiceHelper.Get<IContentManagerProvider>().GetForLevel(levelName);
             foreach (ArtObjectInstance value in level.ArtObjects.Values)
@@ -558,7 +557,7 @@ namespace FezGame.GameInfo
         {
             string str = $"{{\"Type\": \"{this.GetType().GetFormattedName()}\", \"Name\": \"{Name}\"";
             str += $", \"Size\": {Size.ToJsonString()}";
-            str += $", \"LevelTypes\": [{String.Join(", ", LevelNames.GetLevelTypes(Name).Select(a=>$"\"{a}\""))}]";
+            str += $", \"LevelTypes\": [{String.Join(", ", LevelNames.GetLevelTypes(Name).Select(a => $"\"{a}\""))}]";
             str += $", \"Quantum\": {(Quantum ? "true" : "false")}";
             str += $", \"Rainy\": {(Rainy ? "true" : "false")}";
             str += $", \"Flat\": {(Flat ? "true" : "false")}";
@@ -587,7 +586,7 @@ namespace FezGame.GameInfo
                 if (Owls.Count > 0)
                     str += $", \"Owls\": {Owls}";
             }
-            if(PixelsPerTrixel != 0)
+            if (PixelsPerTrixel != 0)
                 str += $", \"PixelsPerTrixel\": {PixelsPerTrixel}";
             if (Sky != null)
                 str += $", \"Sky\": \"{Sky.Name}\"";
