@@ -26,11 +26,14 @@ namespace FezGame.ChaosMod
         /// <summary>
         /// A string representing the current version of this class.
         /// </summary>
-        public static readonly string Version = "1.0.1"
+        /// <remarks>
+        /// See also: <see cref="VersionChecker"/>
+        /// </remarks>
+        public static readonly string Version = "1.0.2"
 #if DEBUG
         + $" (debug build)"
 #endif
-        ;//TODO add a version checker to check for new versions? (accessing the internet might trigger antivirus); see System.Net.WebClient.DownloadStringAsync
+        ;
 
         /// <summary>
         /// Determines if this <see cref="FezChaosMod"/> is enabled. 

@@ -188,3 +188,7 @@ Reworked save files
 
 1.0.1 - 2026-11-03T00:11:01Z
 fixed several bugs with the file picker 
+
+1.0.2 - 
+added version checker
+
