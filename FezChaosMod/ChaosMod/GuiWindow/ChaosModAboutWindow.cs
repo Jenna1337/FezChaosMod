@@ -21,12 +21,12 @@ namespace FezGame
                 ImGui.Dummy(new System.Numerics.Vector2(0, 20));
 
                 // Author label
-                ImGui.Text("FEZ Chaos Mod made by Jenna Sloan");
+                ImGui.TextWrapped("FEZ Chaos Mod made by Jenna Sloan");
 
                 ImGui.Spacing();
 
                 // Version label dynamically pulling from FezChaosMod.Version
-                ImGui.Text($"Chaos Mod Version: {FezChaosMod.Version}");
+                ImGui.TextWrapped($"Chaos Mod Version: {FezChaosMod.Version}");
 
                 // Position the OK button near the bottom center/right matching original coordinates
                 // We calculate available height to push it down

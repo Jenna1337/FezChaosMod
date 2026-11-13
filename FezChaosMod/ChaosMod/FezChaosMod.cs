@@ -1195,6 +1195,13 @@ false
 
             drawingTools.DrawShadowedText(debugText, ShowDebugInfo ? Color.White : Color.Transparent, Vector2.Zero, scale);
 
+            //fix imgui font scaling 
+            var io = ImGui.GetIO();
+            io.FontAllowUserScaling = true;
+            const float targetFontSize = 24f;//24 is the target size of the game
+            float fontScale = targetFontSize / ImGui.GetFont().FontSize;
+            io.FontGlobalScale = fontScale * scale;
+
             // Render ImGui right over the game
             if (ChaosModWindow.Instance != null && ChaosModWindow.Instance.IsOpen)
             {

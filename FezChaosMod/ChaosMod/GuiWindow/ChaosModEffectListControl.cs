@@ -26,8 +26,10 @@ namespace FezGame
                 .OrderBy(g => g.Key);
 
             float maxLabelWidth = chaosMod.ChaosEffectsList.Max(effect => ImGui.CalcTextSize(effect.Name).X);
-            float targetLabelWidth = maxLabelWidth + ImGui.GetFrameHeight() + ImGui.GetStyle().ItemInnerSpacing.X;
+            float targetLabelWidth = maxLabelWidth + ImGui.GetFrameHeight() + ImGui.GetStyle().ItemInnerSpacing.X * 2;
 
+            float indent = 0;
+            const float indentAmount = 10f;
             foreach (var categoryGroup in categorizedEffects)
             {
                 // Render category as a collapsible header
@@ -56,14 +58,16 @@ namespace FezGame
 
                 if (ImGui.CollapsingHeader(categoryGroup.Key, ImGuiTreeNodeFlags.DefaultOpen))
                 {
-                    ImGui.Indent(10.0f);
+                    indent += indentAmount;
+                    ImGui.Indent(indentAmount);
 
                     foreach (var effect in categoryGroup)
                     {
-                        DrawEffectRow(effect, targetLabelWidth);
+                        DrawEffectRow(effect, targetLabelWidth + indent);
                     }
 
-                    ImGui.Unindent(10.0f);
+                    ImGui.Unindent(indentAmount);
+                    indent -= indentAmount;
                     ImGui.Spacing();
                 }
             }
@@ -93,9 +97,11 @@ namespace FezGame
                 ImGui.SetCursorPosX(checkboxAlignX);
             }
 
+            float spinnerWidth = ImGui.GetFontSize() * 7f;
+
             // Weight Spinner / Input
             float weight = (float)effect._weight;
-            ImGui.SetNextItemWidth(100f);
+            ImGui.SetNextItemWidth(spinnerWidth);
             if (ImGui.InputFloat(idPrefix + "Weight", ref weight, 0.01f, 0.1f, "%.4f"))
             {
                 effect._weight = weight;
@@ -108,7 +114,7 @@ namespace FezGame
             {
                 ImGui.SameLine();
                 float duration = (float)effect._duration;
-                ImGui.SetNextItemWidth(100f);
+                ImGui.SetNextItemWidth(spinnerWidth);
                 if (ImGui.InputFloat(idPrefix + "Duration", ref duration, 0.1f, 1f, "%.4f"))
                 {
                     effect._duration = duration;
@@ -119,7 +125,7 @@ namespace FezGame
             else
             {
                 ImGui.SameLine();
-                ImGui.Dummy(new System.Numerics.Vector2(104f, 1f));
+                ImGui.Dummy(new System.Numerics.Vector2(spinnerWidth, 1f));
             }
 
             ImGui.SameLine();

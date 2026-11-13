@@ -174,26 +174,27 @@ namespace FezGame
 
                             ImGui.Spacing();
 
-                            ImGui.SetNextItemWidth(120f);
+                            float spinnerWidth = ImGui.GetFontSize() * 7f;
+                            ImGui.SetNextItemWidth(spinnerWidth);
                             if (ImGui.InputFloat("Delay Between Effects (seconds)", ref Settings.delayBetweenEffects, 0.1f, 1f, "%.3f"))
                             {
                                 chaosMod.DelayBetweenEffects = Settings.delayBetweenEffects;
                             }
 
-                            ImGui.SetNextItemWidth(120f);
+                            ImGui.SetNextItemWidth(spinnerWidth);
                             if (ImGui.InputFloat("Effect Duration Multiplier", ref Settings.durationMultiplier, 0.1f, 1f, "%.3f"))
                             {
                                 chaosMod.EffectsDurationMultiplier = Settings.durationMultiplier;
                             }
 
-                            ImGui.SetNextItemWidth(120f);
+                            ImGui.SetNextItemWidth(spinnerWidth);
                             if (ImGui.InputInt("Max Effects to Display", ref Settings.maxEffectsToDisplay))
                             {
                                 chaosMod.MaxActiveEffectsToDisplay = Settings.maxEffectsToDisplay;
                                 if (Settings.latestEffectsToDisplay > Settings.maxEffectsToDisplay) Settings.latestEffectsToDisplay = Settings.maxEffectsToDisplay;
                             }
 
-                            ImGui.SetNextItemWidth(120f);
+                            ImGui.SetNextItemWidth(spinnerWidth);
                             if (ImGui.InputInt("Latest Effects to Display", ref Settings.latestEffectsToDisplay))
                             {
                                 if (Settings.latestEffectsToDisplay > Settings.maxEffectsToDisplay) Settings.latestEffectsToDisplay = Settings.maxEffectsToDisplay;
@@ -206,7 +207,7 @@ namespace FezGame
 
                             // Right Effect Checklist Container Box
                             System.Numerics.Vector2 listRegionSize = ImGui.GetContentRegionAvail();
-                            if (ImGui.BeginChild("EffectsCheckListContainer", listRegionSize, ImGuiChildFlags.Border))
+                            if (ImGui.BeginChild("EffectsCheckListContainer", listRegionSize, ImGuiChildFlags.Border, ImGuiWindowFlags.HorizontalScrollbar))
                             {
                                 ImGui.Text("Effects");
                                 ImGui.Separator();

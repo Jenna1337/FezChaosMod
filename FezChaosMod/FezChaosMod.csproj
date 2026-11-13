@@ -9,7 +9,6 @@
 
     <!-- Retaining original FEZ constant and common settings -->
     <DefineConstants>FEZCLIENT</DefineConstants>
-    <Platforms>x86</Platforms>
 
     <!-- Your Assembly Information -->
     <Product>FezMultiplayerMod</Product>
@@ -18,11 +17,13 @@
     <Company>FEZ Modding</Company>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 
+    <DebugType>full</DebugType>
+
     <!-- Don't include dependencies -->
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
 
     <!-- Disables the generation of the .deps.json file completely -->
-    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <GenerateDependencyFile>true</GenerateDependencyFile>
 
   </PropertyGroup>
 

@@ -1,8 +1,8 @@
 <Solution>
   <Configurations>
-    <Platform Name="x86" />
+    <Platform Name="Any CPU" />
   </Configurations>
   <Project Path="FezChaosMod/FezChaosMod.csproj">
-    <Platform Project="x86" />
+    <Platform Project="Any CPU" />
   </Project>
 </Solution>
