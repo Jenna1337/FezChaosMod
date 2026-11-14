@@ -23,7 +23,7 @@
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
 
     <!-- Disables the generation of the .deps.json file completely -->
-    <GenerateDependencyFile>true</GenerateDependencyFile>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
 
   </PropertyGroup>
 
@@ -40,12 +40,10 @@
       <ModCompileOutputDir Condition="'$(ModOutputDir)' != ''">$(ModOutputDir)</ModCompileOutputDir>
       <ModCompileOutputDir Condition="'$(ModOutputDir)' == ''">$(ProjectDir)out</ModCompileOutputDir>
     </PropertyGroup>
-
     <ItemGroup>
       <ModFiles
         Include="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb;$(ProjectDir)..\Metadata.xml" />
     </ItemGroup>
-
     <MakeDir Directories="$(ModCompileOutputDir)" />
     <Copy SourceFiles="@(ModFiles)" DestinationFolder="$(ModCompileOutputDir)" />
     <Copy SourceFiles="@(NativeAssets)"

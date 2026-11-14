@@ -29,7 +29,6 @@ cd /d %projectpath%
 @copy Metadata.xml %projectsubpath%\publish\Metadata.xml
 @IF NOT EXIST %packedpath% @mkdir %packedpath%
 
-@rem bin\x86\Debug\net10.0
 @echo Packing the files that are in %projectsubpath%\publish into %packedpath%\%projectname%.zip ...
 @powershell -command "Compress-Archive -Path '%projectsubpath%\publish\*' -DestinationPath '%packedpath%\%projectname%.zip' -Force"
 
@@ -45,3 +44,4 @@ cd /d %projectpath%
 @echo Build time: %utcTime%>%packedpath%\buildtime.txt
 @echo Done.
 @pause
+
