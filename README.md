@@ -34,7 +34,7 @@ For a full list of features, see [changelog.txt](/changelog.txt)
 2. Copy `UserProperties.xml.template` to `UserProperties.xml` and configure `FezDir`, `MonoModDir`, `ImGuiDir`, and `ModOutputDir`.
 3. Run `dotnet build FezChaosMod-NET10.slnx --configuration Release`. The build copies the mod DLL, symbols, and metadata to `ModOutputDir`.
 
-Settings windows and progress indicators use the IMGUI mod's renderer. Remaining game text and textures use FNA; the .NET 10 build excludes the legacy GDI+ progress renderers and WinForms resources.
+Settings windows and progress indicators use the IMGUI mod's renderer. Remaining game text and textures use FNA.
 
 ## Contributing
 
