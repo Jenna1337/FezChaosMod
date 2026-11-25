@@ -47,6 +47,11 @@ namespace FezGame
 
             LoadSettingsFromFile(activeSaveFile);
 
+            if (!File.Exists(activeSaveFile))
+            {
+                SaveSettingsToFile(activeSaveFile);
+            }
+
             SettingsFilePicker = FilePicker.GetFilePicker(ChaosModWindowFilePickerId, activeSaveFile);
             SettingsFilePicker.SelectedFile = activeSaveFile;
             SettingsFilePicker.AddFileExtensionOption("INI Files", [".ini"]);
