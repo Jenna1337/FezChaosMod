@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace FezGame
 {
-    internal class Hotkey : IEquatable<Hotkey>
+    internal class KeyCombo : IEquatable<KeyCombo>
     {
         private Keys MainKey { get; }
         private KeyModifiers ModifierKeys { get; }
@@ -38,15 +38,15 @@ namespace FezGame
             Cmd = 8,
         }
 
-        public Hotkey(Keys key) : this(key, KeyModifiers.None)
+        public KeyCombo(Keys key) : this(key, KeyModifiers.None)
         {
         }
-        private Hotkey(Keys key, KeyModifiers modifiers)
+        private KeyCombo(Keys key, KeyModifiers modifiers)
         {
             MainKey = key;
             ModifierKeys = modifiers;
         }
-        public Hotkey(string keyCombo)
+        public KeyCombo(string keyCombo)
         {
             MainKey = Keys.None;
             ModifierKeys = KeyModifiers.None;
@@ -115,7 +115,7 @@ namespace FezGame
             return active;
         }
         private static readonly HashSet<Keys> PressedNonModifiers = [];
-        public static bool GetPressedCombo(out Hotkey hotkey)
+        public static bool GetPressedCombo(out KeyCombo hotkey)
         {
             KeyboardState keyboardState = Keyboard.GetState();
             PressedNonModifiers.Clear();
@@ -131,7 +131,7 @@ namespace FezGame
             {
                 foreach (Keys mainKey in PressedNonModifiers)
                 {
-                    hotkey = new Hotkey(mainKey, GetActiveModifiers(keyboardState));
+                    hotkey = new KeyCombo(mainKey, GetActiveModifiers(keyboardState));
                     return true;
                 }
             }
@@ -179,7 +179,7 @@ namespace FezGame
             public string[] Aliases { get; }
         }
 
-        public bool Equals(Hotkey other)
+        public bool Equals(KeyCombo other)
         {
             if (other is null)
             {
@@ -189,11 +189,11 @@ namespace FezGame
             return MainKey == other.MainKey && ModifierKeys == other.ModifierKeys;
         }
 
-        public override bool Equals(object obj) => Equals(obj as Hotkey);
+        public override bool Equals(object obj) => Equals(obj as KeyCombo);
 
         public override int GetHashCode() => HashCode.Combine(MainKey, ModifierKeys);
 
-        public static bool operator ==(Hotkey left, Hotkey right)
+        public static bool operator ==(KeyCombo left, KeyCombo right)
         {
             if (left is null)
             {
@@ -203,7 +203,7 @@ namespace FezGame
             return left.Equals(right);
         }
 
-        public static bool operator !=(Hotkey left, Hotkey right) => !(left == right);
+        public static bool operator !=(KeyCombo left, KeyCombo right) => !(left == right);
     }
 
     public static class KeysExtensions
