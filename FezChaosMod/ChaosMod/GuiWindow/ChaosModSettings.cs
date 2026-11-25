@@ -1,4 +1,5 @@
 ﻿using FezGame.ChaosMod;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace FezGame
 {
     internal class ChaosModSettings
     {
+        [ChaosModSetting(useRaw: true)]
+        public KeyCombo toggleChaosModMenuHotkey = new KeyCombo(Keys.F1);
         [ChaosModSetting]
         public bool chaosModeEnabled = true;
         [ChaosModSetting]
@@ -84,6 +87,7 @@ namespace FezGame
         }
         public void ApplySettings()
         {
+            FezChaosMod.Instance.ToggleChaosModMenuHotkey = toggleChaosModMenuHotkey;
             FezChaosMod.Enabled = chaosModeEnabled;
             FezChaosMod.Instance.DelayBetweenEffects = delayBetweenEffects;
             FezChaosMod.Instance.EffectsDurationMultiplier = durationMultiplier;
@@ -181,6 +185,18 @@ namespace FezGame
             });
             return settings;
         }
+        private static object ParseValue(string rawValue, Type targetType)
+        {
+            // use the public Constructor(string) if it exists
+            ConstructorInfo stringCtor = targetType.GetConstructor([typeof(string)]);
+            if (stringCtor != null)
+            {
+                return stringCtor.Invoke([rawValue]);
+            }
+
+            // fall back to built-in primitive conversion
+            return Convert.ChangeType(rawValue, targetType, System.Globalization.CultureInfo.InvariantCulture);
+        }
         public void SetAllInputsValues(IniFile ctrlvals)
         {
             string[] sectionsToCheckFirst = [
@@ -202,7 +218,8 @@ namespace FezGame
                 if (ctrlvals.TryGetValue(uid, out string val, [expectedSection, .. sectionsToCheckFirst]))
                 {
                     var newType = isAdditionalSettings ? typeof(bool) : field.FieldType;
-                    object newVal = Convert.ChangeType(val, newType, System.Globalization.CultureInfo.InvariantCulture);
+
+                    object newVal = ParseValue(val, newType);
                     if (isAdditionalSettings)
                     {
                         ((AdditionalSettingsCheckListItem)ob).Value = (bool)newVal;
@@ -240,7 +257,7 @@ namespace FezGame
                     continue;
                 }
                 var FieldType = field.FieldType;
-                if (FieldType.IsPrimitive)
+                if (FieldType.IsPrimitive || attribute.UseRaw)
                 {
                     MappingFunc(field, ob, path);
                 }
@@ -280,6 +297,12 @@ namespace FezGame
         [AttributeUsage(AttributeTargets.Field)]
         private class ChaosModSettingAttribute : Attribute
         {
+            public bool UseRaw;
+
+            public ChaosModSettingAttribute(bool useRaw = false)
+            {
+                UseRaw = useRaw;
+            }
         }
     }
     internal static class TypeExtensions

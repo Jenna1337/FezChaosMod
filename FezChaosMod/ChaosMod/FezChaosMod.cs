@@ -2,7 +2,6 @@
 using FezEngine.Services;
 using FezEngine.Services.Scripting;
 using FezEngine.Structure;
-using FezEngine.Structure.Input;
 using FezEngine.Tools;
 using FezGame.Components;
 using FezGame.GameInfo;
@@ -56,7 +55,7 @@ namespace FezGame.ChaosMod
         /// </summary>
         public int LatestEffectsToDisplay = 2;
 
-        private const Microsoft.Xna.Framework.Input.Keys ToggleChaosModMenu = Microsoft.Xna.Framework.Input.Keys.F1;
+        internal KeyCombo ToggleChaosModMenuHotkey = new(Microsoft.Xna.Framework.Input.Keys.F1);
 
         #region ServiceDependencies
         [ServiceDependency]
@@ -547,7 +546,6 @@ namespace FezGame.ChaosMod
             //Game.TargetElapsedTime = TimeSpan.FromTicks(1);
             if (!DidInit)
             {
-                KeyboardState.RegisterKey(ToggleChaosModMenu);
                 LoadingText = "Loading effects";
                 //DidInit = true;
 
@@ -934,7 +932,7 @@ namespace FezGame.ChaosMod
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (KeyboardState.GetKeyState(ToggleChaosModMenu) == FezButtonState.Pressed)
+            if (ToggleChaosModMenuHotkey.IsPressed)
             {
                 if (ChaosModWindow.Instance != null)
                 {
