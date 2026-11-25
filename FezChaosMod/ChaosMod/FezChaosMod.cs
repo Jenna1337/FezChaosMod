@@ -539,6 +539,50 @@ namespace FezGame.ChaosMod
 
             LoadingText = "Loading Content...";
             _ = Waiters.Wait(() => MemoryContentManager.AssetExists("Skies/DEFAULT"), () => { Waiters.Wait(1, Initialize0); });//wait until the assets are loaded
+            _ = Waiters.Wait(() =>
+            {
+                return ServiceHelper.FirstLoadDone;
+            }, () =>
+            {
+                IGameComponent q = Game.Components.FirstOrDefault(c => c.GetType().FullName.Equals("FEZUG.Fezug"));
+                if (q != null)
+                {
+                    var FezugConsole = q.GetType().Assembly?.GetType("FEZUG.Features.Console.FezugConsole");
+                    try
+                    {
+                        var FezugConsoleAddCommandFunc = FezugConsole?.GetMethod("AddCommand");
+                        if (FezugConsoleAddCommandFunc != null)
+                        {
+                            void AddCommand(string name, string helpText, Func<string[], List<string>> autocompleteProvider, Func<string[], bool> executeCommand)
+                            {
+                                _ = FezugConsoleAddCommandFunc.Invoke(null, new object[] {
+                                name,
+                                helpText,
+                                autocompleteProvider,
+                                executeCommand
+                            });
+                            }
+                            AddCommand("chaos_settings",
+                                    $"toggles the chaos mod settings window", null,
+                                    args =>
+                                    {
+                                        if (ChaosModWindow.Instance != null)
+                                        {
+                                            ChaosModWindow.Instance.IsOpen = !ChaosModWindow.Instance.IsOpen;
+                                        }
+                                        return true;
+                                    }
+                            );
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Common.Logger.Log(nameof(FezChaosMod), "Failed to inject FEZUG commands. Reason: " + e.Message);
+                        Common.Logger.Log(nameof(FezChaosMod), "Failed to inject FEZUG commands. Stack trace: " + e.StackTrace);
+                    }
+                }
+            });
+
         }
         private void Initialize0()
         {
