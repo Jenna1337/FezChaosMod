@@ -192,3 +192,7 @@ fixed several bugs with the file picker
 1.0.2 - 2026-11-05T23:20:50Z
 added version checker
 
+1.0.3 - TBA
+add setting to change the key to open settings
+add FEZUG command to toggle the settings window
+
