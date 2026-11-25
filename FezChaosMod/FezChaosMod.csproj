@@ -27,12 +27,10 @@
 
   </PropertyGroup>
 
-  <Import Project="$(MSBuildThisFileDirectory)../UserProperties.xml"
-    Condition="Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
+  <Import Project="$(MSBuildThisFileDirectory)../UserProperties.xml" Condition="Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
 
   <Target Name="VerifyModReferences" BeforeTargets="Build">
-    <Error Text="You forgot to configure UserProperties.xml"
-      Condition="!Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
+    <Error Text="You forgot to configure UserProperties.xml" Condition="!Exists('$(MSBuildThisFileDirectory)../UserProperties.xml')" />
   </Target>
 
   <Target Name="PrepareMod" AfterTargets="Build">
@@ -41,14 +39,18 @@
       <ModCompileOutputDir Condition="'$(ModOutputDir)' == ''">$(ProjectDir)out</ModCompileOutputDir>
     </PropertyGroup>
     <ItemGroup>
-      <ModFiles
-        Include="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb;$(ProjectDir)..\Metadata.xml" />
+      <ModFiles Include="$(TargetDir)$(TargetName).dll;$(TargetDir)$(TargetName).pdb;$(ProjectDir)..\Metadata.xml" />
     </ItemGroup>
     <MakeDir Directories="$(ModCompileOutputDir)" />
     <Copy SourceFiles="@(ModFiles)" DestinationFolder="$(ModCompileOutputDir)" />
-    <Copy SourceFiles="@(NativeAssets)"
-      DestinationFolder="$(ModCompileOutputDir)\runtimes\%(RecursiveDir)" />
+    <Copy SourceFiles="@(NativeAssets)" DestinationFolder="$(ModCompileOutputDir)\runtimes\%(RecursiveDir)" />
   </Target>
+
+  <ItemGroup>
+    <Compile Remove="publish\**" />
+    <EmbeddedResource Remove="publish\**" />
+    <None Remove="publish\**" />
+  </ItemGroup>
 
 
   <!-- External Assembly References from your libs folder -->
