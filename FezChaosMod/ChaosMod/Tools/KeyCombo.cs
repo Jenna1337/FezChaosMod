@@ -34,8 +34,8 @@ namespace FezGame
             Alt = 2,
             [KeyModifier]
             Shift = 4,
-            [KeyModifier("Command", "Win", "Windows")]
-            Cmd = 8,
+            [KeyModifier("Cmd", "Command", "Win", "Windows", "OSKey", "Super")]
+            Meta = 8,
         }
 
         public KeyCombo(Keys key) : this(key, KeyModifiers.None)
@@ -109,7 +109,7 @@ namespace FezGame
 
             if (state.IsKeyDown(Keys.LeftWindows) || state.IsKeyDown(Keys.RightWindows))
             {
-                active |= KeyModifiers.Cmd;
+                active |= KeyModifiers.Meta;
             }
 
             return active;
@@ -117,6 +117,7 @@ namespace FezGame
         private static readonly HashSet<Keys> PressedNonModifiers = [];
         public static bool GetPressedCombo(out KeyCombo hotkey)
         {
+            //TODO maybe use this method to add a button to the GUI to change the keybind? 
             KeyboardState keyboardState = Keyboard.GetState();
             PressedNonModifiers.Clear();
             foreach (Keys key in keyboardState.GetPressedKeys())
