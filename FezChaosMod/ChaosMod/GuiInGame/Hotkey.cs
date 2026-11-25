@@ -5,16 +5,19 @@ using System.Reflection;
 
 namespace FezGame
 {
-    internal class Hotkey
+    internal class Hotkey : IEquatable<Hotkey>
     {
-        private Keys MainKey { get; set; }
-        private KeyModifiers ModifierKeys { get; set; }
+        private Keys MainKey { get; }
+        private KeyModifiers ModifierKeys { get; }
+        private bool wasPressed = false;
         public bool IsPressed => GetIsPressed();
 
         public override string ToString()
         {
             if (ModifierKeys == KeyModifiers.None)
-                return MainKey.ToString(); // Or string.Empty if no trigger key
+            {
+                return MainKey.ToString();
+            }
 
             return $"{ModifierKeys.ToString().Replace(", ", "+")}+{MainKey}";
         }
@@ -49,13 +52,17 @@ namespace FezGame
             ModifierKeys = KeyModifiers.None;
 
             if (string.IsNullOrWhiteSpace(keyCombo))
+            {
                 return;
+            }
 
             foreach (string rawToken in keyCombo.Split('+'))
             {
                 string token = rawToken.Trim();
                 if (string.IsNullOrEmpty(token))
+                {
                     continue;
+                }
 
                 if (AliasMap.TryGetValue(token, out KeyModifiers mod))
                 {
@@ -69,25 +76,41 @@ namespace FezGame
         }
         private bool GetIsPressed()
         {
-            KeyboardState keyboardState = Keyboard.GetState();
-            if (!keyboardState.IsKeyDown(MainKey))
+            if (MainKey == Keys.None)
             {
                 return false;
             }
-            return GetActiveModifiers(keyboardState) == ModifierKeys;
+
+            KeyboardState keyboardState = Keyboard.GetState();
+            bool isDown = keyboardState.IsKeyDown(MainKey) && GetActiveModifiers(keyboardState) == ModifierKeys;
+            bool justPressed = isDown && !wasPressed;
+            wasPressed = isDown;
+
+            return justPressed;
         }
         private static KeyModifiers GetActiveModifiers(KeyboardState state)
         {
             KeyModifiers active = KeyModifiers.None;
 
             if (state.IsKeyDown(Keys.LeftControl) || state.IsKeyDown(Keys.RightControl))
+            {
                 active |= KeyModifiers.Ctrl;
+            }
+
             if (state.IsKeyDown(Keys.LeftAlt) || state.IsKeyDown(Keys.RightAlt))
+            {
                 active |= KeyModifiers.Alt;
+            }
+
             if (state.IsKeyDown(Keys.LeftShift) || state.IsKeyDown(Keys.RightShift))
+            {
                 active |= KeyModifiers.Shift;
+            }
+
             if (state.IsKeyDown(Keys.LeftWindows) || state.IsKeyDown(Keys.RightWindows))
+            {
                 active |= KeyModifiers.Cmd;
+            }
 
             return active;
         }
@@ -124,11 +147,15 @@ namespace FezGame
             {
                 var attr = field.GetCustomAttribute<KeyModifierAttribute>();
                 if (attr == null)
+                {
                     continue;
+                }
 
                 var value = (KeyModifiers)field.GetValue(null);
                 if (value == KeyModifiers.None)
+                {
                     continue;
+                }
 
                 // Register the canonical enum name (e.g., "Ctrl")
                 map[field.Name] = value;
@@ -152,6 +179,31 @@ namespace FezGame
             public string[] Aliases { get; }
         }
 
+        public bool Equals(Hotkey other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return MainKey == other.MainKey && ModifierKeys == other.ModifierKeys;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as Hotkey);
+
+        public override int GetHashCode() => HashCode.Combine(MainKey, ModifierKeys);
+
+        public static bool operator ==(Hotkey left, Hotkey right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Hotkey left, Hotkey right) => !(left == right);
     }
 
     public static class KeysExtensions
